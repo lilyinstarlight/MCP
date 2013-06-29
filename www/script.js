@@ -8,6 +8,12 @@ function change(element) {
 	document.getElementById(element).style.display = 'block';
 }
 
+function scriptChange(element) {
+	document.getElementById('script_editor').style.display = 'none';
+	document.getElementById('script_console').style.display = 'none';
+	document.getElementById(element).style.display = 'block';
+}
+
 function start() {
 	document.getElementById('start').href = null;
 	document.getElementById('start').className = 'button disabled';
@@ -111,6 +117,9 @@ function sendCommand(command) {
 }
 
 function getLog() {
+	if(document.getElementById('console').style.display == 'none')
+		return;
+
 	var ajax = new XMLHttpRequest();
 	ajax.onload =	function() {
 		if(ajax.readyState == 4) {
@@ -121,6 +130,22 @@ function getLog() {
 	ajax.open('POST', 'action.php', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	ajax.send('action=log');
+}
+
+function getScriptLog() {
+	if(document.getElementById('script_console').style.display == 'none')
+		return;
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload =	function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status == 200 && ajax.responseText != '')
+				document.getElementById('script_log').innerHTML = ajax.responseText;
+		}
+	}
+	ajax.open('POST', 'action.php', true);
+	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	ajax.send('action=script_log');
 }
 
 function updateSettings() {
@@ -187,7 +212,9 @@ function load() {
 
 	document.getElementById('settings').style.display = 'none'
 	document.getElementById('scripting').style.display = 'none'
+	document.getElementById('script_console').style.display = 'none'
 	setInterval(getLog, 500);
+	setInterval(getScriptLog, 500);
 }
 
 window.addEventListener('load', load, false);

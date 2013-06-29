@@ -22,6 +22,9 @@ $CONFIG = array(
 	'manager'	=> '/home/armagetron/manager.sh',
 
 	//Path to server directory
-	'serverdir'	=> '/home/armagetron/servers'
+	'serverdir'	=> '/home/armagetron/servers',
+
+	//How many lines to show of the logs
+	'lines'		=> 200
 );
 ?>

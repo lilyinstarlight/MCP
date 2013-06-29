@@ -50,11 +50,8 @@ function sendCommand($server, $command) {
 	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/var/input.txt', $command . "\n", FILE_APPEND) !== false;
 }
 
-function getLog($server) {
-	global $CONFIG;
-
-	$file = fopen($CONFIG['serverdir'] . '/' . $server . '/arma.log', 'r');
-	$lines = 200;
+function getTail($filename, $lines) {
+	$file = fopen($filename, 'r');
 	$pos = -2;
 	$text = array();
 	$line = 0;
@@ -77,6 +74,18 @@ function getLog($server) {
 
 	fclose($file);
 	return implode($text);
+}
+
+function getLog($server) {
+	global $CONFIG;
+
+	return getTail($CONFIG['serverdir'] . '/' . $server . '/arma.log', $CONFIG['lines']);
+}
+
+function getScriptLog($server) {
+	global $CONFIG;
+
+	return getTail($CONFIG['serverdir'] . '/' . $server . '/script-error.log', $CONFIG['lines']);
 }
 
 function getSettings($server) {

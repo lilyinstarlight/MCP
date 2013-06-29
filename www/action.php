@@ -24,6 +24,10 @@ if(isset($_SESSION['user']) && isset($_REQUEST['action'])) {
 			if(serverExists($_SESSION['server']))
 				echo getLog($_SESSION['server']);
 			break;
+		case 'script_log':
+			if(serverExists($_SESSION['server']))
+				echo getScriptLog($_SESSION['server']);
+			break;
 		case 'settings':
 			if(serverExists($_SESSION['server']) && updateSettings($_SESSION['server'], $_REQUEST['settings'])) {
 				if(isRunning($_SESSION['server']))

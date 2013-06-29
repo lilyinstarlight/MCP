@@ -39,7 +39,7 @@ if [ -f $scriptpid ]; then
 fi
 
 function start_script {
-	/usr/sbin/daemonize -a -e "$prefix/script-error.log" -o "$prefix/var/input.txt" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid"
+	/usr/sbin/daemonize -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		stop

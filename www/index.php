@@ -100,16 +100,25 @@ if(isset($_SESSION['user'])) {
 						<a id="settings_submit" href="javascript:updateSettings()" class="button">Save</a>
 					</span>
 				</div>
-				<textarea id="settings_text" placeholder="Here you can specify your server's custom settings.  There is no need to set TALK_TO_MASTER or GLOBAL_ID here, but you should set your server's name and set yourself as an Owner."><?php if($exists) echo getSettings($_SESSION['server']); ?></textarea>
+				<div id="settings_editor">
+					<textarea id="settings_text" placeholder="Here you can specify your server's custom settings.  There is no need to set TALK_TO_MASTER or GLOBAL_ID here, but you should set your server's name and set yourself as an Owner."><?php if($exists) echo getSettings($_SESSION['server']); ?></textarea>
+				</div>
 			</div>
 			<div id="scripting">
 				<div class="controller">
 					<span class="buttons right">
+						<a href="javascript:scriptChange('script_editor')" class="button">Editor</a>
 						<a href="api.html" target="_blank" class="button">API</a>
+						<a href="javascript:scriptChange('script_console')" class="button">Log</a>
 						<a id="script_submit" href="javascript:updateScript()" class="button">Save</a>
 					</span>
 				</div>
-				<textarea id="script_text" placeholder="Here you can add a custom server script written in Python 3.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details."><?php if($exists) echo getScript($_SESSION['server']); ?></textarea>
+				<div id="script_editor">
+					<textarea id="script_text" placeholder="Here you can add a custom server script written in Python 3.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details."><?php if($exists) echo getScript($_SESSION['server']); ?></textarea>
+				</div>
+				<div id="script_console">
+					<pre id="script_log" class="log"></pre>
+				</div>
 			</div>
 
 		</div>
