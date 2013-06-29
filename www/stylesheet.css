@@ -1,0 +1,84 @@
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.button {
+	background: #369;
+	color: #000;
+	text-decoration: none;
+	padding: 0px 8px 0px 8px;
+	border: 2px solid #000;
+	display: inline-block;
+	text-align: center;
+}
+
+.button:hover {
+	background: #47A;
+}
+
+.disabled {
+	color: #333;
+	cursor: default;
+}
+
+.disabled:hover {
+	background: #369;
+}
+
+.menu {
+	background: #369;
+	border-width: 2px 0px 2px 0px;
+	border-style: solid;
+	border-color: #000;
+	overflow: auto;
+}
+
+.menu .button {
+	width: 80px;
+	padding: 5px 0px 5px 0px;
+	border-style: solid;
+	border-color: #000;
+}
+
+.menu .left .button {
+	float: left;
+	border-width: 0px 2px 0px 0px;
+}
+
+.menu .right .button {
+	float: right;
+	border-width: 0px 0px 0px 2px;
+}
+
+.controller {
+	padding: 10px;
+	overflow: auto;
+}
+
+.status {
+	font-weight: bold;
+}
+
+.commands {
+	width: 100%;
+}
+
+.commands td {
+	padding: 5px;
+}
+
+.command_box {
+	width: 100%;
+}
+
+.log {
+	background: rgba(0, 0, 0, 0.2);
+	height: 50em;
+	border: 1px solid #222;
+	padding: 5px;
+	overflow: auto;
+}

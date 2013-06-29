@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "$$" > "$2"
+python "$1/scripts/armagetron.py" "$1/var/ladderlog.txt" "$1/var/input.txt"
+while [ $? -ne 0 ]; do
+	sleep 3
+	echo "WARNING: The script did not gracefully quit; now restarting." >&2
+	python "$1/scripts/armagetron.py" "$1/var/ladderlog.txt" "$1/var/input.txt"
+done
+rm "$2"

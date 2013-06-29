@@ -1,0 +1,52 @@
+html {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	background: url('background.png');
+	margin: 0px;
+	padding: 0px;
+	min-width: 800px;
+	color: #DDD;
+}
+
+label {
+	font-weight: bold;
+}
+
+.success {
+	color: green;
+}
+
+.failure {
+	color: red;
+}
+
+.header {
+	padding: 20px;
+	text-align: center;
+}
+
+.logo {
+	width: 128px;
+	height: 128px;
+	padding-right: 30px;
+	vertical-align: middle;
+}
+
+.title {
+	font-size: 42px;
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.content {
+	background: rgba(60, 110, 80, 0.6);
+	border-width: 0px 2px 2px 2px;
+	border-style: solid;
+	border-color: #000;
+	width: 92%;
+	margin: 0px auto 60px auto;
+	padding: 20px;
+}
