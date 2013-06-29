@@ -38,19 +38,19 @@ if(isset($_SESSION['user'])) {
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
 		<script src="script.js" type="text/javascript"></script>
 
-		<link href="codemirror/codemirror.css" rel="stylesheet">
+		<link href="codemirror/codemirror.css" rel="stylesheet" />
 		<script src="codemirror/codemirror.js" type="text/javascript"></script>
 		<script src="codemirror/python.js" type="text/javascript"></script>
 		<script src="codemirror/settings.js" type="text/javascript"></script>
 		<script src="codemirror/matchbrackets.js" type="text/javascript"></script>
 		<script src="codemirror/placeholder.js" type="text/javascript"></script>
 		<script src="codemirror/dialog.js" type="text/javascript"></script>
-		<link href="codemirror/dialog.css" rel="stylesheet">
+		<link href="codemirror/dialog.css" rel="stylesheet" />
 		<script src="codemirror/searchcursor.js" type="text/javascript"></script>
 		<script src="codemirror/search.js" type="text/javascript"></script>
 		<script src="codemirror/trailingspace.js" type="text/javascript"></script>
-		<link href="codemirror/style.css" rel="stylesheet">
-		<link href="codemirror/arma.css" rel="stylesheet">
+		<link href="codemirror/style.css" rel="stylesheet" />
+		<link href="codemirror/arma.css" rel="stylesheet" />
 	</head>
 	<body>
 		<div class="header">
