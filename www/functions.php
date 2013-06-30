@@ -79,13 +79,21 @@ function getTail($filename, $lines) {
 function getLog($server) {
 	global $CONFIG;
 
-	return getTail($CONFIG['serverdir'] . '/' . $server . '/arma.log', $CONFIG['lines']);
+	$file = $CONFIG['serverdir'] . '/' . $server . '/arma.log';
+	if(file_exists($file))
+		return getTail($file, $CONFIG['lines']);
+	else
+		return '';
 }
 
 function getScriptLog($server) {
 	global $CONFIG;
 
-	return getTail($CONFIG['serverdir'] . '/' . $server . '/script-error.log', $CONFIG['lines']);
+	$file = $CONFIG['serverdir'] . '/' . $server . '/script-error.log';
+	if(file_exists($file))
+		return getTail($file, $CONFIG['lines']);
+	else
+		return '';
 }
 
 function getSettings($server) {
