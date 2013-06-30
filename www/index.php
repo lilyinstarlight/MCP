@@ -62,12 +62,10 @@ if(isset($_SESSION['user'])) {
 		</div>
 		<div class="menu">
 			<span class="left">
-				<a href="javascript:change('console')" class="button">Console</a>
-				<a href="javascript:change('settings')" class="button">Settings</a>
-				<a href="javascript:change('scripting')" class="button">Scripting</a>
+				<a href="javascript:change('console')" class="button">Console</a><a href="javascript:change('settings')" class="button">Settings</a><a href="javascript:change('scripting')" class="button">Scripting</a>
 			</span>
 			<span class="right">
-				<select><?php foreach($servers as $number => $name) echo "\n\t\t\t\t" . '<option value="' . $number . '">' . $name . '</option>'; ?>
+				<select><?php foreach($servers as $number => $name) echo "\n\t\t\t\t" . '<option value="' . $number . '"' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
 				</select>
 				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout" class="button">Logout</a>
 			</span>

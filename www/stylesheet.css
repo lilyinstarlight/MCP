@@ -14,12 +14,10 @@
 }
 
 .menu .left .button {
-	float: left;
 	border-width: 0px 2px 0px 0px;
 }
 
 .menu .right .button {
-	float: right;
 	border-width: 0px 0px 0px 2px;
 }
 
