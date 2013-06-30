@@ -21,6 +21,10 @@
 	border-width: 0px 0px 0px 2px;
 }
 
+.menu form {
+	display: inline;
+}
+
 .controller {
 	padding: 10px;
 	overflow: auto;
