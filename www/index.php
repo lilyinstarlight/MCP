@@ -13,8 +13,8 @@ if(!isset($_SESSION['user']) && isset($_REQUEST['user'])) {
 		$_SESSION['user'] = $array['username'];
 		$servers = explode(",", $array['servers']);
 		$_SESSION['servers'] = $servers;
-		if(isset($servers[0]))
-			$_SESSION['server'] = $servers[0];
+		if(isset($_SESSION['servers'][0]))
+			$_SESSION['server'] = $_SESSION['servers'][0];
 	}
 	else {
 		$message = '<span class="failure">Error: Wrong password.</span><br /><br />';
@@ -29,8 +29,8 @@ if(isset($_REQUEST['logout'])) {
 }
 
 if(isset($_SESSION['user'])) {
-	if(isset($_REQUEST['server']) && isset($servers[$_REQUEST['server']]))
-		$_SESSION['server'] = $servers[$_REQUEST['server']];
+	if(isset($_REQUEST['server']) && isset($_SESSION['servers'][$_REQUEST['server']]))
+		$_SESSION['server'] = $_SESSION['servers'][$_REQUEST['server']];
 
 	$exists = serverExists($_SESSION['server']);
 	$running = $exists && isRunning($_SESSION['server']);
@@ -69,7 +69,7 @@ if(isset($_SESSION['user'])) {
 			</span>
 			<span class="right">
 				<form id="change_server" action="index.php" method="post" enctype="multipart/form-data">
-					<select name="server" onchange="document.getElementById('change_server').submit()"><?php foreach($servers as $name) echo "\n\t\t\t\t\t\t" . '<option' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
+					<select name="server" onchange="document.getElementById('change_server').submit()"><?php foreach($_SESSION['servers'] as $name) echo "\n\t\t\t\t\t\t" . '<option' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
 					</select>
 				</form>
 				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout" class="button">Logout</a>
