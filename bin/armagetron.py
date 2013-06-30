@@ -32,6 +32,9 @@ def chatCommand(command):
 		sendCommand("PLAYER_MESSAGE " + command[3] + " Command " + command[1] + " not found.");
 
 def run():
+	ladderlog = open(sys.argv[1], "r")
+	armagetron = open(sys.argv[2], "w")
+
 	sendCommand("INCLUDE script.cfg")
 
 	line = ladderlog.readline().rstrip()
@@ -46,9 +49,6 @@ def run():
 
 	ladderlog.close()
 	armagetron.close()
-
-ladderlog = open(sys.argv[1], "r")
-armagetron = open(sys.argv[2], "w")
 
 commands = {	"NEW_ROUND": [ grid.newRound ],
 		"NEW_MATCH": [ grid.newMatch ],
