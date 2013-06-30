@@ -161,7 +161,7 @@ else {
 						<td><input id="password" name="password" type="password" /></td>
 					</tr>
 					<tr>
-						<td></td>
+						<td><input type="submit" style="visibility: hidden" /></td>
 						<td><br /><a href="javascript:document.getElementById('login').submit()" class="button">Submit</a></td>
 					</tr>
 				</table>
