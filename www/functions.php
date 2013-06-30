@@ -115,7 +115,7 @@ function updateSettings($server, $settings) {
 function getScript($server) {
 	global $CONFIG;
 
-	$file = $CONFIG['serverdir'] . '/' . $server . '/script/script.py';
+	$file = $CONFIG['serverdir'] . '/' . $server . '/scripts/script.py';
 	if(file_exists($file))
 		return file_get_contents($file);
 	else
@@ -125,6 +125,6 @@ function getScript($server) {
 function updateScript($server, $script) {
 	global $CONFIG;
 
-	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/script/script.py', $script) !== false;
+	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/scripts/script.py', $script) !== false;
 }
 ?>
