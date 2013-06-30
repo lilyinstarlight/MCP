@@ -15,6 +15,14 @@ label {
 	font-weight: bold;
 }
 
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
 .success {
 	color: green;
 }
@@ -49,4 +57,27 @@ label {
 	width: 92%;
 	margin: 0px auto 60px auto;
 	padding: 20px;
+}
+
+.button {
+	background: #369;
+	color: #000;
+	text-decoration: none;
+	padding: 0px 8px 0px 8px;
+	border: 2px solid #000;
+	display: inline-block;
+	text-align: center;
+}
+
+.button:hover {
+	background: #47A;
+}
+
+.disabled {
+	color: #333;
+	cursor: default;
+}
+
+.disabled:hover {
+	background: #369;
 }

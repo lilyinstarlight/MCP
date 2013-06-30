@@ -142,7 +142,7 @@ else {
 			<span class="title">Server Administration</span>
 		</div>
 		<div class="content"><?php echo $message; ?>
-			<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+			<form id="login" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
 				<table>
 					<tr>
 						<td><label for="user">Username: </label></td>
@@ -154,7 +154,7 @@ else {
 					</tr>
 					<tr>
 						<td></td>
-						<td><br /><input name="submit" type="submit" value="Submit"/></td>
+						<td><br /><a href="javascript:document.getElementById('login').submit()" class="button">Submit</a></td>
 					</tr>
 				</table>
 			</form>
