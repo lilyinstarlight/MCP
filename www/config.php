@@ -15,7 +15,7 @@ $CONFIG = array(
 	'database'	=> 'database',
 
 	//Table containing the login information
-	//Table format: username (varchar, 31)   password (char, 64)   server (varchar, 23)
+	//Table format: username (varchar, 31)   password (char, 64)   servers (varchar, 200)
 	'table'		=> 'armaadmin',
 
 	//Path to management script

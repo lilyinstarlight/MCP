@@ -11,7 +11,10 @@ if(!isset($_SESSION['user']) && isset($_REQUEST['user'])) {
 	if($result->num_rows === 1) {
 		$array = $result->fetch_array(MYSQLI_ASSOC);
 		$_SESSION['user'] = $array['username'];
-		$_SESSION['server'] = $array['server'];
+		$servers = explode(",", $array['servers']);
+		$_SESSION['servers'] = $servers;
+		if(isset($servers[0]))
+			$_SESSION['server'] = $servers[0];
 	}
 	else {
 		$message = '<span class="failure">Error: Wrong password.</span><br /><br />';
@@ -64,6 +67,8 @@ if(isset($_SESSION['user'])) {
 				<a href="javascript:change('scripting')" class="button">Scripting</a>
 			</span>
 			<span class="right">
+				<select><?php foreach($servers as $number => $name) echo "\n\t\t\t\t" . '<option value="' . $number . '">' . $name . '</option>'; ?>
+				</select>
 				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout" class="button">Logout</a>
 			</span>
 		</div>
