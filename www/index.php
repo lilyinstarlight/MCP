@@ -93,7 +93,7 @@ if(isset($_SESSION['user'])) {
 				<table id="commands" class="commands">
 					<tr>
 						<td style="width: 100%">
-							<input id="command_box" type="text"<?php echo $running ? '' : ' disabled="disabled"'; ?> class="command_box" onclick="if(event.keyCode == 13) sendCommand(this.value)" />
+							<input id="command_box" type="text"<?php echo $running ? '' : ' disabled="disabled"'; ?> class="command_box" onkeypress="if(event.keyCode == 13) sendCommand(this.value)" />
 						</td>
 						<td>
 							<a id="command_submit"<?php echo $running ? ' href="javascript:sendCommand(document.getElementById(\'command_box\').value)" class="button"' : ' class="button disabled"'; ?>>Send</a>
