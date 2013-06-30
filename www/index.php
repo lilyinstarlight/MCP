@@ -29,6 +29,9 @@ if(isset($_REQUEST['logout'])) {
 }
 
 if(isset($_SESSION['user'])) {
+	if(isset($_REQUEST['server']) && isset($servers[$_REQUEST['server']]))
+		$_SESSION['server'] = $servers[$_REQUEST['server']];
+
 	$exists = serverExists($_SESSION['server']);
 	$running = $exists && isRunning($_SESSION['server']);
 ?>
@@ -65,8 +68,10 @@ if(isset($_SESSION['user'])) {
 				<a href="javascript:change('console')" class="button">Console</a><a href="javascript:change('settings')" class="button">Settings</a><a href="javascript:change('scripting')" class="button">Scripting</a>
 			</span>
 			<span class="right">
-				<select><?php foreach($servers as $number => $name) echo "\n\t\t\t\t" . '<option value="' . $number . '"' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
-				</select>
+				<form id="change_server" action="index.php" method="post" enctype="multipart/form-data">
+					<select name="server" onchange="document.getElementById('change_server').submit()"><?php foreach($servers as $name) echo "\n\t\t\t\t\t\t" . '<option' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
+					</select>
+				</form>
 				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout" class="button">Logout</a>
 			</span>
 		</div>
