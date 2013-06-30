@@ -69,7 +69,7 @@ if(isset($_SESSION['user'])) {
 			</span>
 			<span class="right">
 				<form id="change_server" action="index.php" method="post" enctype="multipart/form-data">
-					<select name="server" onchange="document.getElementById('change_server').submit()"><?php foreach($_SESSION['servers'] as $name) echo "\n\t\t\t\t\t\t" . '<option' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
+					<select name="server" onchange="document.getElementById('change_server').submit()"><?php foreach($_SESSION['servers'] as $key => $name) echo "\n\t\t\t\t\t\t" . '<option value="' . $key . '"' . ($name == $_SESSION['server'] ? ' selected="selected"' : '') . '>' . $name . '</option>'; ?>
 					</select>
 				</form>
 				<a href="<?php echo $_SERVER['PHP_SELF']; ?>?logout" class="button">Logout</a>
