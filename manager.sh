@@ -39,7 +39,7 @@ if [ -f $scriptpid ]; then
 fi
 
 function start_script {
-	/usr/sbin/daemonize -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid"
+	/usr/sbin/daemonize -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid" "$bindir"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		stop
@@ -62,7 +62,7 @@ function start {
 }
 
 function stop_script {
-	echo "QUIT" >> "$prefix/var/ladderlog.txt"
+	echo "QUIT" > "$prefix/var/ladderlog.txt"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		exit 1
@@ -78,7 +78,7 @@ function stop {
 	if [ "$scriptrunning" ]; then
 		stop_script
 	fi
-	echo "QUIT" >> "$prefix/var/input.txt"
+	echo "QUIT" > "$prefix/var/input.txt"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		exit 1
