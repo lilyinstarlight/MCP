@@ -55,7 +55,7 @@ function start {
 		echo -e "$failure"
 		exit 1
 	fi
-	if [ -f "$prefix/scripts/script.py" ]; then
+	if [ -s "$prefix/scripts/script.py" ]; then
 		start_script
 	fi
 	echo -e "$success"
