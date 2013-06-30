@@ -17,7 +17,7 @@ def removeChatHandler(command):
 		del chatcommands[command]
 
 def sendCommand(command):
-	armagetron.write(command)
+	armagetron.write(command + "\n")
 
 def pauseBeforeRound():
 	sendCommand("WAIT_FOR_EXTERNAL_SCRIPT 1")
