@@ -36,18 +36,16 @@ def chatCommand(command):
 def run():
 	sendCommand("INCLUDE script.cfg")
 
-	line = ladderlog.readline().rstrip()
+	ladderlog.seek(0, 2)
+	line = None
 	while line != "QUIT":
+		line = ladderlog.readline().strip()
 		if not line:
 			continue
 		command = line.split()
 		if command[0] in commands:
 				for handler in commands[command[0]]:
 					handler(command)
-		line = ladderlog.readline().rstrip()
-
-	ladderlog.close()
-	armagetron.close()
 
 ladderlog = open(sys.argv[1], 'r')
 armagetron = open(sys.argv[2], 'w', 1)
