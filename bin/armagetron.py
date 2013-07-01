@@ -3,7 +3,7 @@ import sys
 import grid
 
 def addHandler(command, handler):
-	commands[command].append(handler)
+	commands.get(command, []).append(handler)
 
 def removeHandler(command, handler):
 	if command in commands and handler in commands[command]:
