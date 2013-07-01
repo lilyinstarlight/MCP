@@ -66,6 +66,7 @@ commands = {	"NEW_ROUND": [ grid.newRound ],
 		"POSITIONS": [ grid.positions ],
 		"ZONE_SPAWNED": [ grid.zoneSpawned ],
 		"ZONE_COLLAPSED": [ grid.zoneCollapsed ],
+		"GAME_END": [ grid.reset ],
 		"INVALID_COMMAND": [ chatCommand ] }
 
 chatcommands = {}

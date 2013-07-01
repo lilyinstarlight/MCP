@@ -1,10 +1,4 @@
 #!/usr/bin/python
-round = 0
-teams = {}
-num_players = 0
-players = {}
-zones = {}
-
 class Team:
 	def __init__(self, name):
 		self.name = name
@@ -213,3 +207,12 @@ def zoneCollapsed(command):
 		del zones[command[1]]
 	elif command[2] in zones:
 		del zones[command[2]]
+
+def reset(command):
+	round = 0
+	teams = {}
+	num_players = 0
+	players = {}
+	zones = {}
+
+reset(None)
