@@ -3,7 +3,9 @@ import sys
 import grid
 
 def addHandler(command, handler):
-	commands.get(command, []).append(handler)
+	if not command in commands:
+		commands[command] = []
+	commands[command].append(handler)
 
 def removeHandler(command, handler):
 	if command in commands and handler in commands[command]:
@@ -32,9 +34,6 @@ def chatCommand(command):
 		sendCommand("PLAYER_MESSAGE " + command[3] + " Command " + command[1] + " not found.");
 
 def run():
-	ladderlog = open(sys.argv[1], "r")
-	armagetron = open(sys.argv[2], "w")
-
 	sendCommand("INCLUDE script.cfg")
 
 	line = ladderlog.readline().rstrip()
@@ -50,8 +49,8 @@ def run():
 	ladderlog.close()
 	armagetron.close()
 
-ladderlog = None
-armagetron = None
+ladderlog = open(sys.argv[1], 'r')
+armagetron = open(sys.argv[2], 'w', 1)
 
 commands = {	"NEW_ROUND": [ grid.newRound ],
 		"NEW_MATCH": [ grid.newMatch ],
