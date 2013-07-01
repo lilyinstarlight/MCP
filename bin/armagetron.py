@@ -44,8 +44,8 @@ def run():
 			continue
 		command = line.split()
 		if command[0] in commands:
-				for handler in commands[command[0]]:
-					handler(command)
+			for handler in commands[command[0]]:
+				handler(command)
 
 ladderlog = open(sys.argv[1], 'r')
 armagetron = open(sys.argv[2], 'w', 1)
