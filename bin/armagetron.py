@@ -50,6 +50,9 @@ def run():
 	ladderlog.close()
 	armagetron.close()
 
+ladderlog = None
+armagetron = None
+
 commands = {	"NEW_ROUND": [ grid.newRound ],
 		"NEW_MATCH": [ grid.newMatch ],
 		"ROUND_SCORE": [ grid.roundScore ],
