@@ -78,7 +78,7 @@ if(isset($_SESSION['user'])) {
 		<div class="content">
 			<div id="console">
 				<div class="controller">
-					<span class="buttons left">
+					<span class="left">
 						<span id="stopped"<?php echo $running ? ' style="display: none"' : ''; ?>>
 							<a id="start" href="javascript:start()" class="button">Start</a>
 						</span>
@@ -104,7 +104,7 @@ if(isset($_SESSION['user'])) {
 			</div>
 			<div id="settings">
 				<div class="controller">
-					<span class="buttons right">
+					<span class="right">
 						<a id="settings_submit" href="javascript:updateSettings()" class="button">Save</a>
 					</span>
 				</div>
@@ -114,7 +114,7 @@ if(isset($_SESSION['user'])) {
 			</div>
 			<div id="scripting">
 				<div class="controller">
-					<span class="buttons right">
+					<span class="right">
 						<a href="javascript:scriptChange('script_editor')" class="button">Editor</a>
 						<a href="api.html" target="_blank" class="button">API</a>
 						<a href="javascript:scriptChange('script_console')" class="button">Log</a>
