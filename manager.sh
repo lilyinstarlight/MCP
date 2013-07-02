@@ -50,13 +50,13 @@ function start_script {
 
 function start {
 	echo -n "$waiting Starting server $name."
+	if [ -s "$prefix/scripts/script.py" ]; then
+		start_script
+	fi
 	/usr/sbin/daemonize -a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		exit 1
-	fi
-	if [ -s "$prefix/scripts/script.py" ]; then
-		start_script
 	fi
 	echo -e "$success"
 }
@@ -160,4 +160,8 @@ case "$1" in
 			echo "No script found for server $name."
 		fi
 		;;
+	*)
+		echo "Unrecognized command: $1"
+		echo
+		usage
 esac
