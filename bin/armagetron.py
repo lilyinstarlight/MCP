@@ -33,9 +33,10 @@ def chatCommand(command):
 	else:
 		sendCommand("PLAYER_MESSAGE " + command[3] + " Command " + command[1] + " not found.");
 
-def run():
+def init(command):
 	sendCommand("INCLUDE script.cfg")
 
+def run():
 	ladderlog.seek(0, 2)
 	line = None
 	while line != "QUIT":
@@ -67,6 +68,7 @@ commands = {	"NEW_ROUND": [ grid.newRound ],
 		"ZONE_SPAWNED": [ grid.zoneSpawned ],
 		"ZONE_COLLAPSED": [ grid.zoneCollapsed ],
 		"GAME_END": [ grid.reset ],
+		"ENCODING": [ init ],
 		"INVALID_COMMAND": [ chatCommand ] }
 
 chatcommands = {}
