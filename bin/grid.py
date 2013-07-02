@@ -1,4 +1,10 @@
 #!/usr/bin/python
+round = 0
+teams = {}
+num_players = 0
+players = {}
+zones = {}
+
 class Team:
 	def __init__(self, name):
 		self.name = name
@@ -214,5 +220,3 @@ def reset(command):
 	num_players = 0
 	players = {}
 	zones = {}
-
-reset(None)
