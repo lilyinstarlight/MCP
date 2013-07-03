@@ -148,9 +148,9 @@ class Grid:
 
 	def newMatch(self, command):
 		self.round = 1
-		for team in self.teams:
+		for team in self.teams.values():
 			team.score = 0
-		for player in self.players:
+		for player in self.players.values():
 			player.score = 0
 
 	def roundScore(self, command):
