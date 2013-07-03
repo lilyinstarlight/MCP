@@ -92,14 +92,20 @@ class Zone:
 		armagetron.sendCommand("SET_ZONE_SPEED " + self.name + " " + xdir + " " + ydir)
 
 def getTeam(name):
+	global teams
+
 	if name in teams:
 		return teams[name]
 
 def getPlayer(name):
+	global players
+
 	if name in players:
 		return players[name]
 
 def getZone(name):
+	global zones
+
 	if name in zones:
 		return zones[name]
 
@@ -141,10 +147,17 @@ def createZone(name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=Non
 #Ladderlog commands
 
 def newRound(command):
+	global round
+	global zones
+
 	round += 1
 	zones = {}
 
 def newMatch(command):
+	global round
+	global teams
+	global players
+
 	round = 1
 	for team in teams:
 		team.score = 0
@@ -152,41 +165,63 @@ def newMatch(command):
 		player.score = 0
 
 def roundScore(command):
+	global players
+
 	if command[2] in players:
 		players[command[2]].score += command[1]
 
 def roundScoreTeam(command):
+	global teams
+
 	if command[2] in teams:
 		teams[command[2]].score += command[1]
 
 def teamCreated(command):
+	global teams
+
 	teams[command[1]] = Team(command[1])
 
 def teamDestroyed(command):
+	global teams
+
 	if command[1] in teams:
 		del teams[command[1]]
 
 def teamRenamed(command):
+	global teams
+
 	if command[1] in teams:
 		teams[command[2]] = teams.pop(command[1])
 		teams[command[2]].name = command[2]
 
 def teamPlayerAdded(command):
+	global teams
+	global players
+
 	if command[1] in teams and command[2] in players:
 		teams[command[1]].players[command[2]] = players[command[2]]
 
 def teamPlayerRemoved(command):
+	global teams
+	global players
+
 	if command[1] in teams and command[2] in teams[command[1]].players:
 		del teams[command[1]].players[command[2]]
 
 def playerEntered(command):
+	global players
+
 	players[command[1]] = Player(command[1], command[3], command[2])
 
 def playerLeft(command):
+	global players
+
 	if command[1] in players:
 		del players[command[1]]
 
 def playerRenamed(command):
+	global players
+
 	if command[1] in players:
 		if not command[2] in players:
 			players[command[2]] = players.pop(command[1])
@@ -194,27 +229,41 @@ def playerRenamed(command):
 		players[command[2]].screenname = command[5]
 
 def numHumans(command):
+	global num_players
+
 	num_players = command[1]
 
 def positions(command):
+	global teams
+
 	if command[1] in teams:
 		teams[command[1]].positions = []
 		for i in range(2, len(command)):
 			team.positions.append(getPlayer(command[i]))
 
 def zoneSpawned(command):
+	global zones
+
 	if command[2] != "":
 		zones[command[2]] = Zone(command[2], None, command[3], command[4], None)
 	else:
 		zones[command[1]] = Zone(command[1], None, command[3], command[4], None)
 
 def zoneCollapsed(command):
+	global zones
+
 	if command[1] in zones:
 		del zones[command[1]]
 	elif command[2] in zones:
 		del zones[command[2]]
 
 def reset(command):
+	global round
+	global teams
+	global num_players
+	global players
+	global zones
+
 	round = 0
 	teams = {}
 	num_players = 0

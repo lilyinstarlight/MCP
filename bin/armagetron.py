@@ -40,7 +40,7 @@ def run():
 	ladderlog.seek(0, 2)
 	line = None
 	while line != "QUIT":
-		line = ladderlog.readline().strip()
+		line = ladderlog.readline()
 		if not line:
 			continue
 		command = line.split()
