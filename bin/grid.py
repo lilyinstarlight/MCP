@@ -1,10 +1,4 @@
 #!/usr/bin/python
-round = 0
-teams = {}
-num_players = 0
-players = {}
-zones = {}
-
 class Team:
 	def __init__(self, name):
 		self.name = name
@@ -21,7 +15,7 @@ class Player:
 		self.alive = False
 
 class Zone:
-	def __init__(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, command=None):
+	def __init__(self, grid, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, command=None):
 		self.name = name
 		self.type = type
 		self.x = x
@@ -53,29 +47,29 @@ class Zone:
 			self.owner = owner
 
 		if type == "target" and command != None:
-			addCommand(command)
+			self.addCommand(command)
 
 	def __del__(self):
 		self.changeSize(0)
 
-	def addCommand(command):
+	def addCommand(self, command):
 		if zone.type == "target":
-			armagetron.sendCommand("SET_TARGET_COMMAND " + self.name + " " + command)
+			grid.sendCommand("SET_TARGET_COMMAND " + self.name + " " + command)
 
 	def changeColor(self, r, g, b):
 		self.r = r
 		self.g = g
 		self.b = b
-		armagetron.sendCommand("SET_ZONE_COLOR " + self.name + " " + r + " " + g + " " + b)
+		grid.sendCommand("SET_ZONE_COLOR " + self.name + " " + r + " " + g + " " + b)
 
 	def changeExpansion(self, growth):
 		self.growth = growth
-		armagetron.sendCommand("SET_ZONE_EXPANSION " + self.name + " " + growth)
+		grid.sendCommand("SET_ZONE_EXPANSION " + self.name + " " + growth)
 
 	def changePosition(self, x, y):
 		self.x = x
 		self.y = y
-		armagetron.sendCommand("SET_ZONE_POSITION " + self.name + " " + x + " " + y)
+		grid.sendCommand("SET_ZONE_POSITION " + self.name + " " + x + " " + y)
 
 	def changeSize(self, size, growth=None):
 		self.size = size
@@ -84,188 +78,147 @@ class Zone:
 		if growth != None:
 			command += " " + growth
 
-		armagetron.sendCommand(command)
+		grid.sendCommand(command)
 
 	def changeSpeed(self, xdir, ydir):
 		self.xdir = xdir
 		self.ydir = ydir
-		armagetron.sendCommand("SET_ZONE_SPEED " + self.name + " " + xdir + " " + ydir)
+		grid.sendCommand("SET_ZONE_SPEED " + self.name + " " + xdir + " " + ydir)
+class Grid:
+	def __init__(self, sendCommand):
+		self.round = 0
+		self.teams = {}
+		self.num_players = 0
+		self.players = {}
+		self.zones = {}
+		self.sendCommand = sendCommand
 
-def getTeam(name):
-	global teams
+	def getTeam(self, name):
+		if name in self.teams:
+			return self.teams[name]
 
-	if name in teams:
-		return teams[name]
+	def getPlayer(self, name):
+		if name in self.players:
+			return self.players[name]
 
-def getPlayer(name):
-	global players
+	def getZone(self, name):
+		if name in self.zones:
+			return self.zones[name]
 
-	if name in players:
-		return players[name]
+	def createZone(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, targetcommand=None):
+		command = "SPAWN_ZONE n " + name + " " + type
 
-def getZone(name):
-	global zones
+		if type == "zombie":
+			if player == None:
+				return None
+			command += " " + player
 
-	if name in zones:
-		return zones[name]
+		if type == "zombieOwner":
+			if player == None or owner == None:
+				return None
+			command += " " + player + " " + owner
 
-def createZone(name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, targetcommand=None):
-	command = "SPAWN_ZONE n " + name + " " + type
+		command += " " + x + " " + y + " " + size + " " + growth + " " + xdir + " " + ydir
 
-	if type == "zombie":
-		if player == None:
-			return None
-		command += " " + player
+		if type == "rubber":
+			if rubber == None:
+				return None
+			command += rubber
 
-	if type == "zombieOwner":
-		if player == None or owner == None:
-			return None
-		command += " " + player + " " + owner
+		if interactive != None:
+			command += " " + interactive
 
-	command += " " + x + " " + y + " " + size + " " + growth + " " + xdir + " " + ydir
+		if r != None and g != None and b != None:
+			command += " " + r + " " + g+ " " + b
 
-	if type == "rubber":
-		if rubber == None:
-			return None
-		command += rubber
+		if target_size != None:
+			command += " " + target_size
 
-	if interactive != None:
-		command += " " + interactive
+		self.sendCommand(command)
 
-	if r != None and g != None and b != None:
-		command += " " + r + " " + g+ " " + b
+		self.zones[name] = Zone(self, name, type, x, y, size, growth, xdir, ydir, interactive, r, g, b, target_size, rubber, player, owner, targetcommand)
 
-	if target_size != None:
-		command += " " + target_size
+		return self.zones[name]
 
-	armagetron.sendCommand(command)
+	#Ladderlog commands
 
-	zones[name] = Zone(name, type, x, y, size, growth, xdir, ydir, interactive, r, g, b, target_size, rubber, player, owner, targetcommand)
+	def newRound(self, command):
+		self.round += 1
+		self.zones = {}
 
-	return zones[name]
+	def newMatch(self, command):
+		self.round = 1
+		for team in self.teams:
+			team.score = 0
+		for player in self.players:
+			player.score = 0
 
-#Ladderlog commands
+	def roundScore(self, command):
+		if command[2] in self.players:
+			self.players[command[2]].score += command[1]
 
-def newRound(command):
-	global round
-	global zones
+	def roundScoreTeam(self, command):
+		if command[2] in self.teams:
+			self.teams[command[2]].score += command[1]
 
-	round += 1
-	zones = {}
+	def teamCreated(self, command):
+		self.teams[command[1]] = Team(command[1])
 
-def newMatch(command):
-	global round
-	global teams
-	global players
+	def teamDestroyed(self, command):
+		if command[1] in self.teams:
+			del self.teams[command[1]]
 
-	round = 1
-	for team in teams:
-		team.score = 0
-	for player in players:
-		player.score = 0
+	def teamRenamed(self, command):
+		if command[1] in self.teams:
+			self.teams[command[2]] = self.teams.pop(command[1])
+			self.teams[command[2]].name = command[2]
 
-def roundScore(command):
-	global players
+	def teamPlayerAdded(self, command):
+		if command[1] in self.teams and command[2] in self.players:
+			self.teams[command[1]].players[command[2]] = self.players[command[2]]
 
-	if command[2] in players:
-		players[command[2]].score += command[1]
+	def teamPlayerRemoved(self, command):
+		if command[1] in self.teams and command[2] in self.teams[command[1]].players:
+			del self.teams[command[1]].players[command[2]]
 
-def roundScoreTeam(command):
-	global teams
+	def playerEntered(self, command):
+		self.players[command[1]] = Player(command[1], command[3], command[2])
 
-	if command[2] in teams:
-		teams[command[2]].score += command[1]
+	def playerLeft(self, command):
+		if command[1] in self.players:
+			del self.players[command[1]]
 
-def teamCreated(command):
-	global teams
+	def playerRenamed(self, command):
+		if command[1] in self.players:
+			if not command[2] in self.players:
+				self.players[command[2]] = self.players.pop(command[1])
+				self.players[command[2]].name = command[2]
+			self.players[command[2]].screenname = command[5]
 
-	teams[command[1]] = Team(command[1])
+	def numHumans(self, command):
+		self.num_players = command[1]
 
-def teamDestroyed(command):
-	global teams
+	def positions(self, command):
+		if command[1] in self.teams:
+			self.teams[command[1]].positions = []
+			for i in range(2, len(command)):
+				team.positions.append(getPlayer(command[i]))
 
-	if command[1] in teams:
-		del teams[command[1]]
+	def zoneSpawned(self, command):
+		if command[2] != "":
+			self.zones[command[2]] = Zone(command[2], None, command[3], command[4], None)
+		else:
+			self.zones[command[1]] = Zone(command[1], None, command[3], command[4], None)
 
-def teamRenamed(command):
-	global teams
+	def zoneCollapsed(self, command):
+		if command[1] in self.zones:
+			del self.zones[command[1]]
+		elif command[2] in self.zones:
+			del self.zones[command[2]]
 
-	if command[1] in teams:
-		teams[command[2]] = teams.pop(command[1])
-		teams[command[2]].name = command[2]
-
-def teamPlayerAdded(command):
-	global teams
-	global players
-
-	if command[1] in teams and command[2] in players:
-		teams[command[1]].players[command[2]] = players[command[2]]
-
-def teamPlayerRemoved(command):
-	global teams
-	global players
-
-	if command[1] in teams and command[2] in teams[command[1]].players:
-		del teams[command[1]].players[command[2]]
-
-def playerEntered(command):
-	global players
-
-	players[command[1]] = Player(command[1], command[3], command[2])
-
-def playerLeft(command):
-	global players
-
-	if command[1] in players:
-		del players[command[1]]
-
-def playerRenamed(command):
-	global players
-
-	if command[1] in players:
-		if not command[2] in players:
-			players[command[2]] = players.pop(command[1])
-			players[command[2]].name = command[2]
-		players[command[2]].screenname = command[5]
-
-def numHumans(command):
-	global num_players
-
-	num_players = command[1]
-
-def positions(command):
-	global teams
-
-	if command[1] in teams:
-		teams[command[1]].positions = []
-		for i in range(2, len(command)):
-			team.positions.append(getPlayer(command[i]))
-
-def zoneSpawned(command):
-	global zones
-
-	if command[2] != "":
-		zones[command[2]] = Zone(command[2], None, command[3], command[4], None)
-	else:
-		zones[command[1]] = Zone(command[1], None, command[3], command[4], None)
-
-def zoneCollapsed(command):
-	global zones
-
-	if command[1] in zones:
-		del zones[command[1]]
-	elif command[2] in zones:
-		del zones[command[2]]
-
-def reset(command):
-	global round
-	global teams
-	global num_players
-	global players
-	global zones
-
-	round = 0
-	teams = {}
-	num_players = 0
-	players = {}
-	zones = {}
+	def reset(self, command):
+		self.round = 0
+		self.teams = {}
+		self.num_players = 0
+		self.players = {}
+		self.zones = {}

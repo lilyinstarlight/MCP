@@ -51,6 +51,8 @@ def run():
 ladderlog = open(sys.argv[1], 'r')
 armagetron = open(sys.argv[2], 'w', 1)
 
+grid = grid.Grid(sendCommand)
+
 commands = {	"NEW_ROUND": [ grid.newRound ],
 		"NEW_MATCH": [ grid.newMatch ],
 		"ROUND_SCORE": [ grid.roundScore ],
