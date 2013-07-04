@@ -198,7 +198,7 @@ class Grid:
 		if command[1] in self.teams:
 			self.teams[command[1]].positions = []
 			for i in range(2, len(command)):
-				self.teams[command[1]].positions.append(getPlayer(command[i]))
+				self.teams[command[1]].positions.append(self.getPlayer(command[i]))
 
 	def zoneSpawned(self, command):
 		if command[2] != "":
