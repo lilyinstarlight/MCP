@@ -151,11 +151,11 @@ class Grid:
 
 	def roundScore(self, command):
 		if command[2] in self.players:
-			self.players[command[2]].score += command[1]
+			self.players[command[2]].score += int(command[1])
 
 	def roundScoreTeam(self, command):
 		if command[2] in self.teams:
-			self.teams[command[2]].score += command[1]
+			self.teams[command[2]].score += int(command[1])
 
 	def teamCreated(self, command):
 		self.teams[command[1]] = Team(command[1])
