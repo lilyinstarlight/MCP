@@ -49,7 +49,7 @@ def run():
 				handler(command)
 
 ladderlog = open(sys.argv[1], 'r')
-armagetron = open(sys.argv[2], 'w', 1)
+armagetron = open(sys.argv[2], 'a', 1)
 
 grid = grid.Grid(sendCommand)
 
