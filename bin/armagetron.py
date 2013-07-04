@@ -40,10 +40,10 @@ def run():
 		line = ladderlog.readline()
 		if not line:
 			continue
-		if line == "QUIT":
+		if line.startswith("QUIT"):
 			break
 		command = line.split()
-		if command[0] in commands:
+		if command and command[0] in commands:
 			for handler in commands[command[0]]:
 				handler(command)
 
