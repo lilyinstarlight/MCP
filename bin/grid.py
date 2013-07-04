@@ -86,7 +86,7 @@ class Zone:
 		grid.sendCommand("SET_ZONE_SPEED " + self.name + " " + xdir + " " + ydir)
 class Grid:
 	def __init__(self, sendCommand):
-		self.reset()
+		self.reset(None)
 		self.sendCommand = sendCommand
 
 	def getTeam(self, name):
