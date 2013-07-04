@@ -25,6 +25,12 @@
 	display: inline;
 }
 
+.content {
+	border-width: 0px 2px 2px 2px;
+	border-style: solid;
+	border-color: #000;
+}
+
 .controller {
 	padding: 10px;
 	overflow: auto;
