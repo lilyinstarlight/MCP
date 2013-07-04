@@ -37,11 +37,12 @@ def init(command):
 	sendCommand("INCLUDE script.cfg")
 
 def run():
-	line = None
-	while line != "QUIT":
+	while True:
 		line = ladderlog.readline()
 		if not line:
 			continue
+		if line == "QUIT":
+			break
 		command = line.split()
 		if command[0] in commands:
 			for handler in commands[command[0]]:
