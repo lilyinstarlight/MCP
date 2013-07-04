@@ -42,7 +42,7 @@ function start() {
 	ajax.send('action=start');
 }
 
-function stop() {
+function stop(restart) {
 	document.getElementById('stop').href = null;
 	document.getElementById('stop').className = 'button disabled';
 	document.getElementById('restart').href = null;
@@ -60,6 +60,9 @@ function stop() {
 				document.getElementById('command_box').disabled = true;
 				document.getElementById('command_submit').href = null;
 				document.getElementById('command_submit').className = 'button disabled';
+
+				if(restart)
+					start();
 			}
 			else {
 				document.getElementById('status').innerHTML = 'Running';

@@ -84,7 +84,7 @@ if(isset($_SESSION['user'])) {
 						</span>
 						<span id="started"<?php echo $running ? '' : ' style="display: none"'; ?>>
 							<a id="stop" href="javascript:stop()" class="button">Stop</a>
-							<a id="restart" href="javascript:stop();start()" class="button">Restart</a>
+							<a id="restart" href="javascript:stop(true)" class="button">Restart</a>
 							<a id="reload" href="javascript:reload()" class="button">Reload</a>
 						</span>
 					</span>
