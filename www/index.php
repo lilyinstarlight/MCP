@@ -122,7 +122,7 @@ if(isset($_SESSION['user'])) {
 					</span>
 				</div>
 				<div id="script_editor">
-					<textarea id="script_text" placeholder="Here you can add a custom server script written in Python 3.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details."><?php if($exists) echo getScript($_SESSION['server']); ?></textarea>
+					<textarea id="script_text" placeholder="Here you can add a custom server script written in Python.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details."><?php if($exists) echo getScript($_SESSION['server']); ?></textarea>
 				</div>
 				<div id="script_console">
 					<pre id="script_log" class="log"></pre>
