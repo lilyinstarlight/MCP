@@ -30,9 +30,13 @@ def chatCommand(command):
 	if command[1] in chatcommands:
 		chatcommands[command[1]]()
 	else:
-		sendCommand("PLAYER_MESSAGE " + command[3] + " Command " + command[1] + " not found.");
+		sendCommand("PLAYER_MESSAGE " + command[3] + " Command " + command[1] + " not found.")
 
 def init(command):
+	location = ladderlog.tell()
+	ladderlog = open(sys.argv[1], 'r', -1, command[1].lower())
+	ladderlog.seek(location)
+	armagetron = open(sys.argv[2], 'a', 1, command[1].lower())
 	sendCommand("INCLUDE script.cfg")
 
 def run():
