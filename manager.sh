@@ -67,8 +67,15 @@ function stop_script {
 		echo -e "$failure"
 		exit 1
 	fi
-	while [ -f $scriptpid ]; do
-		continue
+	KILL=0
+	while [ -f "$scriptpid" ]; do
+		(( KILL++ ))
+		if [ $KILL -gt 50 ]; then
+			kill -KILL -$scriptrunning;
+			rm "$scriptpid"
+			break
+		fi
+		sleep 0.1
 	done
 	echo > "$prefix/var/ladderlog.txt"
 }
@@ -83,8 +90,15 @@ function stop {
 		echo -e "$failure"
 		exit 1
 	fi
-	while [ -f $pid ]; do
-		continue
+	KILL=0
+	while [ -f "$pid" ]; do
+		(( KILL++ ))
+		if [ $KILL -gt 50 ]; then
+			kill -KILL -$running;
+			rm "$pid"
+			break
+		fi
+		sleep 0.1
 	done
 	echo > "$prefix/var/input.txt"
 	echo -e "$success"
