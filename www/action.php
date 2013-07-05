@@ -21,12 +21,16 @@ if(isset($_SESSION['user']) && isset($_REQUEST['action'])) {
 				echo 'success';
 			break;
 		case 'log':
-			if(serverExists($_SESSION['server']))
+			if(serverExists($_SESSION['server'])) {
+				header('Content-type: text/plain; charset=latin1');
 				echo getLog($_SESSION['server']);
+			}
 			break;
 		case 'script_log':
-			if(serverExists($_SESSION['server']))
+			if(serverExists($_SESSION['server'])) {
+				header('Content-type: text/plain; charset=latin1');
 				echo getScriptLog($_SESSION['server']);
+			}
 			break;
 		case 'settings':
 			if(serverExists($_SESSION['server']) && updateSettings($_SESSION['server'], $_REQUEST['settings'])) {
