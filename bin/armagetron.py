@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import time
 import sys
 
 def addHandler(command, handler):
@@ -46,6 +47,7 @@ def run():
 		if command and command[0] in commands:
 			for handler in commands[command[0]]:
 				handler(command)
+		time.sleep(0.1)
 
 #Grid stuff
 
