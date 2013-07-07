@@ -77,7 +77,6 @@ function stop_script {
 		fi
 		sleep 0.1
 	done
-	echo > "$prefix/var/ladderlog.txt"
 }
 
 function stop {
@@ -100,6 +99,7 @@ function stop {
 		fi
 		sleep 0.1
 	done
+	echo > "$prefix/var/ladderlog.txt"
 	echo > "$prefix/var/input.txt"
 	echo -e "$success"
 }
