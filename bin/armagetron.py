@@ -31,7 +31,7 @@ def chatCommand(command):
 	if command[1] in chatcommands:
 		chatcommands[command[1]]()
 	else:
-		sendCommand("PLAYER_MESSAGE " + command[2] + " Command " + command[1] + " not found.")
+		sendCommand("PLAYER_MESSAGE " + command[2] + " \"Command " + command[1] + " not found.\"")
 
 def init(command):
 	sendCommand("INCLUDE script.cfg")
