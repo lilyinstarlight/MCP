@@ -4,6 +4,8 @@ bindir="$homedir/bin"
 prefixdir="$homedir/servers"
 rundir="$homedir/running"
 
+daemonize="/usr/sbin/daemonize"
+
 waiting="[....]"
 success="\r[\e[32;1m OK \e[00m]"
 failure="\r[\e[31;1mFAIL\e[00m]"
@@ -39,7 +41,7 @@ if [ -f $scriptpid ]; then
 fi
 
 function start_script {
-	/usr/sbin/daemonize -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid" "$bindir"
+	"$daemonize" -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid" "$bindir"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		stop
@@ -53,7 +55,7 @@ function start {
 	if [ -s "$prefix/scripts/script.py" ]; then
 		start_script
 	fi
-	/usr/sbin/daemonize -a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
+	"$daemonize"-a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		exit 1
