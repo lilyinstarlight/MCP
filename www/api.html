@@ -17,6 +17,22 @@
 			Namespace <code>armagetron</code>:
 			<table>
 				<tr>
+					<td rowspan="2"><code>run()</code></td>
+					<td>Description:</td>
+					<td>Let the API listen to the ladderlog.</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>sendCommand(command)</code></td>
+					<td>Description:</td>
+					<td>Sends a command to the server.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>command</code> (string) - Command to send to the server.  A newline is added automatically.</td>
+				</tr>
+				<tr>
 					<td rowspan="2"><code>addHandler(command, handler)</code></td>
 					<td>Description:</td>
 					<td>Adds a handler that will be called when the specified ladderlog command is received.</td>
@@ -25,7 +41,53 @@
 					<td>Parameters:</td>
 					<td><code>command</code> (string) - Ladderlog command to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the parameters of the command where the first parameter is the command itself.</td>
 				</tr>
+				<tr>
+					<td rowspan="2"><code>removeHandler(command, handler)</code></td>
+					<td>Description:</td>
+					<td>Removes a handler from a ladderlog command.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>command</code> (string) - Ladderlog command of the handler.<br /><code>handler</code> (function) - The handler to remove.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>setChatHandler(command, handler)</code></td>
+					<td>Description:</td>
+					<td>Sets the handler for a chat command.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the command where the first element is the command itself (including the beginning slash).</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>removeChatHandler(command)</code></td>
+					<td>Description:</td>
+					<td>Removes a handler from a chat command (making the command unknown).</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>command</code> (string) - Chat command to remove the handler from (including the beginning slash).</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>pauseBeforeRound()</code></td>
+					<td>Description:</td>
+					<td>Tell the server to wait before starting a new round.</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>continueRound()</code></td>
+					<td>Description:</td>
+					<td>Tell the server to start the round (if it was paused).</td>
+				</tr>
+				<tr>
+				</tr>
 			</table>
+			<br />
+			Class <code>Grid</code>:
+			Class <code>Team</code>:
+			Class <code>Player</code>:
+			Class <code>Zone</code>:
 		</div>
 	</body>
 </html>

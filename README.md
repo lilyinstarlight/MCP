@@ -1,22 +1,91 @@
 ArmaAdmin
 =========
-ArmaAdmin is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org).
+ArmaAdmin is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org).  For more information see the forum post [here](http://forums3.armagetronad.org/).
+
+What is this?
+-------------
+This is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting API.  It is designed for unix-like systems so it can easily work on Mac OS, Linux, or FreeBSD.  It might work on Windows too assuming you have all of the dependencies for each module you want to use.  It is modular so you do not have to use all three parts (although the web interface requires the daemon manager).
+
+Features
+--------
+###Daemon Manager###
+- Restarts a server if it crashes
+- Saving a log, error log, and script error log
+- PID file locking
+- Will remove lock file if the process no longer exists (useful in case of system power failure)
+- Kill unresponsive server/script
+- Full support for scripting
+- Clears error log on startup
+
+###Web Interface###
+- User management
+- Start/Stop/Restart/Reload buttons
+- Command box to send commands to the server
+- Reversed log that updates every half second
+- Log supports fancy characters
+- Changing settings\_custom.cfg
+- Changing script.py (with a documented scripting API)
+- Script error log
+- Full syntax highlighting for the settings and script
+
+###Scripting API###
+- Support for adding multiple callbacks to a single ladderlog command
+- Support for special characters
+- Support for chat command handlers
+- Keeps track of and provides a nice interface to:
+	- Current round
+	- The number of players
+	- All of the players and their name, IP address and score and whether they are alive or dead
+	- All of the teams and their name, score, players, and player positions
+	- All of the zones and various features about them
 
 Installing
 ----------
-There are three main parts to the framework.  The daemon and management tool can be installed alone as well as the scripting API.  However, the web interface depends on the daemon tool to start, stop, and reload servers.  All three can be installed at once simply by using this directory structure.
+If you just want a generic and basic installation, all you need to do is just clone repository into a folder and follow the daemon manager's and web interface's configuration instructions.
 
-###Management Tool###
-The management tool is composed of 4 files and 6 folders: manager.sh, bin/armagetronad, bin/script, sources/makeserver.sh, bin/, sources/, sources/config/, sources/scripts/, running/, and servers/.  Simply put these files and folders in the directory you want to keep all of the servers.  You must configure `manager.sh` and `makeserver.sh` before you can use them.  In `manager.sh`, you must modify, at the least, the second line and set `homedir` to the directory you put the files.  You can optionally modify the other three variables if your directory structure is different than the default.  You must also set `homedir` on the second line of `makeserver.sh` to the same as the one in `manager.sh` and optionally set the other two variables if you directory structure is different than the default.
+###Daemon Manager###
+The daemon manager is all of the files and folders with the exception of `bin/armagetron.py` and the `www` folder.  Install is simply putting these files where you want them to go then configuring them for that directory.
 
-To make your first server, put the source code in a directory under `sources`.  You can do this by opening a terminal in the directory and using `bzr branch lp:armagetronad/0.2.8` to download the sources into the `0.2.8` folder.  You can then run `./makeserver.sh <server_name> 0.2.8` to create the server.  Edit the configuration in config directory under your newly made server's directory to your liking.  You can then go the directory with `manager.sh` and run `./manager.sh start <server_name>` to start your server.
+####Daemonize####
+The daemon manager requires the daemonize tool to run armagetron in the background.  Installation of the daemonize tool is very simple, even if there isn't a package for your system.  Gentoo has a package in the main repository for daemonize and Arch has it in its AUR.  Neither Debian nor Ubuntu have it as a package, but it is very simple to install.
 
-You can customize the server creation process by adding configuration that will automatically be added to the `config` folder under `sources`, and add scripts that will automatically be added (such as the API by default) under the `scripts` folder.
+To install from source, run:
 
-If `script.cfg` is in the `config` folder and `armagetron.py` and `grid.py` are in the `scripts` folder, the scripting API is already installed and will be started automatically with your server.  The scripting API will load `script.py` under the `script` under your server if it exists.
+``
+git clone http://github.com/bmc/daemonize.git
+cd daemonize
+sh configure
+make
+sudo make install
+``
 
-###Scripting API###
-The scripting API is written in Python 3 and is composed of `armagetron.py`, `grid.py`, and `script.cfg` in the `scripts` and `config` folders under `sources`.  Here they will be automatically added and run by the management tool for each server.  If you wish to add it to another server without the management tool, simply drop them under your scripts folder and create a file called `script.py` in the same folder.  You can then run `python armagetron.py <path_to_ladderlog.txt> <path_to_input.txt>` and it will automatically start `script.py`.  In `script.py`, there is no need to import `armagetron` or `grid`, but you can use then according to the API that is documented in the web interface under `www/api.html`.
+This will put the daemonize binary in `/usr/local/sbin/daemonize`.
+
+####Configuration####
+To configure the daemon manager, first open up `manager.sh`.  Edit the line that starts with `homedir=` to point to the directory of the script.  If you want a different directory structure than the default, edit the corresponding lines below it.  Next, go down to the line that starts with `daemonize=` and edit it to point to the daemonize binary.
+
+Next, you must configure the server compilation tool.  Open up `sources/makeserver.sh` and edit the line that starts with `homedir=` to point to the same location as the `$homedir` in `manager.sh`.  If you changed any of the other directories, change the corresponding ones in `sources/makeserver.sh` as well.  See Creating Servers below for instructions on how to make your first server.
+
+You can now put your own custom configuration in the `sources/config` folder and your custom scripts in the `sources/scripts` folder that will be copied to every server.  There is a default `server_info.cfg` in the `sources/config` folder that enables GLOBAL\_ID and TALK\_TO\_MASTER.  I would also recommend that you add a SERVER\_DNS entry here, especially if you have a dynamic IP address.
+
+Note: If you do not want to use the scripting API, edit `bin/script` to reflect how you start scripts.
 
 ###Web Interface###
-The web interface is a set of PHP scripts that utilize `manager.sh` to manage servers.  The interface is updated dynamically with AJAX and uses Code Mirror to highlight the Armagetron settings and the Python script.  Simply drop everything in the `www` folder to the place where it will be used and edit `config.php` to your liking.  It depends on a MySQL database to store users and their server's name.
+The web interface is composed of all files in the `www` folder.  Simply put the contents of that folder into your web directory or set your (PHP enabled) web server to that directory.
+
+####Configuration####
+All of the configuration for the web interface is done in `www/config.php`.  Simply enter the MySQL (or MariaDB) server information then put the directories that are configured in the daemon manager.  The file acts as an example configuration and documents itself so read the file's comments for more help.
+
+####MySQL Table####
+Creating the MySQL table is somewhat straightforward.  Simply use a database of your choice then issue this MySQL command: `CREATE TABLE <table name> ( username VARCHAR(31), password CHAR(64), servers VARCHAR(200) );`.
+
+The basic table layout are the columns username, password, and servers.  The username column simply contains that user's name.  The password column contains a sha256 hash of the user's password.  The servers column contains a comma separated list of servers that the user owns.  See Creating Servers below for instructions on adding each row.
+
+###Scripting API###
+The scripting API is entirely contained in `bin/armagetron.py`.  If you would like to use it, simply copy it into your script folder and use it just like you would with the rest of the framework.  The API, however, requires that `sys.argv[1]` is the ladderlog file and `sys.argv[2]` is the input file to armagetron.
+
+The scripting API is documented in `www/api.html` (which uses only `www/common.css`) where there are a few examples.
+
+Creating Servers
+----------------
+Soon...
