@@ -71,7 +71,7 @@ stop_script() {
 	fi
 	KILL=0
 	while [ -f "$scriptpid" ]; do
-		(( KILL++ ))
+		KILL=$((KILL + 1))
 		if [ $KILL -gt 50 ]; then
 			kill -KILL -$scriptrunning;
 			rm "$scriptpid"
@@ -94,7 +94,7 @@ stop() {
 	fi
 	KILL=0
 	while [ -f "$pid" ]; do
-		(( KILL++ ))
+		KILL=$((KILL + 1))
 		if [ $KILL -gt 50 ]; then
 			kill -KILL -$running;
 			rm "$pid"
