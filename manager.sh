@@ -10,7 +10,7 @@ waiting="[....]"
 success="\r[\e[32;1m OK \e[00m]"
 failure="\r[\e[31;1mFAIL\e[00m]"
 
-if [ "$1" == "list" ]; then
+if [ "$1" = "list" ]; then
 	for dir in $(ls "$prefixdir"); do
 		$0 status $dir
 	done
@@ -40,7 +40,7 @@ if [ -f $scriptpid ]; then
 	fi
 fi
 
-function start_script {
+start_script() {
 	"$daemonize" -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid" "$bindir"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
@@ -50,7 +50,7 @@ function start_script {
 }
 
 
-function start {
+start() {
 	echo -n "$waiting Starting server $name."
 	if [ -s "$prefix/scripts/script.py" ]; then
 		start_script
@@ -63,7 +63,7 @@ function start {
 	echo -e "$success"
 }
 
-function stop_script {
+stop_script() {
 	echo "QUIT" >> "$prefix/var/ladderlog.txt"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
@@ -82,7 +82,7 @@ function stop_script {
 	echo > "$prefix/var/ladderlog.txt"
 }
 
-function stop {
+stop() {
 	echo -n "$waiting Stopping server $name."
 	if [ "$scriptrunning" ]; then
 		stop_script
@@ -106,7 +106,7 @@ function stop {
 	echo -e "$success"
 }
 
-function usage {
+usage() {
 	echo -e "Usage:\t$0 {start|stop|status|reload|restart|restart-script} <server>"
 	echo -e "\t$0 list"
 	exit 1
