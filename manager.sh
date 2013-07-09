@@ -25,16 +25,16 @@ running=""
 scriptrunning=""
 
 if [ -f $pid ]; then
-	if ps "$(< "$pid")" > /dev/null; then
-		running="$(< "$pid")"
+	if ps "$(cat "$pid")" > /dev/null; then
+		running="$(cat "$pid")"
 	else
 		rm $pid
 	fi
 fi
 
 if [ -f $scriptpid ]; then
-	if ps "$(< "$scriptpid")" > /dev/null; then
-		scriptrunning="$(< "$scriptpid")"
+	if ps "$(cat "$scriptpid")" > /dev/null; then
+		scriptrunning="$(cat "$scriptpid")"
 	else
 		rm $scriptpid
 	fi
