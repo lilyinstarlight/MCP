@@ -51,13 +51,13 @@ The daemon manager requires the daemonize tool to run armagetron in the backgrou
 
 To install from source, run:
 
-``
+```
 git clone http://github.com/bmc/daemonize.git
 cd daemonize
 sh configure
 make
 sudo make install
-``
+```
 
 This will put the daemonize binary in `/usr/local/sbin/daemonize`.
 
@@ -66,7 +66,7 @@ To configure the daemon manager, first open up `manager.sh`.  Edit the line that
 
 Next, you must configure the server compilation tool.  Open up `sources/makeserver.sh` and edit the line that starts with `homedir=` to point to the same location as the `$homedir` in `manager.sh`.  If you changed any of the other directories, change the corresponding ones in `sources/makeserver.sh` as well.  See Creating Servers below for instructions on how to make your first server.
 
-You can now put your own custom configuration in the `sources/config` folder and your custom scripts in the `sources/scripts` folder that will be copied to every server.  There is a default `server_info.cfg` in the `sources/config` folder that enables GLOBAL\_ID and TALK\_TO\_MASTER.  I would also recommend that you add a SERVER\_DNS entry here, especially if you have a dynamic IP address.
+You can now put your own custom configuration in the `sources/config` folder and your custom scripts in the `sources/scripts` folder that will be copied to every server.  There is a default `server\_info.cfg` in the `sources/config` folder that enables GLOBAL\_ID and TALK\_TO\_MASTER.  I would also recommend that you add a SERVER\_DNS entry here, especially if you have a dynamic IP address.
 
 Note: If you do not want to use the scripting API, edit `bin/script` to reflect how you start scripts.
 
@@ -77,7 +77,9 @@ The web interface is composed of all files in the `www` folder.  Simply put the 
 All of the configuration for the web interface is done in `www/config.php`.  Simply enter the MySQL (or MariaDB) server information then put the directories that are configured in the daemon manager.  The file acts as an example configuration and documents itself so read the file's comments for more help.
 
 ####MySQL Table####
-Creating the MySQL table is somewhat straightforward.  Simply use a database of your choice then issue this MySQL command: `CREATE TABLE <table name> ( username VARCHAR(31), password CHAR(64), servers VARCHAR(200) );`.
+Creating the MySQL table is somewhat straightforward.  Simply use a database of your choice then issue this MySQL command:
+
+`CREATE TABLE <table name> ( username VARCHAR(31), password CHAR(64), servers VARCHAR(200) );`
 
 The basic table layout are the columns username, password, and servers.  The username column simply contains that user's name.  The password column contains a sha256 hash of the user's password.  The servers column contains a comma separated list of servers that the user owns.  See Creating Servers below for instructions on adding each row.
 
