@@ -1,6 +1,6 @@
 ArmaAdmin
 =========
-ArmaAdmin is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org).  For more information see the forum post [here](http://forums3.armagetronad.org/).
+ArmaAdmin is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org).  For more information see the forum post [here](http://forums3.armagetronad.net/).
 
 What is this?
 -------------
@@ -47,7 +47,7 @@ If you just want a generic and basic installation, all you need to do is just cl
 The daemon manager is all of the files and folders with the exception of `bin/armagetron.py` and the `www` folder.  Install is simply putting these files where you want them to go then configuring them for that directory.
 
 ####Daemonize####
-The daemon manager requires the daemonize tool to run armagetron in the background.  Installation of the daemonize tool is very simple, even if there isn't a package for your system.  Gentoo has a package in the main repository for daemonize and Arch has it in its AUR.  Neither Debian nor Ubuntu have it as a package, but it is very simple to install.
+The daemon manager requires the daemonize tool to run armagetron in the background.  Installation of the daemonize tool is very simple, even if there isn't a package for your system.  Gentoo has a package in the main repository for daemonize and Arch has it in its AUR.  Neither Debian nor Ubuntu have it as a package, but it is very simple to install from source.
 
 To install from source, run:
 
@@ -90,4 +90,53 @@ The scripting API is documented in `www/api.html` (which uses only `www/common.c
 
 Creating Servers
 ----------------
-Soon...
+Creating servers is relatively simple thanks to the `sources/makeserver.sh` script.  It will do everything to make a server for you in the proper directory structure with the appropriate settings.  If you are using the web interface, you either need to append the server to an existing user or create a new user for it.
+
+###Sources###
+Before you can make a server, you need to source code to it.  You can get this by changing to the `sources` directory and running one of the following commands:
+
+| Version      | Command                                                                        |
+| ------------ | ------------------------------------------------------------------------------ |
+| 0.2.8        | `bzr branch lp:armagetronad/0.2.8`                                             |
+| 0.4          | `bzr branch lp:armagetronad/0.4`                                               |
+| 0.2.8 sty+ct | `bzr branch lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct sty+ct` |
+
+The only build dependencies of the armagetron server are the `build-essential`, `automake`, `bison`, and `libzthread-dev` packages in Debian/Ubuntu.  In Arch, you only need to install `zthread` from the AUR, and in Gentoo, you only need to install `dev-libs/zthread`.
+
+After you have the sources and the dependencies, simply run `./makeserver.sh <server> <source>` where `<server>` is the server's name and `<source>` is the directory name of the source you just downloaded.  After that, you will have a server ready to start with `manager.sh`.
+
+The configuration for the server is in `servers/<server>/config/settings\_custom.cfg`.  If you are not using the web interface, you will need to create the file and populate it with your own settings.
+
+###Updating the Web Interface###
+Next, you must tell the web interface who owns your new server.  If you already have a user in the database that will own this server, simply add a comma, without any spaces, and the server name to the user's `servers` column.  Do this by running:
+
+`UPDATE <table name> SET servers=concat(servers,',<server>') WHERE username=<username>;`
+
+If you want to add a new user to the database, then you must run:
+
+`INSERT INTO <table name> VALUES (<username>, <sha256 hash of password>, <server>);`
+
+After that, you can login as the new user from the main page and immediately control the new server.  You can change the settings or add a script using the interface and everytime you save the settings or the script, it will automatically reload the settings or restart the script.
+
+Troubleshooting
+---------------
+###The server does not compile!###
+Make sure you have the dependencies and try again.  Maybe your distribution does not come with `automake`?
+
+###The servers won't start!###
+Make sure you have `daemonize` installed and the location in `manager.sh` is correct.
+
+###I can't login to the web interface!###
+Make sure you put a sha256 hash of the password in the password field; its name is misleading.  If you are getting problems with MySQL, then make sure you have mysqli support in PHP.
+
+###The controls in the web interface do not work!###
+Make sure that PHP requests and sessions are working properly.
+
+###The web interface is very buggy!###
+Quit using Internet Explorer.
+
+###The scripting API crashes!###
+Make sure you are using Python 3.
+
+###None of it works!###
+Did you set the `homedir` and `daemonize` in `manager.sh` and `sources/makeserver.sh` and update the configuration in `www/config.php`?  If so, then do you have all of the dependencies?
