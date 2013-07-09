@@ -99,14 +99,10 @@ class Zone:
 			self.owner = owner
 
 		if type == "target" and command != None:
-			self.addCommand(command)
+			self.setCommand(command)
 
 	def __del__(self):
 		self.changeSize(0)
-
-	def addCommand(self, command):
-		if zone.type == "target":
-			sendCommand("SET_TARGET_COMMAND " + self.name + " " + command)
 
 	def changeColor(self, r, g, b):
 		self.r = r
@@ -136,6 +132,11 @@ class Zone:
 		self.xdir = xdir
 		self.ydir = ydir
 		sendCommand("SET_ZONE_SPEED " + self.name + " " + xdir + " " + ydir)
+
+	def setCommand(self, command):
+		if zone.type == "target":
+			sendCommand("SET_TARGET_COMMAND " + self.name + " " + command)
+
 class Grid:
 	def __init__(self):
 		self.reset(None)

@@ -108,6 +108,7 @@ stop() {
 		fi
 		sleep 0.1
 	done
+	echo > "$prefix/var/ladderlog.txt"
 	echo > "$prefix/var/input.txt"
 	echo "$success"
 }
