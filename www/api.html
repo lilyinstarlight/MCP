@@ -11,10 +11,10 @@
 			<span class="title">Scripting API</span>
 		</div>
 		<div class="content">
-			To use the API, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.
+			To use the API, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.  More examples are available at the bottom.
 			<br />
 			<br />
-			Namespace <code>armagetron</code>:
+			<h1>Namespace <code>armagetron</code>:</h1>
 			<table>
 				<tr>
 					<td rowspan="2"><code>run()</code></td>
@@ -84,10 +84,260 @@
 				</tr>
 			</table>
 			<br />
-			Class <code>Grid</code>:
-			Class <code>Team</code>:
-			Class <code>Player</code>:
-			Class <code>Zone</code>:
+			<br />
+			<h1>Class <code>Grid</code> (accessible in <code>armagetron.grid</code>):</h1>
+			<table>
+				<tr>
+					<td rowspan="3"><code>getTeam(name)</code></td>
+					<td>Description:</td>
+					<td>Get a Team object by name.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>name</code> (string) - Name of the team to get.</td>
+				</tr>
+				<tr>
+					<td>Return:</td>
+					<td><code>team</code> (Team) - Team object with the given name.</td>
+				</tr>
+				<tr>
+					<td rowspan="3"><code>getPlayer(name)</code></td>
+					<td>Description:</td>
+					<td>Get a Player object by name.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>name</code> (string) - Name of the player to get.</td>
+				</tr>
+				<tr>
+					<td>Return:</td>
+					<td><code>player</code> (Player) - Player object with the given name.</td>
+				</tr>
+				<tr>
+					<td rowspan="3"><code>getZone(name)</code></td>
+					<td>Description:</td>
+					<td>Get a Zone object by name.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>name</code> (string) - Name of the zone to get.</td>
+				</tr>
+				<tr>
+					<td>Return:</td>
+					<td><code>zone</code> (Zone) - Zone object with the given name.</td>
+				</tr>
+				<tr>
+					<td rowspan="3"><code>createZone(name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, targetcommand=None)</code></td>
+					<td>Description:</td>
+					<td>Create a new zone.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>name</code> (string) - Name of the new zone.</td>
+					<td><code>type</code> (string) - Type of the new zone.</td>
+					<td><code>x</code> (float) - The x coordinate of the new zone.</td>
+					<td><code>y</code> (float) - The y coordinate of the new zone.</td>
+					<td><code>size</code> (float) - Size of the new zone.</td>
+					<td><code>growth</code> (float) - Growth of the new zone. Defaults to 0.</td>
+					<td><code>xdir</code> (float) - Change in the x direction of the new zone. Defaults to 0.</td>
+					<td><code>ydir</code> (float) - Change in the y direction of the new zone. Defaults to 0.</td>
+				</tr>
+				<tr>
+					<td>Return:</td>
+					<td><code>zone</code> (Zone) - The newly created zone (also stored internally).</td>
+				</tr>
+				<tr>
+					<td><code>round</code> (int)</td>
+					<td>Description:</td>
+					<td>Current round number.</td>
+				</tr>
+				<tr>
+					<td><code>num_players</code> (int)</td>
+					<td>Description:</td>
+					<td>Number of people playing.</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<h1>Class <code>Team</code>:</h1>
+			<table>
+				<tr>
+					<td><code>name</code> (string)</td>
+					<td>Description:</td>
+					<td>The team's name.</td>
+				</tr>
+				<tr>
+					<td><code>score</code> (int)</td>
+					<td>Description:</td>
+					<td>The team's score.</td>
+				</tr>
+				<tr>
+					<td><code>players</code> (Player[])</td>
+					<td>Description:</td>
+					<td>Dictionary of the team's players indexed by name.</td>
+				</tr>
+				<tr>
+					<td><code>positions</code> (int[])</td>
+					<td>Description:</td>
+					<td>An array of players on the team representing their position. For example, you can get the player in position with <code>positions[0]</code>.</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<h1>Class <code>Player</code>:</h1>
+			<table>
+				<tr>
+					<td><code>name</code> (string)</td>
+					<td>Description:</td>
+					<td>The player's internal name or login.</td>
+				</tr>
+				<tr>
+					<td><code>screenname</code> (string)</td>
+					<td>Description:</td>
+					<td>The player's visible name, UTF-8 (Python's native) encoded in the case of special characters.</td>
+				</tr>
+				<tr>
+					<td><code>ip</code> (string)</td>
+					<td>Description:</td>
+					<td>The player's IP address.</td>
+				</tr>
+				<tr>
+					<td><code>score</code> (int)</td>
+					<td>Description:</td>
+					<td>The player's score.</td>
+				</tr>
+				<tr>
+					<td><code>alive</code> (bool)</td>
+					<td>Description:</td>
+					<td>Whether or not the player is alive.</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<h1>Class <code>Zone</code>:</h1>
+			<table>
+				<tr>
+					<td rowspan="2"><code>changeColor(r, g, b)</code></td>
+					<td>Description:</td>
+					<td>Sets the zone's color from an RGB triplet.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>r</code> (int) - Red part of color.</td>
+					<td><code>g</code> (int) - Green part of color.</td>
+					<td><code>b</code> (int) - Blue part of color.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>changeExpansion(growth)</code></td>
+					<td>Description:</td>
+					<td>Sets the zone's growth factor.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>growth</code> (float) - The zone's growth factor.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>changePosition(x, y)</code></td>
+					<td>Description:</td>
+					<td>Sets the zone's position.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>x</code> (float) - The x coordinate of zone.</td>
+					<td><code>y</code> (float) - The y coordinate of zone.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>changeSize(size, growth=None)</code></td>
+					<td>Description:</td>
+					<td>Sets the zone's size and a growth rate to it.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>size</code> (float) - The zone's size.</td>
+					<td><code>growth</code> (float) - The zone's growth rate to get to that size.  Defaults to instantly.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>changeSpeed(xdir, ydir)</code></td>
+					<td>Description:</td>
+					<td>Set the zone's speed by components.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>xdir</code> (float) - The zone's x component of the velocity.</td>
+					<td><code>ydir</code> (float) - The zone's y component of the velocity.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>setCommand(command)</code></td>
+					<td>Description:</td>
+					<td>Set the command of the target zone.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>command</code> (string) - Armagetron command to be called when the target zone is entered.</td>
+				</tr>
+				<tr>
+					<td><code>name</code> (string)</td>
+					<td>Description:</td>
+					<td>The zone's name.</td>
+				</tr>
+				<tr>
+					<td><code>type</code> (string)</td>
+					<td>Description:</td>
+					<td>The zone's type.</td>
+				</tr>
+				<tr>
+					<td><code>x</code> (float)</td>
+					<td>Description:</td>
+					<td>The (set) x coordinate of the zone.  Note: This will change if xdir is set.</td>
+				</tr>
+				<tr>
+					<td><code>y</code> (float)</td>
+					<td>Description:</td>
+					<td>The (set) y coordinate of the zone.  Note: This will change if the ydir is set.</td>
+				</tr>
+				<tr>
+					<td><code>size</code> (float)</td>
+					<td>Description:</td>
+					<td>The (set) size of the zone.</td>
+				</tr>
+				<tr>
+					<td><code>growth</code> (float)</td>
+					<td>Description:</td>
+					<td>The growth of the zone.</td>
+				</tr>
+				<tr>
+					<td><code>xdir</code> (float)</td>
+					<td>Description:</td>
+					<td>The x component of the velocity of the zone.</td>
+				</tr>
+				<tr>
+					<td><code>ydir</code> (float)</td>
+					<td>Description:</td>
+					<td>The y component of the velocity of the zone.</td>
+				</tr>
+				<tr>
+					<td>Note: If these parameters are changed outside of the zone's functions (i.e. an armagetron command), these values will not be accurate.</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<h1>Examples:</h1>
+			<br />
+			<h2>Reset the settings when everyone leaves the game:</h2>
+			<pre class="example"><code>
+import armagetron
+
+def reload(command):
+  armagetron.sendCommand("INCLUDE settings.cfg")
+  armagetron.sendCommand("INCLUDE server_info.cfg")
+  armagetron.sendCommand("INCLUDE settings_custom.cfg")
+  armagetron.sendCommand("INCLUDE script.cfg")
+  armagetron.sendCommand("START_NEW_MATCH")
+
+armagetron.addHandler("GAME_END", reload)
+
+armagetron.run()
+			</code></pre>
 		</div>
 	</body>
 </html>

@@ -86,7 +86,7 @@ The basic table layout are the columns username, password, and servers.  The use
 ###Scripting API###
 The scripting API is entirely contained in `bin/armagetron.py`.  If you would like to use it, simply copy it into your script folder and use it just like you would with the rest of the framework.  The API, however, requires that `sys.argv[1]` is the ladderlog file and `sys.argv[2]` is the input file to armagetron.
 
-The scripting API is documented in `www/api.html` (which uses only `www/common.css` and the images) where there are a few examples.
+The scripting API is documented in `www/api.html` (which uses only `www/common.css`, `www/api.css` and the images) where there are a few examples.
 
 Creating Servers
 ----------------
