@@ -108,7 +108,7 @@ function sendCommand(command) {
 			if(ajax.status == 200 && ajax.responseText == 'success')
 				document.getElementById('command_box').value = '';
 			else
-				alert('Error sending command "' + command + '"');
+				alert('Error sending command "' + command + '": ' + ajax.responseText);
 			document.getElementById('command_box').disabled = false;
 			document.getElementById('command_submit').href = 'javascript:sendCommand(document.getElementById(\'command_box\').value)';
 			document.getElementById('command_submit').className = 'button';
