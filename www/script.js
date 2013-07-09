@@ -168,7 +168,7 @@ function updateSettings() {
 	}
 	ajax.open('POST', 'action.php', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=settings&settings=' + document.getElementById('settings_text').value);
+	ajax.send('action=settings&settings=' + encodeURIComponent(document.getElementById('settings_text').value));
 }
 
 function updateScript() {
@@ -188,7 +188,7 @@ function updateScript() {
 	}
 	ajax.open('POST', 'action.php', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=script&script=' + document.getElementById('script_text').value);
+	ajax.send('action=script&script=' + encodeURIComponent(document.getElementById('script_text').value));
 }
 
 function load() {
