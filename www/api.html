@@ -324,7 +324,7 @@
 			<h1>Examples:</h1>
 			<br />
 			<h2>Reset the settings when everyone leaves the game:</h2>
-			<pre class="example"><code>
+			<pre><code>
 import armagetron
 
 def reload(command):
@@ -335,6 +335,18 @@ def reload(command):
   armagetron.sendCommand("START_NEW_MATCH")
 
 armagetron.addHandler("GAME_END", reload)
+
+armagetron.run()
+			</code></pre>
+			<br />
+			<h2>Simple echo chat command:</h2>
+			<pre><code>
+import armagetron
+
+def reload(echo):
+  armagetron.sendCommand("PLAYER_MESSAGE " + command[1] + "\"" + " ".join(command[4:]) + "\"")
+
+armagetron.setChatHandler("/echo", echo)
 
 armagetron.run()
 			</code></pre>
