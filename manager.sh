@@ -55,7 +55,7 @@ start() {
 	if [ -s "$prefix/scripts/script.py" ]; then
 		start_script
 	fi
-	"$daemonize"-a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
+	"$daemonize" -a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
 	if [ $? -ne 0 ]; then
 		echo -e "$failure"
 		exit 1
