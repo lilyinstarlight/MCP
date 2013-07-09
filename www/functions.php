@@ -13,21 +13,21 @@ function isRunning($server) {
 	global $CONFIG;
 
 	exec($CONFIG['manager'] . ' status ' . $server, $running);
-	return strpos($running[0], 'Running') !== false;
+	return preg_match('/Server [a-zA-Z0-9]* status: Running\./', $running[0]) === 1;
 }
 
 function startServer($server) {
 	global $CONFIG;
 
 	exec($CONFIG['manager'] . ' start ' . $server, $started);
-	return strpos($started[0], 'OK') !== false;
+	return preg_match('/[ OK ] Starting server [a-zA-Z0-9]*\./', $started[0]) === 1;
 }
 
 function stopServer($server) {
 	global $CONFIG;
 
 	exec($CONFIG['manager'] . ' stop ' . $server, $stopped);
-	return strpos($stopped[0], 'OK') !== false;
+	return preg_match('/[ OK ] Stopping server [a-zA-Z0-9]*\./', $stopped[0]) === 1;
 }
 
 function reloadServer($server) {
