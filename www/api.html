@@ -57,7 +57,7 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the command where the first element is the command itself (including the beginning slash).</td>
+					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's ip address, the fourth element is the player's access level, and the rest are the command arguments.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>removeChatHandler(command)</code></td>
