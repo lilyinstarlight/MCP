@@ -1,0 +1,13 @@
+.content table {
+	width: 100%;
+}
+
+.content table td:first-child {
+	width: 200px;
+}
+
+.content pre {
+	background: rgba(60, 110, 80, 0.6);
+	border: 2px solid #000;
+	padding: 0px 40px 0px 40px;
+}

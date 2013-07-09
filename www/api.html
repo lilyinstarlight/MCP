@@ -4,6 +4,7 @@
 		<title>Scripting API</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
+		<link href="api.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
 		<div class="header">
@@ -11,11 +12,11 @@
 			<span class="title">Scripting API</span>
 		</div>
 		<div class="content">
-			To use the API, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.  More examples are available at the bottom.
+			To use the API, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.  Examples are available at the bottom.
 			<br />
 			<br />
 			<h1>Namespace <code>armagetron</code>:</h1>
-			<table>
+			<table border="1">
 				<tr>
 					<td rowspan="2"><code>run()</code></td>
 					<td>Description:</td>
@@ -39,7 +40,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>command</code> (string) - Ladderlog command to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the parameters of the command where the first parameter is the command itself.</td>
+					<td><code>command</code> (string) - Ladderlog command to attach the handler.<br /><br />
+					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the parameters of the command where the first parameter is the command itself.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>removeHandler(command, handler)</code></td>
@@ -48,7 +50,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>command</code> (string) - Ladderlog command of the handler.<br /><code>handler</code> (function) - The handler to remove.</td>
+					<td><code>command</code> (string) - Ladderlog command of the handler.<br /><br />
+					<code>handler</code> (function) - The handler to remove.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>setChatHandler(command, handler)</code></td>
@@ -57,7 +60,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is an array representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's ip address, the fourth element is the player's access level, and the rest are the command arguments.</td>
+					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><br />
+					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's ip address, the fourth element is the player's access level, and the rest are the command arguments.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>removeChatHandler(command)</code></td>
@@ -86,7 +90,7 @@
 			<br />
 			<br />
 			<h1>Class <code>Grid</code> (accessible in <code>armagetron.grid</code>):</h1>
-			<table>
+			<table border="1">
 				<tr>
 					<td rowspan="3"><code>getTeam(name)</code></td>
 					<td>Description:</td>
@@ -133,14 +137,14 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>name</code> (string) - Name of the new zone.</td>
-					<td><code>type</code> (string) - Type of the new zone.</td>
-					<td><code>x</code> (float) - The x coordinate of the new zone.</td>
-					<td><code>y</code> (float) - The y coordinate of the new zone.</td>
-					<td><code>size</code> (float) - Size of the new zone.</td>
-					<td><code>growth</code> (float) - Growth of the new zone. Defaults to 0.</td>
-					<td><code>xdir</code> (float) - Change in the x direction of the new zone. Defaults to 0.</td>
-					<td><code>ydir</code> (float) - Change in the y direction of the new zone. Defaults to 0.</td>
+					<td><code>name</code> (string) - Name of the new zone.<br /><br />
+					<code>type</code> (string) - Type of the new zone.<br /><br />
+					<code>x</code> (float) - The x coordinate of the new zone.<br /><br />
+					<code>y</code> (float) - The y coordinate of the new zone.<br /><br />
+					<code>size</code> (float) - Size of the new zone.<br /><br />
+					<code>growth</code> (float) - Growth of the new zone. Defaults to 0.<br /><br />
+					<code>xdir</code> (float) - Change in the x direction of the new zone. Defaults to 0.<br /><br />
+					<code>ydir</code> (float) - Change in the y direction of the new zone. Defaults to 0.</td>
 				</tr>
 				<tr>
 					<td>Return:</td>
@@ -160,7 +164,7 @@
 			<br />
 			<br />
 			<h1>Class <code>Team</code>:</h1>
-			<table>
+			<table border="1">
 				<tr>
 					<td><code>name</code> (string)</td>
 					<td>Description:</td>
@@ -179,13 +183,13 @@
 				<tr>
 					<td><code>positions</code> (int[])</td>
 					<td>Description:</td>
-					<td>An array of players on the team representing their position. For example, you can get the player in position with <code>positions[0]</code>.</td>
+					<td>A list of players on the team representing their position. For example, you can get the player in position with <code>positions[0]</code>.</td>
 				</tr>
 			</table>
 			<br />
 			<br />
 			<h1>Class <code>Player</code>:</h1>
-			<table>
+			<table border="1">
 				<tr>
 					<td><code>name</code> (string)</td>
 					<td>Description:</td>
@@ -215,7 +219,7 @@
 			<br />
 			<br />
 			<h1>Class <code>Zone</code>:</h1>
-			<table>
+			<table border="1">
 				<tr>
 					<td rowspan="2"><code>changeColor(r, g, b)</code></td>
 					<td>Description:</td>
@@ -223,9 +227,9 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>r</code> (int) - Red part of color.</td>
-					<td><code>g</code> (int) - Green part of color.</td>
-					<td><code>b</code> (int) - Blue part of color.</td>
+					<td><code>r</code> (int) - Red part of color.<br /><br />
+					<code>g</code> (int) - Green part of color.<br /><br />
+					<code>b</code> (int) - Blue part of color.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>changeExpansion(growth)</code></td>
@@ -243,8 +247,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>x</code> (float) - The x coordinate of zone.</td>
-					<td><code>y</code> (float) - The y coordinate of zone.</td>
+					<td><code>x</code> (float) - The x coordinate of zone.<br /><br />
+					<code>y</code> (float) - The y coordinate of zone.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>changeSize(size, growth=None)</code></td>
@@ -253,8 +257,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>size</code> (float) - The zone's size.</td>
-					<td><code>growth</code> (float) - The zone's growth rate to get to that size.  Defaults to instantly.</td>
+					<td><code>size</code> (float) - The zone's size.<br /><br />
+					<code>growth</code> (float) - The zone's growth rate to get to that size.  Defaults to instantly.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>changeSpeed(xdir, ydir)</code></td>
@@ -263,8 +267,8 @@
 				</tr>
 				<tr>
 					<td>Parameters:</td>
-					<td><code>xdir</code> (float) - The zone's x component of the velocity.</td>
-					<td><code>ydir</code> (float) - The zone's y component of the velocity.</td>
+					<td><code>xdir</code> (float) - The zone's x component of the velocity.<br /><br />
+					<code>ydir</code> (float) - The zone's y component of the velocity.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>setCommand(command)</code></td>
@@ -316,7 +320,7 @@
 					<td>The y component of the velocity of the zone.</td>
 				</tr>
 				<tr>
-					<td>Note: If these parameters are changed outside of the zone's functions (i.e. an armagetron command), these values will not be accurate.</td>
+					<td colspan="3">Note: If these parameters are changed outside of the zone's functions (i.e. an armagetron command), these values will not be accurate.</td>
 				</tr>
 			</table>
 			<br />
