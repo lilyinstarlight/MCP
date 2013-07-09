@@ -43,7 +43,7 @@ fi
 start_script() {
 	"$daemonize" -a -e "$prefix/script-error.log" -l "$scriptpid" "$bindir/script" "$prefix" "$scriptpid" "$bindir"
 	if [ $? -ne 0 ]; then
-		echo -e "$failure"
+		echo "$failure"
 		stop
 		exit 1
 	fi
@@ -57,16 +57,16 @@ start() {
 	fi
 	"$daemonize" -a -e "$prefix/error.log" -o "$prefix/arma.log" -l "$pid" "$bindir/armagetronad" "$prefix" "$pid"
 	if [ $? -ne 0 ]; then
-		echo -e "$failure"
+		echo "$failure"
 		exit 1
 	fi
-	echo -e "$success"
+	echo "$success"
 }
 
 stop_script() {
 	echo "QUIT" >> "$prefix/var/ladderlog.txt"
 	if [ $? -ne 0 ]; then
-		echo -e "$failure"
+		echo "$failure"
 		exit 1
 	fi
 	KILL=0
@@ -89,7 +89,7 @@ stop() {
 	fi
 	echo "QUIT" >> "$prefix/var/input.txt"
 	if [ $? -ne 0 ]; then
-		echo -e "$failure"
+		echo "$failure"
 		exit 1
 	fi
 	KILL=0
@@ -103,12 +103,12 @@ stop() {
 		sleep 0.1
 	done
 	echo > "$prefix/var/input.txt"
-	echo -e "$success"
+	echo "$success"
 }
 
 usage() {
-	echo -e "Usage:\t$0 {start|stop|status|reload|restart|restart-script} <server>"
-	echo -e "\t$0 list"
+	echo "Usage:\t$0 {start|stop|status|reload|restart|restart-script} <server>"
+	echo "\t$0 list"
 	exit 1
 }
 
@@ -171,7 +171,7 @@ case "$1" in
 				stop_script
 			fi
 			start_script
-			echo -e "$success"
+			echo "$success"
 		else
 			echo "No script found for server $name."
 		fi
