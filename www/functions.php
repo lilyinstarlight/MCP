@@ -20,14 +20,14 @@ function startServer($server) {
 	global $CONFIG;
 
 	exec($CONFIG['manager'] . ' start ' . $server, $started);
-	return preg_match('/[ OK ] Starting server [a-zA-Z0-9]*\./', $started[0]) === 1;
+	return preg_match('/\* Starting server [a-zA-Z0-9]*\... OK!/', $started[0]) === 1;
 }
 
 function stopServer($server) {
 	global $CONFIG;
 
 	exec($CONFIG['manager'] . ' stop ' . $server, $stopped);
-	return preg_match('/[ OK ] Stopping server [a-zA-Z0-9]*\./', $stopped[0]) === 1;
+	return preg_match('/\* Stopping server [a-zA-Z0-9]*\... OK!/', $stopped[0]) === 1;
 }
 
 function reloadServer($server) {

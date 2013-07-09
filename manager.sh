@@ -6,9 +6,15 @@ rundir="$homedir/running"
 
 daemonize="/usr/sbin/daemonize"
 
-waiting="$(tput sc)[....]"
-success="$(tput rc)[$(tput setaf 2) OK $(tput sgr0)]"
-failure="$(tput rc)[$(tput setaf 1)FAIL$(tput sgr0)]"
+if [ $(tput colors) -ge 8 ]; then
+	waiting="$(tput sc)[....]"
+	success="$(tput rc)[$(tput setaf 2) OK $(tput sgr0)]"
+	failure="$(tput rc)[$(tput setaf 1)FAIL$(tput sgr0)]"
+else
+	waiting="*"
+	success=" OK!"
+	failure=" FAIL!"
+fi
 
 if [ "$1" = "list" ]; then
 	for dir in $(ls "$prefixdir"); do
@@ -51,7 +57,7 @@ start_script() {
 
 
 start() {
-	echo -n "$waiting Starting server $name."
+	echo -n "$waiting Starting server $name..."
 	if [ -s "$prefix/scripts/script.py" ]; then
 		start_script
 	fi
@@ -73,7 +79,7 @@ stop_script() {
 	while [ -f "$scriptpid" ]; do
 		KILL=$((KILL + 1))
 		if [ $KILL -gt 50 ]; then
-			kill -KILL -$scriptrunning;
+			kill -KILL -$scriptrunning
 			rm "$scriptpid"
 			break
 		fi
@@ -83,7 +89,7 @@ stop_script() {
 }
 
 stop() {
-	echo -n "$waiting Stopping server $name."
+	echo -n "$waiting Stopping server $name..."
 	if [ "$scriptrunning" ]; then
 		stop_script
 	fi
@@ -96,7 +102,7 @@ stop() {
 	while [ -f "$pid" ]; do
 		KILL=$((KILL + 1))
 		if [ $KILL -gt 50 ]; then
-			kill -KILL -$running;
+			kill -KILL -$running
 			rm "$pid"
 			break
 		fi
