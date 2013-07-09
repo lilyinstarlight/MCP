@@ -7,8 +7,8 @@ rundir="$homedir/running"
 daemonize="/usr/sbin/daemonize"
 
 waiting="[....]"
-success="\r[\e[32;1m OK \e[00m]"
-failure="\r[\e[31;1mFAIL\e[00m]"
+success="\r[$(tput setaf 1) OK $(tput sgr0)]"
+failure="\r[$(tput setaf 2)FAIL$(tput sgr0)]"
 
 if [ "$1" = "list" ]; then
 	for dir in $(ls "$prefixdir"); do
