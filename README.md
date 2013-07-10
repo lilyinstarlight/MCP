@@ -103,7 +103,7 @@ Before you can make a server, you need to source code to it.  You can get this b
 
 The only build dependencies of the armagetron server are the `build-essential`, `automake`, `bison`, and `libzthread-dev` packages in Debian/Ubuntu.  In Arch, you only need to install `zthread` from the AUR, and in Gentoo, you only need to install `dev-libs/zthread`.
 
-If you want to get rid of the `var/input.txt : COMMAND` messages in the log, simply apply the patch at [](http://fkmclane.tk/nolineprint.patch).  You can do this by changing to the source's directory then using this command:
+If you want to get rid of the `var/input.txt : COMMAND` messages in the log, simply apply the patch at http://fkmclane.tk/nolineprint.patch.  You can do this by changing to the source's directory then using this command:
 
 `wget -O- http://fkmclane.tk/nolineprint.patch | patch -p1`
 
