@@ -21,17 +21,55 @@ def removeChatHandler(command):
 def sendCommand(command):
 	armagetron.write(command + "\n")
 
+def say(message):
+	sendCommand("SAY " + message)
+
+def consoleMessage(message):
+	sendCommand("CONSOLE_MESSAGE \"" + message + "\"")
+
+def centerMessage(message):
+	sendCommand("CENTER_MESSAGE \"" + message + "\"")
+
+def sendMessage(player, message):
+	if type(player) == Player:
+		sendCommand("PLAYER_MESSAGE " + player.name + " \"" + message + "\"")
+	else:
+		sendCommand("PLAYER_MESSAGE " + player + " \"" + message + "\"")
+
 def pauseBeforeRound():
 	sendCommand("WAIT_FOR_EXTERNAL_SCRIPT 1")
 
 def continueRound():
 	sendCommand("WAIT_FOR_EXTERNAL_SCRIPT 0")
 
+def setResourceServer(server):
+	sendCommand("RESOURCE_REPOSITORY_SERVER " + server)
+
+def setMap(resource):
+	sendCommand("MAP_FILE " + resource)
+
+def include(config):
+	sendCommand("INCLUDE " + config)
+
+def rinclude(config):
+	sendCommand("RINCLUDE " + config)
+
+def reload():
+	armagetron.sendCommand("INCLUDE settings.cfg")
+	armagetron.sendCommand("INCLUDE server_info.cfg")
+	armagetron.sendCommand("INCLUDE settings_custom.cfg")
+	armagetron.sendCommand("INCLUDE script.cfg")
+	armagetron.sendCommand("START_NEW_MATCH")
+
+def endRound():
+	sendCommand("WIN_ZONE_MIN_LAST_DEATH 0")
+	sendCommand("WIN_ZONE_MIN_ROUND_TIME 0")
+
 def chatCommand(command):
 	if command[1] in chatcommands:
 		chatcommands[command[1]](command[1:])
 	else:
-		sendCommand("PLAYER_MESSAGE " + command[2] + " \"Unknown chat command \\\"" + command[1] + "\\\".\"")
+		sendMessage(command[2], "Unknown chat command \"" + command[1] + "\".")
 
 def init(command):
 	sendCommand("INCLUDE script.cfg")
@@ -66,6 +104,47 @@ class Player:
 		self.score = 0
 		self.alive = False
 
+	def sendMessage(self, message):
+		sendMessage(self, message)
+
+	def kill(self):
+		sendCommand("KILL " + self.name)
+
+	def kick(self, reason=None):
+		command = "KICK " + self.name
+		if reason:
+			command += " " + reason
+
+		sendCommand(command)
+
+	def ban(self, time=None, reason=None):
+		command = "BAN " + self.name
+		if time:
+			command += " " + time
+		if reason:
+			command += " " + reason
+
+		sendCommand(command)
+
+	def banIP(self, time, reason=None):
+		command = "BAN_IP " + self.ip
+		if time:
+			command += " " + time
+		if reason:
+			command += " " + reason
+
+		sendCommand(command)
+
+	def declareWinner(self):
+		sendCommand("DECLARE_ROUND_WINNER " + self.name)
+
+	def teleport(self, x, y, xdir, ydir):
+		sendCommand("TELEPORT_PLAYER " + self.name + " " + x + " " + y + " " + xdir + " " + ydir)
+
+	def respawn(self, x, y, xdir, ydir):
+		if not self.alive:
+			sendCommand("RESPAWN_PLAYER " + self.name + " 1 " + x + " " + y + " " + xdir + " " + ydir)
+
 class Zone:
 	def __init__(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, command=None):
 		self.name = name
@@ -77,15 +156,15 @@ class Zone:
 		self.xdir = xdir
 		self.ydir = ydir
 
-		if interactive != None:
+		if interactive:
 			self.interactive = interactive
 
-		if r != None and g != None and b != None:
+		if r and g and b:
 			self.r = r
 			self.g = g
 			self.b = b
 
-		if target_size != None:
+		if target_size:
 			self.target_size = target_size
 
 		if type == "rubber":
@@ -123,7 +202,7 @@ class Zone:
 		self.size = size
 		command = "SET_ZONE_RADIUS" + self.name + " " + size
 
-		if growth != None:
+		if growth:
 			command += " " + growth
 
 		sendCommand(command)
@@ -173,13 +252,13 @@ class Grid:
 				return None
 			command += rubber
 
-		if interactive != None:
+		if interactive:
 			command += " " + interactive
 
-		if r != None and g != None and b != None:
+		if r and g and b:
 			command += " " + r + " " + g+ " " + b
 
-		if target_size != None:
+		if target_size:
 			command += " " + target_size
 
 		sendCommand(command)
@@ -193,6 +272,8 @@ class Grid:
 	def newRound(self, command):
 		self.round += 1
 		self.zones = {}
+		for player in self.players:
+			player.alive = True
 
 	def newMatch(self, command):
 		self.round = 1
@@ -264,6 +345,42 @@ class Grid:
 		elif command[2] in self.zones:
 			del self.zones[command[2]]
 
+	def deathFrag(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathSuicide(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathTeamkill(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathBasezoneConquered(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathDeathzone(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathRubberzone(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathShotFrag(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathShotSuicide(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
+	def deathShotTeamkill(self, command):
+		if command[1] in self.players:
+			self.players[command[1]].alive = False
+
 	def reset(self, command):
 		self.round = 0
 		self.teams = {}
@@ -292,6 +409,15 @@ commands = {	"NEW_ROUND": [ grid.newRound ],
 		"POSITIONS": [ grid.positions ],
 		"ZONE_SPAWNED": [ grid.zoneSpawned ],
 		"ZONE_COLLAPSED": [ grid.zoneCollapsed ],
+		"DEATH_FRAG": [ grid.deathFrag ],
+		"DEATH_SUICIDE": [ grid.deathSuicide ],
+		"DEATH_TEAMKILL": [ grid.deathTeamkill ],
+		"DEATH_BASEZONE_CONQUERED": [ grid.deathBasezoneConquered ],
+		"DEATH_DEATHZONE": [ grid.deathDeathzone ],
+		"DEATH_RUBBERZONE": [ grid.deathRubberzone ],
+		"DEATH_SHOT_FRAG": [ grid.deathShotFrag ],
+		"DEATH_SHOT_SUICIDE": [ grid.deathShotSuicide ],
+		"DEATH_SHOT_TEAMKILL": [ grid.deathShotTeamkill ],
 		"GAME_END": [ grid.reset ],
 		"ENCODING": [ init ],
 		"INVALID_COMMAND": [ chatCommand ] }

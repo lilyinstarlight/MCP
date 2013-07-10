@@ -61,7 +61,7 @@
 				<tr>
 					<td>Parameters:</td>
 					<td><code>command</code> (string) - Chat command (including the beginning slash) to attach the handler.<br /><br />
-					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's ip address, the fourth element is the player's access level, and the rest are the command arguments.</td>
+					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's IP address, the fourth element is the player's access level, and the rest are the command arguments.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>removeChatHandler(command)</code></td>
@@ -71,6 +71,43 @@
 				<tr>
 					<td>Parameters:</td>
 					<td><code>command</code> (string) - Chat command to remove the handler from (including the beginning slash).</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>say(message)</code></td>
+					<td>Description:</td>
+					<td>Sends the SAY command with the message.  Appears as <code><span style="color: red">Admin</span>: message</code></td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>message</code> (string) - Message to say.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>consoleMessage(message)</code></td>
+					<td>Description:</td>
+					<td>Prints <code>message</code> to every player's console.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>message</code> (string) - Message to send.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>centerMessage(message)</code></td>
+					<td>Description:</td>
+					<td>Prints <code>message</code> on everybody's screens.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>message</code> (string) - Message to send.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>sendMessage(player, message)</code></td>
+					<td>Description:</td>
+					<td>Prints <code>message</code> to the specified player's console.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>player</code> (string or Player) - Player to send the message.<br /><br />
+					<code>message</code> (string) - Message to send.</td>
 				</tr>
 				<tr>
 					<td rowspan="2"><code>pauseBeforeRound()</code></td>
@@ -83,6 +120,56 @@
 					<td rowspan="2"><code>continueRound()</code></td>
 					<td>Description:</td>
 					<td>Tell the server to start the round (if it was paused).</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>setResourceServer(server)</code></td>
+					<td>Description:</td>
+					<td>Sets the resource server.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>server</code> (string) - URI of the resource server.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>setMap(resource)</code></td>
+					<td>Description:</td>
+					<td>Sets the current map.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>resource</code> (string) - Resource of the map.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>include(config)</code></td>
+					<td>Description:</td>
+					<td>Includes a configuration file.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>config</code> (string) - Name of the configuration file to include.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>rinclude(config)</code></td>
+					<td>Description:</td>
+					<td>Includes a configuration file from a resource.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>config</code> (string) - Resource address of the configuration file to include.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>reload()</code></td>
+					<td>Description:</td>
+					<td>Reload's the server's configuration by including the default settings.</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>endRound()</code></td>
+					<td>Description:</td>
+					<td>Ends the round by spawning the win/death zone immediately.</td>
 				</tr>
 				<tr>
 				</tr>
@@ -190,6 +277,82 @@
 			<br />
 			<h1>Class <code>Player</code>:</h1>
 			<table border="1">
+				<tr>
+					<td rowspan="2"><code>sendMessage(message)</code></td>
+					<td>Description:</td>
+					<td>Sends a message to the player's console.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>message</code> (string) - The message to send.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>kill()</code></td>
+					<td>Description:</td>
+					<td>Kills the player instantly.</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>kick(reason=None)</code></td>
+					<td>Description:</td>
+					<td>Kicks a player for a specified reason.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>reason</code> (string) - The message displayed when the player is kicked.  Defaults to None.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>ban(time=None, reason=None)</code></td>
+					<td>Description:</td>
+					<td>Bans a player for the specified time and reason.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>time</code> (int) - The amount of minutes to ban the player.  Defaults to Armagetron's decision.<br /><br />
+					<code>reason</code> (string) - The message displayed when the player is banned.  Defaults to None.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>banIP(time=None, reason=None)</code></td>
+					<td>Description:</td>
+					<td>Bans a player's IP address for a specified time and reason.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>time</code> (int) - The amount of minutes to ban the player.  Defaults to Armagetron's decision.<br /><br />
+					<code>reason</code> (string) - The message displayed when the player is banned.  Defaults to None.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>declareWinner()</code></td>
+					<td>Description:</td>
+					<td>Sets the player as the winner and ends the round.</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>teleport(x, y, xdir, ydir)</code></td>
+					<td>Description:</td>
+					<td>Teleport the player to the specified location.  Note: This function works in sty+ct only.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>x</code> (float) - The x coordinate of the player.<br /><br />
+					<code>y</code> (float) - The y coordinate of the player.<br /><br />
+					<code>xdir</code> (int) - The x direction of the player.  Its value is based on the current axis system.  For example, you could put 1 here in four axes to mean go forward on the x axis.<br /><br />
+					<code>ydir</code> (int) - The y direction of the player.  Its value is based on the current axis system.  For example, you could put 1 here in four axes to mean go forward on the y axis.</td>
+				</tr>
+				<tr>
+					<td rowspan="2"><code>respawn(x, y, xdir, ydir)</code></td>
+					<td>Description:</td>
+					<td>Respawns the player at the specified location.  Note: This function works in sty+ct only.</td>
+				</tr>
+				<tr>
+					<td>Parameters:</td>
+					<td><code>x</code> (float) - The x coordinate of the player.<br /><br />
+					<code>y</code> (float) - The y coordinate of the player.<br /><br />
+					<code>xdir</code> (int) - The x direction of the player.  Its value is based on the current axis system.  For example, you could put 1 here in four axes to mean go forward on the x axis.<br /><br />
+					<code>ydir</code> (int) - The y direction of the player.  Its value is based on the current axis system.  For example, you could put 1 here in four axes to mean go forward on the y axis.</td>
+				</tr>
 				<tr>
 					<td><code>name</code> (string)</td>
 					<td>Description:</td>
@@ -320,7 +483,7 @@
 					<td>The y component of the velocity of the zone.</td>
 				</tr>
 				<tr>
-					<td colspan="3">Note: If these parameters are changed outside of the zone's functions (i.e. an armagetron command), these values will not be accurate.</td>
+					<td colspan="3">Note: If these parameters are changed outside of the zone's functions (i.e. an Armagetron command), these values will not be accurate.</td>
 				</tr>
 				<tr>
 					<td colspan="3">On destruction, the zone is simply set to collapse.</td>
@@ -335,11 +498,7 @@
 import armagetron
 
 def reload(command):
-  armagetron.sendCommand("INCLUDE settings.cfg")
-  armagetron.sendCommand("INCLUDE server_info.cfg")
-  armagetron.sendCommand("INCLUDE settings_custom.cfg")
-  armagetron.sendCommand("INCLUDE script.cfg")
-  armagetron.sendCommand("START_NEW_MATCH")
+  armagetron.reload()
 
 armagetron.addHandler("GAME_END", reload)
 
@@ -350,10 +509,36 @@ armagetron.run()
 			<pre><code>
 import armagetron
 
-def reload(echo):
-  armagetron.sendCommand("PLAYER_MESSAGE " + command[1] + "\"" + " ".join(command[4:]) + "\"")
+def echo(command):
+  armagetron.sendMessage(command[1], " ".join(command[4:]))
 
 armagetron.setChatHandler("/echo", echo)
+
+armagetron.run()
+			</code></pre>
+			<br />
+			<h2>Simple map/config rotation:</h2>
+			<pre><code>
+import armagetron
+
+maps = [ "Anonymous/polygon/regular/square-1.0.1.aamap.xml", None, "fman23/crazysumo/crazysumo-0.0.1.aamap.xml" ]
+config = [ None, "ctfbrawl30.cfg(http://ix.ihptru.net/ctfbrawl30.cfg)", "fman23/crazysumo/crazysumo.cfg" ]
+
+index = 0
+
+def changeMap(command):
+  armagetron.pauseBeforeRound()
+  armagetron.reload()
+  index++
+  if index &gt; len(maps):
+    index = 0
+  if maps[index]:
+    armagetron.setMap(maps[index])
+  if config[index]:
+    armagetron.rinclude(config[index])
+  armagetron.continueRound()
+
+armagetron.addHandler("NEW_ROUND", changeMap)
 
 armagetron.run()
 			</code></pre>
