@@ -55,11 +55,11 @@ def rinclude(config):
 	sendCommand("RINCLUDE " + config)
 
 def reload():
-	armagetron.sendCommand("INCLUDE settings.cfg")
-	armagetron.sendCommand("INCLUDE server_info.cfg")
-	armagetron.sendCommand("INCLUDE settings_custom.cfg")
-	armagetron.sendCommand("INCLUDE script.cfg")
-	armagetron.sendCommand("START_NEW_MATCH")
+	sendCommand("INCLUDE settings.cfg")
+	sendCommand("INCLUDE server_info.cfg")
+	sendCommand("INCLUDE settings_custom.cfg")
+	sendCommand("INCLUDE script.cfg")
+	sendCommand("START_NEW_MATCH")
 
 def endRound():
 	sendCommand("WIN_ZONE_MIN_LAST_DEATH 0")
