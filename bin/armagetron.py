@@ -272,7 +272,7 @@ class Grid:
 	def newRound(self, command):
 		self.round += 1
 		self.zones = {}
-		for player in self.players:
+		for player in self.players.values():
 			player.alive = True
 
 	def newMatch(self, command):
