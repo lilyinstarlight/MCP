@@ -103,6 +103,10 @@ Before you can make a server, you need to source code to it.  You can get this b
 
 The only build dependencies of the armagetron server are the `build-essential`, `automake`, `bison`, and `libzthread-dev` packages in Debian/Ubuntu.  In Arch, you only need to install `zthread` from the AUR, and in Gentoo, you only need to install `dev-libs/zthread`.
 
+If you want to get rid of the `var/input.txt : COMMAND` messages in the log, simply apply the patch at [](http://fkmclane.tk/nolineprint.patch).  You can do this by changing to the source's directory then using this command:
+
+`wget -O- http://fkmclane.tk/nolineprint.patch | patch -p1`
+
 After you have the sources and the dependencies, simply run `./makeserver.sh <server> <source>` where `<server>` is the server's name and `<source>` is the directory name of the source you just downloaded.  After that, you will have a server ready to start with `manager.sh`.
 
 The configuration for the server is in `servers/<server>/config/settings\_custom.cfg`.  If you are not using the web interface, you will need to create the file and populate it with your own settings.
