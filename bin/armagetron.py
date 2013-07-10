@@ -40,6 +40,7 @@ def run():
 	while True:
 		line = ladderlog.readline()
 		if not line:
+			time.sleep(0.1)
 			continue
 		if line.startswith("QUIT"):
 			break
@@ -47,7 +48,6 @@ def run():
 		if command and command[0] in commands:
 			for handler in commands[command[0]]:
 				handler(command)
-		time.sleep(0.1)
 
 #Grid stuff
 
