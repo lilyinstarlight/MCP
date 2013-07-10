@@ -35,6 +35,8 @@ if [ -f $pid ]; then
 		running="$(cat "$pid")"
 	else
 		rm $pid
+		echo > "$prefix/var/ladderlog.txt"
+		echo > "$prefix/var/input.txt"
 	fi
 fi
 
@@ -43,6 +45,7 @@ if [ -f $scriptpid ]; then
 		scriptrunning="$(cat "$scriptpid")"
 	else
 		rm $scriptpid
+		echo > "$prefix/var/ladderlog.txt"
 	fi
 fi
 
