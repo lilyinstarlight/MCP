@@ -39,7 +39,7 @@ if(isset($_SESSION['user'])) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title><?php echo $_SESSION['server']; ?> - Server Administration</title>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
 		<script src="script.js" type="text/javascript"></script>
@@ -140,7 +140,7 @@ else {
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Server Administration</title>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
