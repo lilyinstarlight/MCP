@@ -117,8 +117,8 @@ stop() {
 }
 
 usage() {
-	echo "Usage:\t$0 {start|stop|status|reload|restart|restart-script} <server>"
-	echo "\t$0 list"
+	echo "Usage:$(tput ht)$0 {start|stop|status|reload|restart|restart-script} <server>"
+	echo "$(tput ht)$0 list"
 	exit 1
 }
 
