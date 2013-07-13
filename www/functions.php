@@ -5,7 +5,7 @@ function serverExists($server) {
 	global $CONFIG;
 
 	exec(escapeshellcmd($CONFIG['manager'] . ' list'), $list);
-	$servers = preg_replace('/Server ([a-zA-Z0-9]*) status: (Stopped|Running)\./', '$1', $list);
+	$servers = preg_replace('/Server ([a-zA-Z0-9_-]*) status: (Stopped|Running)\./', '$1', $list);
 	return in_array($server, $servers);
 }
 
