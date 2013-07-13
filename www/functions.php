@@ -13,21 +13,21 @@ function isRunning($server) {
 	global $CONFIG;
 
 	exec(escapeshellcmd($CONFIG['manager'] . ' status ' . $server), $running);
-	return preg_match('/Server [a-zA-Z0-9]* status: Running\./', $running[0]) === 1;
+	return preg_match('/Server [a-zA-Z0-9_-]* status: Running\./', $running[0]) === 1;
 }
 
 function startServer($server) {
 	global $CONFIG;
 
 	exec(escapeshellcmd($CONFIG['manager'] . ' start ' . $server), $started);
-	return preg_match('/\* Starting server [a-zA-Z0-9]*\... OK!/', $started[0]) === 1;
+	return preg_match('/\* Starting server [a-zA-Z0-9_-]*\... OK!/', $started[0]) === 1;
 }
 
 function stopServer($server) {
 	global $CONFIG;
 
 	exec(escapeshellcmd($CONFIG['manager'] . ' stop ' . $server), $stopped);
-	return preg_match('/\* Stopping server [a-zA-Z0-9]*\... OK!/', $stopped[0]) === 1;
+	return preg_match('/\* Stopping server [a-zA-Z0-9_-]*\... OK!/', $stopped[0]) === 1;
 }
 
 function reloadServer($server) {
