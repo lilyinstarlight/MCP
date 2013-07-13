@@ -4,7 +4,7 @@ require_once 'config.php';
 function serverExists($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' list', $list);
+	exec(escapeshellcmd($CONFIG['manager'] . ' list'), $list);
 	$servers = preg_replace('/Server ([a-zA-Z0-9]*) status: (Stopped|Running)\./', '$1', $list);
 	return in_array($server, $servers);
 }
@@ -12,35 +12,35 @@ function serverExists($server) {
 function isRunning($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' status ' . $server, $running);
+	exec(escapeshellcmd($CONFIG['manager'] . ' status ' . $server), $running);
 	return preg_match('/Server [a-zA-Z0-9]* status: Running\./', $running[0]) === 1;
 }
 
 function startServer($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' start ' . $server, $started);
+	exec(escapeshellcmd($CONFIG['manager'] . ' start ' . $server), $started);
 	return preg_match('/\* Starting server [a-zA-Z0-9]*\... OK!/', $started[0]) === 1;
 }
 
 function stopServer($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' stop ' . $server, $stopped);
+	exec(escapeshellcmd($CONFIG['manager'] . ' stop ' . $server), $stopped);
 	return preg_match('/\* Stopping server [a-zA-Z0-9]*\... OK!/', $stopped[0]) === 1;
 }
 
 function reloadServer($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' reload ' . $server, $reloaded);
+	exec(escapeshellcmd($CONFIG['manager'] . ' reload ' . $server), $reloaded);
 	return count($reloaded) === 0;
 }
 
 function reloadScript($server) {
 	global $CONFIG;
 
-	exec($CONFIG['manager'] . ' restart-script ' . $server, $reloaded);
+	exec(escapeshellcmd($CONFIG['manager'] . ' restart-script ' . $server), $reloaded);
 	return count($reloaded) === 0;
 }
 
