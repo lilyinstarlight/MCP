@@ -47,7 +47,7 @@ function reloadScript($server) {
 function sendCommand($server, $command) {
 	global $CONFIG;
 
-	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/var/input.txt', $command . "\n", FILE_APPEND) !== false;
+	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/var/input.txt', iconv('utf-8', 'latin1', $command . "\n"), FILE_APPEND) !== false;
 }
 
 function getTail($filename, $lines) {
@@ -109,7 +109,7 @@ function getSettings($server) {
 function updateSettings($server, $settings) {
 	global $CONFIG;
 
-	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/config/settings_custom.cfg', $settings) !== false;
+	return file_put_contents($CONFIG['serverdir'] . '/' . $server . '/config/settings_custom.cfg', iconv('utf-8', 'latin1', $settings)) !== false;
 }
 
 function getScript($server) {
