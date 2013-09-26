@@ -7,7 +7,7 @@ import subprocess
 
 import config
 
-open('users.db', 'w').close()
+open('armaadmin/users.db', 'w').close()
 
 import armaadmin.users
 
@@ -32,12 +32,12 @@ distutils.core.setup(
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/ArmaAdmin',
 	packages=[ 'armaadmin', 'armaadmin.www' ],
-	package_data={ 'armaadmin': [ 'users.db', 'www' ], 'armaadmin.www': [ 'html' ] },
-	scripts=[ 'bin/armaadmin' ],
+	package_data={ 'armaadmin': [ 'users.db', 'data/www' ], 'armaadmin.www': [ 'data/html' ] },
+	scripts=[ 'dist/bin/armaadmin' ],
 )
 
-os.remove(os.path.join('armaadmin', 'config.py'))
-os.remove('users.db')
+os.remove('armaadmin/config.py')
+os.remove('armaadmin/users.db')
 
 print('Making directories...')
 
@@ -55,11 +55,11 @@ response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, Cen
 print('Installing init script...')
 
 if response == "1":
-	shutil.copy('init/sysv/armaadmin', '/etc/init.d/')
+	shutil.copy('dist/init/sysv/armaadmin', '/etc/init.d/')
 elif response == "2":
-	shutil.copy('init/openrc/armaadmin', '/etc/init.d/')
+	shutil.copy('dist/init/openrc/armaadmin', '/etc/init.d/')
 elif response == "3":
-	shutil.copy('init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
+	shutil.copy('dist/init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 	subprocess.call(['systemctl', 'daemon-reload'])
 
 print('Done.')
