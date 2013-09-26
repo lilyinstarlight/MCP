@@ -15,108 +15,115 @@ function scriptChange(element) {
 }
 
 function start() {
-	document.getElementById('start').href = null;
-	document.getElementById('start').className = 'button disabled';
-	document.getElementById('status').innerHTML = 'Starting...';
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText == 'success') {
-				document.getElementById('status').innerHTML = 'Running';
-				document.getElementById('stopped').style.display = 'none';
-				document.getElementById('started').style.display = 'inline';
-				document.getElementById('command_box').disabled = false;
-				document.getElementById('command_submit').href = 'javascript:sendCommand(document.getElementById(\'command_box\').value)';
-				document.getElementById('command_submit').className = 'button';
-			}
-			else {
-				document.getElementById('status').innerHTML = 'Stopped';
+			if(ajax.status != 200 || ajax.responseText != 'success')
 				alert('Error starting server: ' + ajax.responseText);
-			}
-			document.getElementById('start').href = 'javascript:start()';
-			document.getElementById('start').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=start');
+	ajax.open('GET', '/start', true);
+	ajax.send();
 }
 
-function stop(restart) {
-	document.getElementById('stop').href = null;
-	document.getElementById('stop').className = 'button disabled';
-	document.getElementById('restart').href = null;
-	document.getElementById('restart').className = 'button disabled';
-	document.getElementById('reload').href = null;
-	document.getElementById('reload').className = 'button disabled';
-	document.getElementById('status').innerHTML = 'Stopping...';
+function stop() {
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText == 'success') {
-				document.getElementById('status').innerHTML = 'Stopped';
-				document.getElementById('stopped').style.display = 'inline';
-				document.getElementById('started').style.display = 'none';
-				document.getElementById('command_box').disabled = true;
-				document.getElementById('command_submit').href = null;
-				document.getElementById('command_submit').className = 'button disabled';
-
-				if(restart)
-					start();
-			}
-			else {
-				document.getElementById('status').innerHTML = 'Running';
+			if(ajax.status != 200 || ajax.responseText != 'success')
 				alert('Error stopping server: ' + ajax.responseText);
-			}
-			document.getElementById('stop').href = 'javascript:stop()';
-			document.getElementById('stop').className = 'button';
-			document.getElementById('restart').href = 'javascript:stop();start()';
-			document.getElementById('restart').className = 'button';
-			document.getElementById('reload').href = 'javascript:reload()';
-			document.getElementById('reload').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=stop');
+	ajax.open('GET', '/stop', true);
+	ajax.send();
 }
 
 function reload() {
 	document.getElementById('reload').href = null;
 	document.getElementById('reload').className = 'button disabled';
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status != 200 || ajax.responseText != 'success')
 				alert('Error reloading server: ' + ajax.responseText);
-			document.getElementById('reload').href = 'javascript:reload()';
-			document.getElementById('reload').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=reload');
+	ajax.open('GET', '/reload', true);
+	ajax.send();
+}
+
+function restart() {
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status != 200 || ajax.responseText != 'success')
+				alert('Error restarting server: ' + ajax.responseText);
+		}
+	}
+	ajax.open('GET', '/restart', true);
+	ajax.send();
 }
 
 function sendCommand(command) {
-	document.getElementById('command_box').disabled = true;
-	document.getElementById('command_submit').href = null;
-	document.getElementById('command_submit').className = 'button disabled';
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText == 'success')
 				document.getElementById('command_box').value = '';
 			else
 				alert('Error sending command "' + command + '": ' + ajax.responseText);
-			document.getElementById('command_box').disabled = false;
-			document.getElementById('command_submit').href = 'javascript:sendCommand(document.getElementById(\'command_box\').value)';
-			document.getElementById('command_submit').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
+	ajax.open('POST', '/sendcommand', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=command&command=' + command);
+	ajax.send('command=' + encodeURIComponent(command));
+}
+
+function getStatus() {
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status == 200 && ajax.responseText != '') {
+				if(ajax.responseText == 'stopped') {
+					document.getElementById('started').style.display = 'none';
+					document.getElementById('stopped').style.display = 'inline';
+					document.getElementById('command_box').disabled = true;
+					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('status').innerHTML = 'Stopped';
+				}
+				else if(ajax.responseText == 'starting') {
+					document.getElementById('started').style.display = 'none';
+					document.getElementById('stopped').style.display = 'inline';
+					document.getElementById('command_box').disabled = true;
+					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('status').innerHTML = 'Starting...';
+				}
+				else if(ajax.responseText == 'started') {
+					document.getElementById('stopped').style.display = 'none';
+					document.getElementById('started').style.display = 'inline';
+					document.getElementById('command_box').disabled = false;
+					document.getElementById('command_submit').className = 'button';
+					document.getElementById('status').innerHTML = 'Running';
+				}
+				else if(ajax.responseText == 'stopping') {
+					document.getElementById('stopped').style.display = 'none';
+					document.getElementById('started').style.display = 'inline';
+					document.getElementById('command_box').disabled = true;
+					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('status').innerHTML = 'Stopping...';
+				}
+				else if(ajax.responseText == 'nonexistent') {
+					document.getElementById('stopped').style.display = 'none';
+					document.getElementById('started').style.display = 'none';
+					document.getElementById('command_box').disabled = true;
+					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
+				}
+			}
+		}
+	}
+	ajax.open('GET', '/status', true);
+	ajax.send();
 }
 
 function getLog() {
@@ -124,56 +131,78 @@ function getLog() {
 		return;
 
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
 				document.getElementById('log').innerHTML = ajax.responseText;
 		}
 	}
-	ajax.open('POST', 'action.php', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=log');
+	ajax.open('GET', '/get/log', true);
+	ajax.send();
 }
 
 function getScriptLog() {
-	if(document.getElementById('script_console').style.display == 'none')
+	if(document.getElementById('scripting').style.display == 'none' || document.getElementById('script_console').style.display == 'none')
 		return;
 
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
 				document.getElementById('script_log').innerHTML = ajax.responseText;
 		}
 	}
-	ajax.open('POST', 'action.php', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=script_log');
+	ajax.open('GET', '/get/scriptlog', true);
+	ajax.send();
+}
+
+function getSettings() {
+	if(document.getElementById('settings').style.display == 'none')
+		return;
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status == 200 && ajax.responseText != '')
+				document.getElementById('settings_text').innerHTML = ajax.responseText;
+		}
+	}
+	ajax.open('GET', '/get/settings', true);
+	ajax.send();
+}
+
+function getScript() {
+	if(document.getElementById('scripting').style.display == 'none' || document.getElementById('script_editor').style.display == 'none')
+		return;
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status == 200 && ajax.responseText != '')
+				document.getElementById('script_text').innerHTML = ajax.responseText;
+		}
+	}
+	ajax.open('GET', '/get/script', true);
+	ajax.send();
 }
 
 function updateSettings() {
-	document.getElementById('settings_submit').href = null;
-	document.getElementById('settings_submit').className = 'button disabled';
 	settings.save();
 	var ajax = new XMLHttpRequest();
-	ajax.onload =	function() {
+	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText == 'success')
 				alert('Settings successfully updated!');
 			else
 				alert('Error updating settings: ' + ajax.responseText);
-			document.getElementById('settings_submit').href = 'javascript:updateSettings()';
-			document.getElementById('settings_submit').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
+	ajax.open('POST', '/update/settings', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=settings&settings=' + encodeURIComponent(document.getElementById('settings_text').value));
+	ajax.send('settings=' + encodeURIComponent(document.getElementById('settings_text').value));
 }
 
 function updateScript() {
-	document.getElementById('script_submit').href = null;
-	document.getElementById('script_submit').className = 'button disabled';
 	script.save();
 	var ajax = new XMLHttpRequest();
 	ajax.onload =	function() {
@@ -182,13 +211,11 @@ function updateScript() {
 				alert('Script successfully updated!');
 			else
 				alert('Error updating script: ' + ajax.responseText);
-			document.getElementById('script_submit').href = 'javascript:updateScript()';
-			document.getElementById('script_submit').className = 'button';
 		}
 	}
-	ajax.open('POST', 'action.php', true);
+	ajax.open('POST', '/update/script', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('action=script&script=' + encodeURIComponent(document.getElementById('script_text').value));
+	ajax.send('script=' + encodeURIComponent(document.getElementById('script_text').value));
 }
 
 function load() {
@@ -213,11 +240,11 @@ function load() {
 		theme: 'arma',
 	});
 
-	document.getElementById('settings').style.display = 'none'
-	document.getElementById('scripting').style.display = 'none'
-	document.getElementById('script_console').style.display = 'none'
+	setInterval(getStatus, 50);
 	setInterval(getLog, 500);
 	setInterval(getScriptLog, 500);
+	setInterval(getSettings, 500);
+	setInterval(getScript, 500);
 }
 
 window.addEventListener('load', load, false);

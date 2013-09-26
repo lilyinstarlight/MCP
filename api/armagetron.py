@@ -19,7 +19,7 @@ def removeChatHandler(command):
 		del chatcommands[command]
 
 def sendCommand(command):
-	armagetron.write(command + '\n')
+	sys.stdout.write(command + '\n')
 
 def say(message):
 	sendCommand('SAY ' + message)
@@ -76,7 +76,7 @@ def init(command):
 
 def run():
 	while True:
-		line = ladderlog.readline()
+		line = sys.stdin.readline()
 		if not line:
 			time.sleep(0.1)
 			continue
@@ -388,9 +388,6 @@ class Grid:
 		self.num_players = 0
 		self.players = {}
 		self.zones = {}
-
-ladderlog = open(sys.argv[1], 'r', 1, 'latin-1')
-armagetron = open(sys.argv[2], 'a', 1, 'latin-1')
 
 grid = Grid()
 

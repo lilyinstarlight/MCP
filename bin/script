@@ -1,6 +1,0 @@
-#!/bin/sh
-echo "$$" > "$2"
-echo > "$1/script-error.log"
-export PYTHONPATH="$PYTHONPATH:$3"
-python "$1/scripts/script.py" "$1/var/ladderlog.txt" "$1/var/input.txt"
-rm "$2"
