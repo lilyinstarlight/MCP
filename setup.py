@@ -44,7 +44,7 @@ print('Making directories...')
 os.makedirs(config.prefix, exist_ok=True)
 
 if config.sources:
-	os.makedirs(config.sources, exist_ok=True)
+	shutil.copytree('sources', config.sources, copy_function=shutil.copy)
 
 if config.api:
 	print('Installing API...')
