@@ -57,7 +57,7 @@ After the configuration is complete, run the setup script:
 ```
 The setup script will ask a few questions about your system then automatically install the files.  It additionally creates the folders specified in `config.py` if they don't exist.  The administrator user has access to all of the servers and to the administration interface.
 
-Start the daemon using the init system specified in the setup script.  If no init system was specified, start the daemon by running `armaadmin` as root.  Theoretically, the daemon could run as a non-root user, but running the servers as a different user would most likely not work, the HTTP port would need to be greater than 1024, and server creation may not work.
+Start the daemon using the init system specified in the setup script.  If no init system was specified, start the daemon by running `armaadmin` as root.
 
 ###Creating a server###
 Open a web browser to `http://localhost/` or the address specified in `config.py`.  Login as the administrator user then click `Administration`. ***How to make a server***
@@ -79,6 +79,20 @@ To compile servers, you must be on a unix-like system with a modern compiler.
 
 ####Gentoo####
 - dev-libs/zthread (optional, 0.2.8 only)
+
+Questions
+---------
+###Can I run the daemon as a user other than root?###
+Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation may not work.
+
+###Is there a demo?###
+There is a live demo at (http://arma.fkmclane.tk/).  It shows off the web interface and the simplicity of the scripting API by its script to reset the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
+
+###What if I want to use my own scripting API?###
+Well, you simply need to place it in the `api` folder of the project and reinstall.  You can also (optionally) create your own `api.html`.
+
+###I found a bug! I found a bug!###
+Well that isn't a question, but could you please report it on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues)?
 
 Troubleshooting
 ---------------

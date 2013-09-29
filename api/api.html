@@ -541,6 +541,8 @@ config = [ None, "ctfbrawl30.cfg(http://ix.ihptru.net/ctfbrawl30.cfg)", "fman23/
 index = 0
 
 def changeMap(command):
+  global index
+
   armagetron.pauseBeforeRound()
   armagetron.reload()
   index++

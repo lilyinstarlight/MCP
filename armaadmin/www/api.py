@@ -8,6 +8,5 @@ def handle(request):
 		except IOError:
 			pass
 
-	request.set_status(404)
 	request.set_header('Content-Type', 'text/plain; charset=utf-8')
-	return '404 - Not Found'
+	return 'Sorry, there is no (documented) scripting API.'
