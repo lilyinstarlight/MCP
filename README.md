@@ -86,7 +86,7 @@ Questions
 Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation may not work.
 
 ###Is there a demo?###
-There is a live demo at [http://arma.fkmclane.tk/].  It shows off the web interface and the simplicity of the scripting API by its script to reset the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
+There is a live demo at http://arma.fkmclane.tk/.  It shows off the web interface and the simplicity of the scripting API by its script to reset the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
 
 ###What if I want to use my own scripting API?###
 Well, you simply need to place it in the `api` folder of the project and reinstall.  You can also (optionally) create your own `api.html`.
