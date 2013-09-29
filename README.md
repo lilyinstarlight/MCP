@@ -42,13 +42,20 @@ Features
 Installing
 ----------
 ###Setup###
-Edit `config.py` to match your directory structure and preferences.  The `prefix` folder is mandatory and should be the folder set aside for Armagetron servers.  The `sources` folder is optional and contains the source code to the server software to allow server creation.  The `api` folder is also optional and contains the scripting api (in the `api` folder of the project).  The `user` is the user under which the servers (and scripts) will run.  If the `address` is filled in, the server will only accept requests from `address` but generally, you do not need to set this.  The `port` is the port on which the HTTP server will listen.  If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.  The `log` is the path of the HTTP access log.
+Edit `config.py` to match your directory structure and preferences.
+- `prefix` folder is mandatory and should be the folder set aside for Armagetron servers.
+- `sources` folder is optional and contains the source code to the server software to allow server creation.
+- `api` folder is also optional and contains the scripting api (in the `api` folder of the project).
+- `user` is the user under which the servers (and scripts) will run.
+- `address` is the address for which the server will accept requests but generally, you do not need to set this.
+- `port` is the port on which the HTTP server will listen.  If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
+- `log` is the path of the HTTP access log.
 
 After the configuration is complete, run the setup script:
 ```
 ./setup.py
 ```
-The setup script will ask a few questions about your system then automatically install the files.  It additionally creates the folders specified in the configuration if they don't exist.  The administrator user has access to all of the servers and to the administration interface.
+The setup script will ask a few questions about your system then automatically install the files.  It additionally creates the folders specified in `config.py` if they don't exist.  The administrator user has access to all of the servers and to the administration interface.
 
 Start the daemon using the init system specified in the setup script.  If no init system was specified, start the daemon by running `armaadmin` as root.  Theoretically, the daemon could run as a non-root user, but running the servers as a different user would most likely not work, the HTTP port would need to be greater than 1024, and server creation may not work.
 
