@@ -55,7 +55,7 @@ def create(name, source):
 	except:
 		return 'Failed to remove "share" directory'
 
-	if not os.path.exists(config.prefix + '/' + name + '/var')
+	if not os.path.exists(config.prefix + '/' + name + '/var'):
 		try:
 			os.makedirs(config.prefix + '/' + name + '/var')
 		except:
@@ -67,13 +67,13 @@ def create(name, source):
 	except:
 		return 'Could not ensure the existence of ladderlog.txt and input.txt'
 
-	if not os.path.exists(config.prefix + '/' + name + '/scripts')
+	if not os.path.exists(config.prefix + '/' + name + '/scripts'):
 		try:
 			os.makedirs(config.prefix + '/' + name + '/scripts')
 		except:
 			return 'Could not make "scripts" directory'
 
-	if not os.path.exists(config.prefix + '/' + name + '/user')
+	if not os.path.exists(config.prefix + '/' + name + '/user'):
 		try:
 			os.makedirs(config.prefix + '/' + name + '/user')
 		except:

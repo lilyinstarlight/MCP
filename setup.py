@@ -33,6 +33,7 @@ distutils.core.setup(
 	packages=[ 'armaadmin', 'armaadmin.www' ],
 	package_data={ 'armaadmin': [ 'users.db', 'data/www' ], 'armaadmin.www': [ 'data/html' ] },
 	scripts=[ 'dist/bin/armaadmin' ],
+	script_args=[ 'install' ]
 )
 
 os.remove('armaadmin/config.py')
@@ -51,13 +52,14 @@ if config.api:
 
 response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
 
-print('Installing init script...')
-
 if response == "1":
+	print('Installing SysV init script...')
 	shutil.copy('dist/init/sysv/armaadmin', '/etc/init.d/')
 elif response == "2":
+	print('Installing OpenRC init script...')
 	shutil.copy('dist/init/openrc/armaadmin', '/etc/init.d/')
 elif response == "3":
+	print('Installing Systemd init script...')
 	shutil.copy('dist/init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 	subprocess.call(['systemctl', 'daemon-reload'])
 

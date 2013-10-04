@@ -53,7 +53,7 @@ Edit `config.py` to match your directory structure and preferences.
 
 After the configuration is complete, run the setup script:
 ```
-./setup.py
+# ./setup.py
 ```
 The setup script will ask a few questions about your system then automatically install the files.  It additionally creates the folders specified in `config.py` if they don't exist.  The administrator user has access to all of the servers and to the administration interface.
 
