@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 
-import config
+import armaadmin.config
 
 def create(name, source):
 	if not config.sources:

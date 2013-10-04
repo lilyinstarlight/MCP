@@ -1,7 +1,7 @@
 import http.server
 import threading
 
-import config
+import armaadmin.config
 
 server = None
 

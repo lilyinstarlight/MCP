@@ -19,7 +19,6 @@ password = getpass.getpass('Password: ')
 print('Setting configuration...')
 
 armaadmin.users.add(username, password, [], True)
-
 shutil.copy('config.py', 'armaadmin')
 
 print('Installing...')

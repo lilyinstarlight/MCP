@@ -1,10 +1,10 @@
-import manager
-import sessions
-import users
+import armaadmin.manager
+import armaadmin.sessions
+import armaadmin.users
 
-import www.root
-import www.admin
-import www.api
+import armaadmin.www.root
+import armaadmin.www.admin
+import armaadmin.www.api
 
 def action(reqeust):
 	request.set_header('Content-Type', 'text/plain; charset=utf8')

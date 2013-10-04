@@ -3,8 +3,8 @@ import pwd
 import subprocess
 import sys
 
-import config
-import server
+import armaadmin.config
+import armaadmin.server
 
 servers = {}
 
