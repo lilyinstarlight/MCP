@@ -3,7 +3,7 @@ import hashlib
 users = {}
 
 def parse():
-	del users[:]
+	users.clear()
 
 	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'r') as file:
 		for line in file:
