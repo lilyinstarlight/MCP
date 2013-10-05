@@ -65,10 +65,10 @@ def remove(user):
 	if user in users:
 		return
 
-	with open(os.path.dirname(__file__) + '/users.db'), 'r' as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		lines = file.readlines()
 
-	with open(os.path.dirname(__file__) + '/users.db'), 'w') as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'w') as file:
 		for line in lines:
 			if not line.startswith(user + '|'):
 				file.write(line)

@@ -6,8 +6,6 @@ import os
 import shutil
 import subprocess
 
-import config
-
 class post_install(install):
 	def run(self):
 		open('users.db', 'w').close()
@@ -26,6 +24,8 @@ class post_install(install):
 		armaadmin.users.add(username, password, [], True)
 
 		print('Making directories...')
+
+		import armaadmin.config
 
 		os.makedirs(config.prefix, exist_ok=True)
 
