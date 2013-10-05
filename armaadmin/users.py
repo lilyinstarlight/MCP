@@ -6,7 +6,7 @@ users = {}
 def parse():
 	users.clear()
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'r') as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		for line in file:
 			data = line.rstrip().split('|')
 			if len(data) > 3:
@@ -24,7 +24,7 @@ def add(user, password, servers, admin=False):
 	if user in users:
 		return
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'a') as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'a') as file:
 		if admin:
 			file.write(user + '|' + hashlib.sha256(password.encode()).hexdigest() + '|' + ','.join(servers) + '|admin\n')
 		else:
@@ -36,10 +36,10 @@ def change(user, password=None, servers=None, admin=None):
 	if not user in users:
 		return
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'r') as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		lines = file.readlines()
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'w') as file:
+	with open(os.path.dirname(__file__) + '/users.db', 'w') as file:
 		for line in lines:
 			if line.startswith(user + '|'):
 				if password:
@@ -65,10 +65,10 @@ def remove(user):
 	if user in users:
 		return
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'r') as file:
+	with open(os.path.dirname(__file__) + '/users.db'), 'r' as file:
 		lines = file.readlines()
 
-	with open(os.path.join(os.path.dirname(__file__), 'users.db'), 'w') as file:
+	with open(os.path.dirname(__file__) + '/users.db'), 'w') as file:
 		for line in lines:
 			if not line.startswith(user + '|'):
 				file.write(line)

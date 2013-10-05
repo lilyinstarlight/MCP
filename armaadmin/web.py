@@ -1,7 +1,8 @@
 import http.server
+import os
 import threading
 
-import armaadmin.config
+from armaadmin import config
 
 server = None
 
@@ -23,6 +24,7 @@ class HTTPServer(http.server.HTTPServer):
 		self.routes = routes
 
 		if log:
+			os.makedirs(os.path.dirname(log), exist_ok=True)
 			self.log = open(log, 'a', 1)
 		else:
 			self.log = None
@@ -53,9 +55,9 @@ class HTTPServer(http.server.HTTPServer):
 					parse_url_params(self.get_args, request[1])
 
 				self.args = self.get_args.copy()
-				try:
+				if hasattr(self, 'post_args'):
 					self.args.update(self.post_args)
-				except NameError:
+				else:
 					self.post_args = {}
 
 				self.cookies = {}

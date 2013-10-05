@@ -1,10 +1,6 @@
-import armaadmin.manager
-import armaadmin.sessions
-import armaadmin.users
+from armaadmin import manager, sessions, users
 
-import armaadmin.www.root
-import armaadmin.www.admin
-import armaadmin.www.api
+from armaadmin.www import root, admin, api
 
 def action(reqeust):
 	request.set_header('Content-Type', 'text/plain; charset=utf8')
@@ -51,4 +47,4 @@ def file(request):
 		request.set_header('Content-Type', 'text/plain; charset=utf-8')
 		return '404 - Not Found'
 
-routes = { '/': www.root.handle, '/admin': www.admin.handle, '/api': www.api.handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action, '404': file }
+routes = { '/': root.handle, '/admin': admin.handle, '/api': api.handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action, '404': file }

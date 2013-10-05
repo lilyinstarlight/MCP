@@ -1,3 +1,5 @@
+from armaadmin import sessions
+
 def handle(request):
 	session = sessions.get(request.cookies.get('session'))
 	if not session or not session.user.admin:
