@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from distutils.core import setup
 from distutils.command.install import install
+from distutils import dir_util
+from distutils import file_util
 import getpass
 import os
-import shutil
 import subprocess
 
 class post_install(install):
@@ -13,6 +14,8 @@ class post_install(install):
 		install.run(self)
 
 		os.remove('users.db')
+
+		print()
 
 		import armaadmin.users
 
@@ -27,26 +30,26 @@ class post_install(install):
 
 		import armaadmin.config
 
-		os.makedirs(config.prefix, exist_ok=True)
+		dir_util.mkpath(armaadmin.config.prefix)
 
-		if config.sources:
-			shutil.copytree('sources', config.sources, copy_function=shutil.copy)
+		if armaadmin.config.sources:
+			dir_util.copy_tree('data/sources', armaadmin.config.sources)
 
-		if config.api:
+		if armaadmin.config.api:
 			print('Installing API...')
-			shutil.copytree('api', config.api, copy_function=shutil.copy)
+			dir_util.copy_tree('api', armaadmin.config.api)
 
 		response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
 
 		if response == "1":
 			print('Installing SysV init script...')
-			shutil.copy('dist/init/sysv/armaadmin', '/etc/init.d/')
+			file_util.copy_file('dist/init/sysv/armaadmin', '/etc/init.d/')
 		elif response == "2":
 			print('Installing OpenRC init script...')
-			shutil.copy('dist/init/openrc/armaadmin', '/etc/init.d/')
+			file_util.copy_file('dist/init/openrc/armaadmin', '/etc/init.d/')
 		elif response == "3":
 			print('Installing Systemd init script...')
-			shutil.copy('dist/init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
+			file_util.copy_file('dist/init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 			subprocess.call(['systemctl', 'daemon-reload'])
 
 setup(
@@ -57,7 +60,7 @@ setup(
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/ArmaAdmin',
 	packages=[ 'armaadmin', 'armaadmin.www' ],
-	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'data/www' ], 'armaadmin.www': [ 'data/html' ] },
+	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'data/www/*', 'data/www/codemirror/*' ], 'armaadmin.www': [ 'data/html/*' ] },
 	scripts=[ 'dist/bin/armaadmin' ],
 	cmdclass={ 'install': post_install }
 )

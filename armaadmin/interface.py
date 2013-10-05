@@ -1,5 +1,6 @@
-from armaadmin import manager, sessions, users
+import os
 
+from armaadmin import manager, sessions, users
 from armaadmin.www import root, admin, api
 
 def action(reqeust):
@@ -40,7 +41,7 @@ def action(reqeust):
 
 def file(request):
 	try:
-		with open(os.path.join(os.path.dirname(__file__), 'www' + request.request), 'r') as file:
+		with open(os.path.dirname(__file__) + '/data/www' + request.request, 'r') as file:
 			request.set_status(200)
 			return file.read()
 	except IOError:

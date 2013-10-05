@@ -1,6 +1,7 @@
 import http.server
 import os
 import threading
+import urllib
 
 from armaadmin import config
 
@@ -52,7 +53,7 @@ class HTTPServer(http.server.HTTPServer):
 				self.request = request[0]
 				self.get_args = {}
 				if len(request) > 1:
-					parse_url_params(self.get_args, request[1])
+					HTTPHandler.parse_url_params(self.get_args, request[1])
 
 				self.args = self.get_args.copy()
 				if hasattr(self, 'post_args'):
@@ -95,7 +96,7 @@ class HTTPServer(http.server.HTTPServer):
 				if self.headers.get('content-type') == 'application/x-www-form-urlencoded':
 					post = self.rfile.readline(self.headers.get('content-length', -1))
 					self.post_args = {}
-					parse_url_params(self.post_args, post)
+					HTTPHandler.parse_url_params(self.post_args, post)
 
 				self.do_GET()
 

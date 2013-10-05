@@ -164,5 +164,5 @@ if config.api:
 		env['PYTHONPATH'] = config.api
 
 for dir in os.listdir(config.prefix):
-	if os.path.isdir(os.path.join(config.prefix, dir)):
+	if os.path.isdir(config.prefix + '/' + dir):
 		servers[dir] = Server(dir)

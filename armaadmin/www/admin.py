@@ -7,5 +7,5 @@ def handle(request):
 		request.set_header('Location', '/')
 		return ''
 
-	with open(os.path.join(os.path.dirname(__file__), 'html/admin.html'), 'r') as file:
+	with open(os.path.dirname(__file__) + '/data/html/admin.html', 'r') as file:
 		return file.read()
