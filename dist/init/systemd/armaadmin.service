@@ -3,7 +3,7 @@ Description=A complete Armagetron Advanced multi-server management framework and
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/armaadmin
+ExecStart=armaadmin
 Restart=on-abort
 
 [Install]

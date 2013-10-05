@@ -2,6 +2,12 @@
 
 start() {
 	ebegin "Starting ArmaAdmin"
-	start-stop-daemon --start --exec /usr/bin/armaadmin --pidfile /var/run/armaadmin.pid --make-pidfile
+	start-stop-daemon --start --exec `which armaadmin` --pidfile /var/run/armaadmin.pid --make-pidfile
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping ArmaAdmin"
+	start-stop-daemon --stop --pidfile /var/run/armaadmin.pid
 	eend $?
 }
