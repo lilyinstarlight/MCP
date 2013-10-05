@@ -31,7 +31,7 @@ class HTTPServer(http.server.HTTPServer):
 			self.log = None
 
 		super(HTTPServer, self).__init__((address, port), self.makeHandler())
-		self.log.write('Serving HTTP on ' + self.server_name + ' port ' + str(self.server_port) + '...')
+		self.log.write('Serving HTTP on ' + self.server_name + ' port ' + str(self.server_port) + '...\n')
 
 	def server_close(self):
 		if self.log:
