@@ -73,14 +73,18 @@ class HTTPServer(http.server.HTTPServer):
 				self.set_header('Content-Type', 'text/html; charset=utf-8')
 				if self.request in self.routes:
 					self.set_status(200)
-					self.response = self.routes[self.request](self).encode('utf-8')
+					self.response = self.routes[self.request](self)
 				elif '404' in self.routes:
 					self.set_status(404)
-					self.response = self.routes['404'](self).encode('utf-8')
+					self.response = self.routes['404'](self)
 				else:
 					self.set_status(404)
 					self.set_header('Content-Type', 'text/plain; charset=utf-8')
-					self.response = '404 - Not Found'.encode('utf-8')
+					self.response = '404 - Not Found'
+
+				if not isinstance(self.response, bytes):
+					self.response = self.response.encode('utf-8')
+
 				self.set_header('Content-Length', len(self.response))
 
 				self.send_response(self.status)

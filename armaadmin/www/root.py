@@ -40,4 +40,4 @@ def handle(request):
 			return file.read() % { 'server': session.server, 'servers': servers }
 	else:
 		with open(os.path.dirname(__file__) + '/data/html/login.html', 'r') as file:
-			return file.read() % { 'error': error }
+			return file.read() % { 'error': error, 'user': request.args.get('user', '') }
