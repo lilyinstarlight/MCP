@@ -3,7 +3,7 @@ import os
 from armaadmin import manager, sessions, users
 from armaadmin.www import root, admin, api
 
-def action(reqeust):
+def action(request):
 	request.set_header('Content-Type', 'text/plain; charset=utf8')
 
 	session = sessions.get(request.cookies.get('session'))
@@ -20,7 +20,7 @@ def action(reqeust):
 		manager.get(session.server).reload()
 	elif request.request == '/restart':
 		manager.get(session.server).restart()
-	elif request.reqeust == '/status':
+	elif request.request == '/status':
 		return manager.get(session.server).status()
 	elif request.request == '/sendcommand':
 		manager.get(session.server).sendCommand(request.args.get('command'))
