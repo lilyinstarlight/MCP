@@ -1,7 +1,7 @@
 import os
 
 from armaadmin import manager, sessions, users
-from armaadmin.www import root, admin, api
+from armaadmin.routes import root, admin, api
 
 def action(request):
 	request.set_header('Content-Type', 'text/plain; charset=utf8')
@@ -46,7 +46,7 @@ def action(request):
 
 def file(request):
 	try:
-		with open(os.path.dirname(__file__) + '/data/www' + request.request, 'rb') as file:
+		with open(os.path.dirname(__file__) + '/www' + request.request, 'rb') as file:
 			request.set_status(200)
 
 			if request.request.endswith('.html'):

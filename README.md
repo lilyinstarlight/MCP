@@ -42,7 +42,7 @@ Features
 Installing
 ----------
 ###Setup###
-Edit `config.py` to match your directory structure and preferences.
+Edit `config.py` to match your directory structure and preferences.  Below is a list of the preferences and what they mean.
 - `prefix` folder is mandatory and should be the folder set aside for Armagetron servers.
 - `sources` folder is optional and contains the source code to the server software to allow server creation.
 - `api` folder is also optional and contains the scripting api (in the `api` folder of the project).
@@ -53,7 +53,7 @@ Edit `config.py` to match your directory structure and preferences.
 
 After the configuration is complete, run the setup script:
 ```
-# ./setup.py
+# ./setup.py install
 ```
 The setup script will ask a few questions about your system then automatically install the files.  It additionally creates the folders specified in `config.py` if they don't exist.  The administrator user has access to all of the servers and to the administration interface.
 
@@ -82,14 +82,14 @@ To compile servers, you must be on a unix-like system with a modern compiler.
 
 Questions
 ---------
-###Can I run the daemon as a user other than root?###
-Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation may not work.
-
 ###Is there a demo?###
 There is a live demo at http://arma.fkmclane.tk/.  It shows off the web interface and the simplicity of the scripting API by its script to reset the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
 
 ###What if I want to use my own scripting API?###
 Well, you simply need to place it in the `api` folder of the project and reinstall.  You can also (optionally) create your own `api.html`.
+
+###Can I run the daemon as a user other than root?###
+Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation and user management may not work.
 
 ###I want to use this on Windows but is isn't working!###
 Well that isn't a question and I'm afraid I can't help you there.  I don't mess with Windows and don't have time to fiddle with an unsupported operating system for a single person.  This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install Ubuntu then install this software.
@@ -106,7 +106,7 @@ Make sure you have the dependencies and try again.  Maybe your distribution does
 Quit using Internet Explorer.
 
 ###The scripting API crashes!###
-Make sure you are using Python 3.
+Make sure it is running with Python 3.
 
 ###None of it works!###
-Make sure you installed the package with Python 3 and started the daemon.
+Make sure you installed the package with Python 3 and started the daemon properly.

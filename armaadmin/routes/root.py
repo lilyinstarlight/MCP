@@ -38,8 +38,8 @@ def handle(request):
 			else:
 				servers += '\n\t\t\t\t\t\t<option value="' + server + '">' + server + '</option>'
 
-		with open(os.path.dirname(__file__) + '/data/html/index.html', 'r') as file:
+		with open(os.path.dirname(__file__) + '/html/index.html', 'r') as file:
 			return file.read() % { 'server': session.server, 'servers': servers }
 	else:
-		with open(os.path.dirname(__file__) + '/data/html/login.html', 'r') as file:
+		with open(os.path.dirname(__file__) + '/html/login.html', 'r') as file:
 			return file.read() % { 'error': error, 'user': request.args.get('user', '') }

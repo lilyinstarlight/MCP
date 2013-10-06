@@ -5,20 +5,18 @@ from distutils import dir_util
 from distutils import file_util
 import getpass
 import os
+import shutil
 import subprocess
+import sys
 
 class post_install(install):
 	def run(self):
-		open('users.db', 'w').close()
-
-		install.run(self)
-
-		os.remove('users.db')
-
-		print()
+		open('armaadmin/users.db', 'w').close()
+		shutil.copy('config.py', 'armaadmin/')
 
 		import armaadmin.users
 
+		print()
 		print('Please set up the administrator account.')
 
 		username = input('Username: ')
@@ -26,30 +24,40 @@ class post_install(install):
 
 		armaadmin.users.add(username, password, [], True)
 
+		install.run(self)
+
+		os.remove('armaadmin/users.db')
+		os.remove('armaadmin/config.py')
+
+		print()
 		print('Making directories...')
 
-		import armaadmin.config
+		import config
 
-		dir_util.mkpath(armaadmin.config.prefix)
+		dir_util.mkpath(config.prefix)
 
-		if armaadmin.config.sources:
-			dir_util.copy_tree('data/sources', armaadmin.config.sources)
+		if config.sources:
+			dir_util.copy_tree('sources', config.sources)
 
-		if armaadmin.config.api:
+		if config.api:
+			print()
 			print('Installing API...')
-			dir_util.copy_tree('api', armaadmin.config.api)
+			dir_util.copy_tree('api', config.api)
 
 		response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
 
 		if response == "1":
+			print()
 			print('Installing SysV init script...')
-			file_util.copy_file('dist/init/sysv/armaadmin', '/etc/init.d/')
+			file_util.copy_file('init/sysv/armaadmin', '/etc/init.d/')
 		elif response == "2":
+			print()
 			print('Installing OpenRC init script...')
-			file_util.copy_file('dist/init/openrc/armaadmin', '/etc/init.d/')
+			file_util.copy_file('init/openrc/armaadmin', '/etc/init.d/')
 		elif response == "3":
+			print()
 			print('Installing Systemd init script...')
-			file_util.copy_file('dist/init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
+			file_util.copy_file('init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 			subprocess.call(['systemctl', 'daemon-reload'])
 
 setup(
@@ -59,8 +67,8 @@ setup(
 	author='Foster McLane',
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/ArmaAdmin',
-	packages=[ 'armaadmin', 'armaadmin.www' ],
-	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'data/www/*', 'data/www/codemirror/*' ], 'armaadmin.www': [ 'data/html/*' ] },
-	scripts=[ 'dist/bin/armaadmin' ],
+	packages=[ 'armaadmin', 'armaadmin.routes' ],
+	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/codemirror/*' ], 'armaadmin.routes': [ 'html/*' ] },
+	scripts=[ 'bin/armaadmin' ],
 	cmdclass={ 'install': post_install }
 )
