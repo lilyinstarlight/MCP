@@ -1,4 +1,6 @@
-import armaadmin.config
+import os
+
+from armaadmin import config
 
 def handle(request):
 	if config.api:
