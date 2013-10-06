@@ -67,6 +67,7 @@ setup(
 	author='Foster McLane',
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/ArmaAdmin',
+	license='MIT',
 	packages=[ 'armaadmin', 'armaadmin.routes' ],
 	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/codemirror/*' ], 'armaadmin.routes': [ 'html/*' ] },
 	scripts=[ 'bin/armaadmin' ],
