@@ -1,9 +1,11 @@
 import os
 
-from armaadmin import sessions
+from armaadmin import sessions, users
 
 def handle(request):
 	error = ''
+
+	session = sessions.get(request.cookies.get('session'))
 
 	if request.args.get('user') and request.args.get('pass'):
 		if users.check(request.args.get('user'), request.args.get('pass')):
@@ -20,17 +22,17 @@ def handle(request):
 	if 'logout' in request.args:
 		sessions.destroy(request.cookies.get('session'))
 		request.set_cookie({'session': '0'}, -1)
+		session = None
 
-	session = sessions.get(request.cookies.get('session'))
 	if session:
 		request.set_cookie({'session': session.id})
 
 		server = request.args.get('server')
-		if server and server in session.servers:
+		if server and server in session.user.servers:
 			session.server = server
 
 		servers = ''
-		for server in session.servers:
+		for server in session.user.servers:
 			if server == session.server:
 				servers += '\n\t\t\t\t\t\t<option value="' + server + '" selected="selected">' + server + '</option>'
 			else:

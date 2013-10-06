@@ -3,7 +3,7 @@ import armaadmin.config
 def handle(request):
 	if config.api:
 		try:
-			with open(config.api + '/api.html', 'r') as file:
+			with open(config.api + '/api.html', 'rb') as file:
 				return file.read()
 		except IOError:
 			pass
