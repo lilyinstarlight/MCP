@@ -98,7 +98,7 @@ class HTTPServer(http.server.HTTPServer):
 
 			def do_POST(self):
 				if self.headers.get('content-type') == 'application/x-www-form-urlencoded':
-					post = self.rfile.readline(self.headers.get('content-length', -1))
+					post = self.rfile.readline(int(self.headers.get('content-length', '-1'))).decode('utf-8')
 					self.post_args = {}
 					HTTPHandler.parse_url_params(self.post_args, post)
 

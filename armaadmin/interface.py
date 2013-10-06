@@ -12,30 +12,35 @@ def action(request):
 	if not session.server:
 		return 'No server selected'
 
+	server = manager.get(session.server)
+
+	if not server:
+		return 'Server does not exist'
+
 	if request.request == '/start':
-		manager.get(session.server).start()
+		server.start()
 	elif request.request == '/stop':
-		manager.get(session.server).stop()
+		server.stop()
 	elif request.request == '/reload':
-		manager.get(session.server).reload()
+		server.reload()
 	elif request.request == '/restart':
-		manager.get(session.server).restart()
+		server.restart()
 	elif request.request == '/status':
-		return manager.get(session.server).status()
+		return server.status()
 	elif request.request == '/sendcommand':
-		manager.get(session.server).sendCommand(request.args.get('command'))
+		server.sendCommand(request.args.get('command'))
 	elif request.request == '/get/log':
-		return manager.get(session.server).getLog()
+		return server.getLog()
 	elif request.request == '/get/scriptlog':
-		return manager.get(session.server).getScriptLog()
+		return server.getScriptLog()
 	elif request.request == '/get/settings':
-		return manager.get(session.server).getSettings()
+		return server.getSettings()
 	elif request.request == '/get/script':
-		return manager.get(session.server).getScript()
+		return server.getScript()
 	elif request.request == '/update/settings':
-		manager.get(session.server).updateSettings(request.args.get('settings'))
+		server.updateSettings(request.args.get('settings'))
 	elif request.request == '/update/script':
-		manager.get(session.server).udpateScript(request.args.get('script'))
+		server.udpateScript(request.args.get('script'))
 
 	return 'success'
 

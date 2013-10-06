@@ -7,8 +7,8 @@ def handle(request):
 
 	session = sessions.get(request.cookies.get('session'))
 
-	if request.args.get('user') and request.args.get('pass'):
-		if users.check(request.args.get('user'), request.args.get('pass')):
+	if request.args.get('user') and request.args.get('password'):
+		if users.check(request.args.get('user'), request.args.get('password')):
 			session = sessions.create()
 			request.set_cookie({'session': session.id})
 			session.user = users.get(request.args.get('user'))

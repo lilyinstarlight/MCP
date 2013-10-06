@@ -31,7 +31,7 @@
 				<a href="javascript:change('console')" class="button">Console</a><a href="javascript:change('settings')" class="button">Settings</a><a href="javascript:change('scripting')" class="button">Scripting</a>
 			</span>
 			<span class="right">
-				<form id="change_server" action="/" method="post" enctype="multipart/form-data">
+				<form id="change_server" action="/" method="post" enctype="application/x-www-form-urlencoded">
 					<select name="server" onchange="document.change_server.submit()">%(servers)s
 					</select>
 				</form>
@@ -42,7 +42,7 @@
 			<div id="console">
 				<div class="controller">
 					<span class="left">
-						<span id="stopped">
+						<span id="stopped" style="display: none">
 							<a id="start" href="javascript:start()" class="button">Start</a>
 						</span>
 						<span id="started" style="display: none">
