@@ -38,8 +38,13 @@ def handle(request):
 			else:
 				servers += '\n\t\t\t\t\t\t<option value="' + server + '">' + server + '</option>'
 
+		if session.user.admin:
+			menu = '\n<a href="/admin" class="button">Admin</a>'
+		else:
+			menu = ''
+
 		with open(os.path.dirname(__file__) + '/html/index.html', 'r') as file:
-			return file.read() % { 'server': session.server, 'servers': servers }
+			return file.read() % { 'server': session.server, 'servers': servers, 'menu': menu }
 	else:
 		with open(os.path.dirname(__file__) + '/html/login.html', 'r') as file:
 			return file.read() % { 'error': error, 'user': request.args.get('user', '') }

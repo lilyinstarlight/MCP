@@ -35,7 +35,7 @@
 					<select name="server" onchange="document.change_server.submit()">%(servers)s
 					</select>
 				</form>
-				<a href="/?logout" class="button">Logout</a>
+				%(menu)s<a href="/?logout" class="button">Logout</a>
 			</span>
 		</div>
 		<div class="content">
@@ -47,7 +47,7 @@
 						</span>
 						<span id="started" style="display: none">
 							<a id="stop" href="javascript:stop()" class="button">Stop</a>
-							<a id="restart" href="javascript:stop(true)" class="button">Restart</a>
+							<a id="restart" href="javascript:restart()" class="button">Restart</a>
 							<a id="reload" href="javascript:reload()" class="button">Reload</a>
 						</span>
 					</span>

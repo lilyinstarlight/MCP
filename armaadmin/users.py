@@ -62,7 +62,7 @@ def change(user, password=None, servers=None, admin=None):
 	parse()
 
 def remove(user):
-	if user in users:
+	if not user in users:
 		return
 
 	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:

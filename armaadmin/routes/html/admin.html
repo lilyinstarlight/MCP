@@ -1,1 +1,35 @@
-TODO
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>ArmaAdmin Administration</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
+		<link href="common.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
+		<script src="admin.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="header">
+			<img src="aalogo.png" alt="" class="logo" />
+			<span class="title">ArmaAdmin Administration</span>
+		</div>
+		<div class="menu">
+			<span class="left">
+				<a href="javascript:change('users')" class="button">Users</a><a href="javascript:change('servers')" class="button">Servers</a><a href="javascript:change('config')" class="button">Config</a>
+			</span>
+			<span class="right">
+				<a href="/" class="button">Servers</a>
+			</span>
+		</div>
+		<div class="content">
+			<div id="users">
+				Users
+			</div>
+			<div id="servers" style="display: none">
+				Servers
+			</div>
+			<div id="config" style="display: none">
+				Config
+			</div>
+		</div>
+	</body>
+</html>
