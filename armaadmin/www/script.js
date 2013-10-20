@@ -224,7 +224,6 @@ function load() {
 		lineNumbers: true,
 		lineWrapping: true,
 		showTrailingSpace: true,
-		matchBrackets: true,
 		theme: 'arma',
 	});
 

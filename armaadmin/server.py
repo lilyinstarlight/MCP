@@ -79,6 +79,12 @@ def create(name, source):
 		except:
 			return 'Could not make "user" directory'
 
+	with open(config.sources + '/' + source + '/.bzr/branch/last-revision', 'r') as file:
+		revision = file.read().split(' ', 1)[0]
+
+	with open(config.prefix + '/' + name + '/source', 'w') as file:
+		file.write(source + '|' + revision)
+
 	return 'success'
 
 def destroy(name):
@@ -90,4 +96,22 @@ def destroy(name):
 	except:
 		return 'Failed to remove directory'
 
-		return 'sucess'
+	return 'sucess'
+
+def updateSource(source):
+	if not name in os.listdir(config.sources):
+		return 'Sources do not exist'
+
+	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + source ]):
+		return 'Failed to pull changes'
+
+	return 'success'
+
+def updateServer(name):
+	if not name in os.listdir(config.prefix):
+		return 'Server does not exist'
+
+	with open(config.prefix + '/' + name + '/source', 'r') as file:
+		source = file.read().split('|')[0]
+
+	return create(name, source)

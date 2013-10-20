@@ -1,6 +1,6 @@
 import os
 
-from armaadmin import manager, sessions, users
+from armaadmin import manager, sessions
 from armaadmin.routes import root, admin, api
 
 def action(request):
@@ -41,14 +41,6 @@ def action(request):
 		server.updateSettings(request.args.get('settings'))
 	elif request.request == '/update/script':
 		server.udpateScript(request.args.get('script'))
-	elif request.request == '/admin/create/user':
-		users.add(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin'))
-	elif request.request == '/admin/destroy/user':
-		users.remove(request.args.get('user'))
-	elif request.request == '/admin/create/server':
-		manager.create(request.args.get('server'))
-	elif request.request == '/admin/destroy/server':
-		manager.destroy(request.args.get('server'))
 
 	return 'success'
 
@@ -73,4 +65,4 @@ def file(request):
 		request.set_header('Content-Type', 'text/plain; charset=utf-8')
 		return '404 - Not Found'
 
-routes = { '/': root.handle, '/admin': admin.handle, '/api': api.handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action, '/admin/create/user': action, '/admin/destroy/user': action, '/admin/create/server': action, '/admin/destroy/server': action, '404': file }
+routes = { '/': root.handle, '/admin': admin.handle, '/api': api.handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action, '/admin/create/user': admin.action, '/admin/destroy/user': admin.action, '/admin/create/server': admin.action, '/admin/destroy/server': admin.action, '/admin/get/users': admin.action, '/admin/get/servers': admin.action, '/admin/get/config': admin.config, '404': file }
