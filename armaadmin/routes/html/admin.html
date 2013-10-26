@@ -26,7 +26,7 @@
 		</div>
 		<div class="menu">
 			<span class="left">
-				<a href="javascript:change('users')" class="button">Users</a><a href="javascript:change('servers')" class="button">Servers</a><a href="javascript:change('config')" class="button">Config</a>
+				<a href="javascript:change('users')" class="button">Users</a><a href="javascript:change('servers')" class="button">Servers</a><a href="javascript:change('sources')" class="button">Sources</a><a href="javascript:change('config')" class="button">Config</a>
 			</span>
 			<span class="right">
 				<a href="/" class="button">Servers</a>
@@ -51,8 +51,22 @@
 					Create
 				</div>
 			</div>
+			<div id="sources" style="display: none">
+				Sources
+				<div id="source_list">
+					List
+				</div>
+				<div id="source_add" style="display: none">
+					Add
+				</div>
+			</div>
 			<div id="config" style="display: none">
-				<textarea id="config_text" placeholder="Here you can specify configuration global to every server.  Generally GLOBAL_ID and TALK_TO_MASTER are turned on here but you should also specify a SERVER_DNS."></textarea>
+				<div class="controller">
+					<span class="right">
+						<a id="config_submit" href="javascript:updateConfig()" class="button">Save</a>
+					</span>
+				</div>
+				<div id="config_editor"></div>
 			</div>
 		</div>
 	</body>

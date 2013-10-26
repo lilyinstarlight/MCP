@@ -98,15 +98,6 @@ def destroy(name):
 
 	return 'sucess'
 
-def updateSource(source):
-	if not name in os.listdir(config.sources):
-		return 'Sources do not exist'
-
-	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + source ]):
-		return 'Failed to pull changes'
-
-	return 'success'
-
 def updateServer(name):
 	if not name in os.listdir(config.prefix):
 		return 'Server does not exist'
@@ -115,3 +106,53 @@ def updateServer(name):
 		source = file.read().split('|')[0]
 
 	return create(name, source)
+
+def addSource(name, bzr):
+	if not config.sources:
+		return 'Server creation disabled'
+
+	if name in os.listdir(config.sources):
+		return 'Source already exists'
+
+	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + source ]):
+		return 'Failed to clone bzr tree'
+
+	return 'sucess'
+
+def removeSource(name):
+	if not config.sources:
+		return 'Server creation disabled'
+
+	if not name in os.listdir(config.sources):
+		return 'Source does not exist'
+
+	try:
+		shutil.rmtree(config.sources + '/' + name)
+	except:
+		return 'Failed to remove directory'
+
+	return 'sucess'
+
+
+def updateSource(name):
+	if not config.sources:
+		return 'Server creation disabled'
+
+	if not name in os.listdir(config.sources):
+		return 'Source does not exist'
+
+	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + source ]):
+		return 'Failed to pull changes'
+
+	return 'success'
+
+def getConfig():
+	if not config.sources:
+		return 'Server creation disabled'
+
+	with open(config.sources + '/config/server_info.cfg', 'r') as file:
+		return file.read()
+
+def updateConfig(config_text):
+	with open(config.sources + '/config/server_info.cfg', 'w') as file:
+		file.write(config_text)

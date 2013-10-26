@@ -3,6 +3,7 @@ var config;
 function change(element) {
 	document.getElementById('users').style.display = 'none';
 	document.getElementById('servers').style.display = 'none';
+	document.getElementById('sources').style.display = 'none';
 	document.getElementById('config').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
 }
@@ -16,6 +17,12 @@ function userChange(element) {
 function serverChange(element) {
 	document.getElementById('server_list').style.display = 'none';
 	document.getElementById('server_setup').style.display = 'none';
+	document.getElementById(element).style.display = 'block';
+}
+
+function sourceChange(element) {
+	document.getElementById('source_list').style.display = 'none';
+	document.getElementById('source_setup').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
 }
 
@@ -45,7 +52,7 @@ function destroyUser(user) {
 	ajax.send('user=' + encodeURIComponent(user));
 }
 
-function createServer(server) {
+function createServer(server, source) {
 	var ajax = new XMLHttpRequest();
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
@@ -55,7 +62,7 @@ function createServer(server) {
 	}
 	ajax.open('POST', '/admin/create/server', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('server=' + encodeURIComponent(server));
+	ajax.send('server=' + encodeURIComponent(server) + '&source=' + encodeURIComponent(source));
 }
 
 function destroyServer(server) {
@@ -69,6 +76,45 @@ function destroyServer(server) {
 	ajax.open('POST', '/admin/destroy/server', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	ajax.send('server=' + encodeURIComponent(server));
+}
+
+function addSource(source, bzr) {
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status != 200 || ajax.responseText != 'success')
+				alert('Error adding source: ' + ajax.responseText);
+		}
+	}
+	ajax.open('POST', '/admin/add/source', true);
+	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	ajax.send('server=' + encodeURIComponent(server) + '&bzr=' + encodeURIComponent(bzr));
+}
+
+function removeSource(source) {
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status != 200 || ajax.responseText != 'success')
+				alert('Error removing source: ' + ajax.responseText);
+		}
+	}
+	ajax.open('POST', '/admin/remove/source', true);
+	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	ajax.send('source=' + encodeURIComponent(source));
+}
+
+function updateSource(source) {
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status != 200 || ajax.responseText != 'success')
+				alert('Error updating source: ' + ajax.responseText);
+		}
+	}
+	ajax.open('POST', '/admin/update/source', true);
+	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	ajax.send('source=' + encodeURIComponent(source));
 }
 
 function getUsers() {
@@ -101,6 +147,21 @@ function getServers() {
 	ajax.send();
 }
 
+function getSources() {
+	if(document.getElementById('sources').style.display == 'none' || document.getElementById('sources_list').style.display == 'none')
+		return;
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status == 200 && ajax.responseText != '')
+				document.getElementById('sources_list').innerHTML = ajax.responseText;
+		}
+	}
+	ajax.open('GET', '/admin/get/sources', true);
+	ajax.send();
+}
+
 function getConfig() {
 	if(document.getElementById('config').style.display == 'none')
 		return;
@@ -109,24 +170,42 @@ function getConfig() {
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('config_text').innerHTML = ajax.responseText;
+				config.setValue(ajax.responseText);
 		}
 	}
 	ajax.open('GET', '/admin/get/config', true);
 	ajax.send();
 }
 
+function updateConfig() {
+	if(document.getElementById('config').style.display == 'none')
+		return;
+
+	var ajax = new XMLHttpRequest();
+	ajax.onload = function() {
+		if(ajax.readyState == 4) {
+			if(ajax.status != 200 || ajax.responseText != 'success')
+				alert('Error updating config: ' + ajax.responseText);
+		}
+	}
+	ajax.open('POST', '/admin/update/config', true);
+	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	ajax.send('config=' + encodeURIComponent(config.getValue()));
+}
+
 function load() {
-	config = CodeMirror.fromTextArea(document.getElementById('config_text'), {
+	config = CodeMirror(document.getElementById('config_editor'), {
 		mode: 'settings',
 		lineNumbers: true,
 		lineWrapping: true,
 		showTrailingSpace: true,
 		theme: 'arma',
+		placeholder: 'Here you can specify configuration global to every server.  Generally GLOBAL_ID and TALK_TO_MASTER are turned on here but you should also specify a SERVER_DNS.'
 	});
 
 	setInterval(getUsers, 500);
 	setInterval(getServers, 500);
+	setInterval(getSources, 500);
 	setInterval(getConfig, 500);
 }
 

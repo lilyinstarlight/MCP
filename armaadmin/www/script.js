@@ -164,7 +164,7 @@ function getSettings() {
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('settings_text').innerHTML = ajax.responseText;
+				settings.setValue(ajax.responseText);
 		}
 	}
 	ajax.open('GET', '/get/settings', true);
@@ -179,7 +179,7 @@ function getScript() {
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('script_text').innerHTML = ajax.responseText;
+				script.setValue(ajax.responseText);
 		}
 	}
 	ajax.open('GET', '/get/script', true);
@@ -187,7 +187,6 @@ function getScript() {
 }
 
 function updateSettings() {
-	settings.save();
 	var ajax = new XMLHttpRequest();
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
@@ -199,11 +198,10 @@ function updateSettings() {
 	}
 	ajax.open('POST', '/update/settings', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('settings=' + encodeURIComponent(document.getElementById('settings_text').value));
+	ajax.send('settings=' + encodeURIComponent(settings.getValue()));
 }
 
 function updateScript() {
-	script.save();
 	var ajax = new XMLHttpRequest();
 	ajax.onload =	function() {
 		if(ajax.readyState == 4) {
@@ -215,19 +213,20 @@ function updateScript() {
 	}
 	ajax.open('POST', '/update/script', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('script=' + encodeURIComponent(document.getElementById('script_text').value));
+	ajax.send('script=' + encodeURIComponent(script.getValue()));
 }
 
 function load() {
-	settings = CodeMirror.fromTextArea(document.getElementById('settings_text'), {
+	settings = CodeMirror(document.getElementById('settings_editor'), {
 		mode: 'settings',
 		lineNumbers: true,
 		lineWrapping: true,
 		showTrailingSpace: true,
 		theme: 'arma',
+		placeholder: 'Here you can specify your server\'s custom settings.  There is no need to set TALK_TO_MASTER or GLOBAL_ID here, but you should set your server\'s name and set yourself as an Owner.'
 	});
 
-	script = CodeMirror.fromTextArea(document.getElementById('script_text'), {
+	script = CodeMirror(document.getElementById('script_editor'), {
 		mode: {
 			name: 'python',
 			version: 3,
@@ -237,6 +236,7 @@ function load() {
 		showTrailingSpace: true,
 		matchBrackets: true,
 		theme: 'arma',
+		placeholder: 'Here you can add a custom server script written in Python.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details.'
 	});
 
 	setInterval(getStatus, 50);

@@ -10,11 +10,11 @@ servers = {}
 def get(name):
 	return servers.get(name)
 
-def create(name):
+def create(name, source):
 	if name in servers:
 		return 'Server already exists'
 
-	result = server.create(name)
+	result = server.create(name, source)
 	if result == 'success':
 		servers[name] = Server(name)
 
