@@ -122,7 +122,7 @@ Make sure you have the dependencies and try again.  Maybe your distribution does
 Quit using Internet Explorer.
 
 ###The scripting API crashes!###
-Make sure it is running with Python 3 and if so, please report the crash and error log on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues).
+Make sure it is running with Python 3.  If it is, please report the crash and error log on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues).
 
 ###None of it works!###
 Make sure you installed the package with Python 3 and started the daemon properly.
