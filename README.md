@@ -4,7 +4,7 @@ ArmaAdmin is a complete multi-server management framework for [Armagetron Advanc
 
 What is this?
 -------------
-ArmaAdmin is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting API for Armagetron Advanced.  It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface.  Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques.  This project solves these problems in a simple Python daemon that serves a set of web pages for control.  This project is designed for a unix-like system and should run well on Linux, Mac OS, or FreeBSD, but also should work on Windows in a unix-like environment (Cygwin) though it may not have server creation functionality.
+ArmaAdmin is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting API for Armagetron Advanced.  It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface.  Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques.  This project solves these problems in a simple Python daemon that serves a set of web pages for control.  This project is designed for a unix-like system and should run well on Linux, Mac OS, or FreeBSD, but also should work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
 
 Features
 --------
@@ -45,7 +45,7 @@ Installing
 Edit `config.py` to match your directory structure and preferences.  Below is a list of the preferences and what they mean.
 - `prefix` folder is mandatory and should be the folder set aside for Armagetron servers.
 - `sources` folder is optional and contains the source code to the server software to allow server creation.
-- `api` folder is also optional and contains the scripting api (in the `api` folder of the project).
+- `api` folder is also optional and contains the scripting API (in the `api` folder of the project).
 - `user` is the user under which the servers (and scripts) will run.
 - `address` is the address for which the server will accept requests but generally, you do not need to set this.
 - `port` is the port on which the HTTP server will listen.  If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
@@ -59,25 +59,41 @@ The setup script will ask a few questions about your system then automatically i
 
 Start the daemon using the init system specified in the setup script.  If no init system was specified, start the daemon by running `armaadmin` as root.
 
+###Downloading sources###
+Before you can create your first server, you must download a copy of the Armagetron Advanced source code.  To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then click the `Sources` tab in the administration interface.  Click the `Add Source` button and fill out the form with the appropriate information.  The source name is the name by which this source will be referred.  For example, you can call one `sty+ct` if you download ct's patched version.  The bzr address is the location of the bzr repository for the source code.  For example, for `0.2.8-sty+ct`, the source is located at `lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct`.  Use the table below for a list of common versions and their bzr addresses.
+
+| Version         | Bzr Address                                                     |
+| --------------- | --------------------------------------------------------------- |
+| 0.2.8           | `bzr branch lp:armagetronad/0.2.8`                              |
+| 0.4             | `bzr branch lp:armagetronad/0.4`                                |
+| 0.2.8 sty+ct    | `lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct`    |
+| 0.2.9 sty+ct+ap | `lp:~armagetronad-ap/armagetronad/0.2.9-armagetronad-sty+ct+ap` |
+
+After the information is filled in and submitted, the source can then be used in the server creation form in a drop-down list.  The source code will take some time to download, generally up to 30 seconds.
+
 ###Creating a server###
-Open a web browser to `http://localhost/` or the address specified in `config.py`.  Login as the administrator user then click `Administration`. ***How to make a server***
+Once you have added a source, you can create your first server.  To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then click the `Servers` tab in the administration interface.  Click the `Create Server` button and fill out the form with information about the server.  The name of the server is the name by which it will be referred when assigning it to users.  The source is the source version that should be used to create the server.  After the information is filled out and submitted, the manager will then begin server creation.  This process can take up to 10 minutes depending on the processing power and load of the server computer.
 
 ###Creating a user###
-***How to make a user***
+To create a user, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then make sure you are on the `Users` tab in the administration interface.  Click the `Create User` button and fill out the form with the user's information.  The admin checkbox enables administrative right to the user allowing them access to the administration interface.  From the drop-down menu, choose the user's first server then click on `Add`.  Many servers can be associated with the same user by selecting a those servers and clicking `Add` in between them.  After the information is filled out and submitted, the user will be able to log in be able to manage its servers.
 
 ###Server creation dependencies###
-To compile servers, you must be on a unix-like system with a modern compiler.
+To create servers, you must be on a unix-like system with a modern compiler.  Each server is compiled when it is created with a special set of flags to keep them in their own prefixes and in a sane directory structure.  This allows multiple servers to be kept on one system at the same time and allows easy access and configuration of the servers over FTP or SSH.  Below are the necessary packages that must be installed to be able to download sources and create servers.
 
 ####Debian/Ubuntu####
 - build-essential
 - automake
 - bison
+- bzr
 - libzthread-dev (optional, 0.2.8 only)
 
 ####Arch####
+- base-devel
+- bzr
 - zthread (optional, 0.2.8 only)
 
 ####Gentoo####
+- dev-vcs/bzr
 - dev-libs/zthread (optional, 0.2.8 only)
 
 Questions
@@ -106,7 +122,7 @@ Make sure you have the dependencies and try again.  Maybe your distribution does
 Quit using Internet Explorer.
 
 ###The scripting API crashes!###
-Make sure it is running with Python 3.
+Make sure it is running with Python 3 and if so, please report the crash and error log on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues).
 
 ###None of it works!###
 Make sure you installed the package with Python 3 and started the daemon properly.
