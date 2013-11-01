@@ -157,7 +157,7 @@ function getScriptLog() {
 }
 
 function getSettings() {
-	if(document.getElementById('settings').style.display == 'none')
+	if(document.getElementById('settings').style.display == 'none' || settings.hasFocus())
 		return;
 
 	var ajax = new XMLHttpRequest();
@@ -172,7 +172,7 @@ function getSettings() {
 }
 
 function getScript() {
-	if(document.getElementById('scripting').style.display == 'none' || document.getElementById('script_editor').style.display == 'none')
+	if(document.getElementById('scripting').style.display == 'none' || document.getElementById('script_editor').style.display == 'none' || script.hasFocus())
 		return;
 
 	var ajax = new XMLHttpRequest();

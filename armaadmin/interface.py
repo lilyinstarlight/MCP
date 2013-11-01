@@ -17,30 +17,57 @@ def action(request):
 	if not server:
 		return 'Server does not exist'
 
-	if request.request == '/start':
-		server.start()
-	elif request.request == '/stop':
-		server.stop()
-	elif request.request == '/reload':
-		server.reload()
-	elif request.request == '/restart':
-		server.restart()
-	elif request.request == '/status':
-		return server.status()
-	elif request.request == '/sendcommand':
-		server.sendCommand(request.args.get('command'))
-	elif request.request == '/get/log':
-		return server.getLog()
-	elif request.request == '/get/scriptlog':
-		return server.getScriptLog()
-	elif request.request == '/get/settings':
-		return server.getSettings()
-	elif request.request == '/get/script':
-		return server.getScript()
-	elif request.request == '/update/settings':
-		server.updateSettings(request.args.get('settings'))
-	elif request.request == '/update/script':
-		server.udpateScript(request.args.get('script'))
+	try:
+		if request.request == '/start':
+			server.start()
+		elif request.request == '/stop':
+			server.stop()
+		elif request.request == '/reload':
+			server.reload()
+		elif request.request == '/restart':
+			server.restart()
+		elif request.request == '/status':
+			return server.status()
+		elif request.request == '/sendcommand':
+				server.sendCommand(request.args.get('command'))
+		elif request.request == '/get/log':
+			try:
+				return server.getLog()
+			except FileNotFoundError:
+				return 'Log not found'
+		elif request.request == '/get/scriptlog':
+			try:
+				return server.getScriptLog()
+			except FileNotFoundError:
+				return 'Script log not found'
+		elif request.request == '/get/settings':
+			try:
+				return server.getSettings()
+			except FileNotFoundError:
+				return 'Settings file not found'
+		elif request.request == '/get/script':
+			try:
+				return server.getScript()
+			except FileNotFoundError:
+				return 'Script file not found'
+		elif request.request == '/update/settings':
+			try:
+				server.updateSettings(request.args.get('settings'))
+			except FileNotFoundError:
+				return 'Settings file not found'
+		elif request.request == '/update/script':
+			try:
+				server.udpateScript(request.args.get('script'))
+			except FileNotFoundError:
+				return 'Script file not found'
+	except NoServerError:
+		return 'Server does not exist'
+	except ServerRunningError:
+		return 'Server is already running'
+	except ServerStoppedError:
+		return 'Server is not running'
+	except:
+		return 'Unknown error'
 
 	return 'success'
 

@@ -10,20 +10,33 @@ function change(element) {
 
 function userChange(element) {
 	document.getElementById('user_list').style.display = 'none';
-	document.getElementById('user_setup').style.display = 'none';
+	document.getElementById('user_create').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
 }
 
 function serverChange(element) {
 	document.getElementById('server_list').style.display = 'none';
-	document.getElementById('server_setup').style.display = 'none';
+	document.getElementById('server_create').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
 }
 
 function sourceChange(element) {
 	document.getElementById('source_list').style.display = 'none';
-	document.getElementById('source_setup').style.display = 'none';
+	document.getElementById('source_add').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
+}
+
+function submitUser() {
+	var servers = ""
+	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers, document.getElementById('user_admin').checked ? 'true' : 'false')
+}
+
+function submitServer() {
+	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value)
+}
+
+function submitSource() {
+	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value)
 }
 
 function createUser(user, password, servers, admin) {
@@ -36,7 +49,7 @@ function createUser(user, password, servers, admin) {
 	}
 	ajax.open('POST', '/admin/create/user', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('user=' + encodeURIComponent(user) + '&password=' + ecnodeURIComponent(password)  + '&servers=' + encodeURIComponent(servers) + '&admin=' + encodeURIComponent(admin));
+	ajax.send('user=' + encodeURIComponent(user) + '&password=' + encodeURIComponent(password)  + '&servers=' + encodeURIComponent(servers) + '&admin=' + encodeURIComponent(admin));
 }
 
 function destroyUser(user) {
@@ -125,7 +138,7 @@ function getUsers() {
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('user_list').innerHTML = ajax.responseText;
+				document.getElementById('user_listing').innerHTML = ajax.responseText;
 		}
 	}
 	ajax.open('GET', '/admin/get/users', true);
@@ -140,7 +153,7 @@ function getServers() {
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('server_list').innerHTML = ajax.responseText;
+				document.getElementById('server_listing').innerHTML = ajax.responseText;
 		}
 	}
 	ajax.open('GET', '/admin/get/servers', true);
@@ -148,14 +161,14 @@ function getServers() {
 }
 
 function getSources() {
-	if(document.getElementById('sources').style.display == 'none' || document.getElementById('sources_list').style.display == 'none')
+	if(document.getElementById('sources').style.display == 'none' || document.getElementById('source_list').style.display == 'none')
 		return;
 
 	var ajax = new XMLHttpRequest();
 	ajax.onload = function() {
 		if(ajax.readyState == 4) {
 			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('sources_list').innerHTML = ajax.responseText;
+				document.getElementById('source_listing').innerHTML = ajax.responseText;
 		}
 	}
 	ajax.open('GET', '/admin/get/sources', true);
@@ -163,7 +176,7 @@ function getSources() {
 }
 
 function getConfig() {
-	if(document.getElementById('config').style.display == 'none')
+	if(document.getElementById('config').style.display == 'none' || config.hasFocus())
 		return;
 
 	var ajax = new XMLHttpRequest();

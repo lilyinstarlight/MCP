@@ -34,28 +34,95 @@
 		</div>
 		<div class="content">
 			<div id="users">
-				Users
-				<div id="user_list"></div>
+				<div id="user_list">
+					<div class="controller">
+						<span class="left">
+							<a href="javascript:userChange('user_create')" class="button">Create</a>
+							<a href="javascript:void()" class="button disabled">Destroy</a>
+						</span>
+					</div>
+					<pre id="user_listing"></pre>
+				</div>
 				<div id="user_create" style="display: none">
-					Create
+					<table>
+						<tr>
+							<td><label for="user_name">Username: </label></td>
+							<td><input id="user_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_password">Password: </label></td>
+							<td><input id="user_password" type="password" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_admin">Admin: </label></td>
+							<td><input id="user_admin" type="checkbox" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_servers">Servers: </label></td>
+							<td><select id="user_servers"></select><input id="server_add" type="button" value="Add" /></td>
+						</tr>
+						<tr>
+							<td colspan=2>TODO: Current Server List</td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitUser();userChange('user_list')" class="button">Create</a></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div id="servers" style="display: none">
-				Servers
 				<div id="server_list">
-					List
+					<div class="controller">
+						<span class="left">
+							<a href="javascript:serverChange('server_create')" class="button">Create</a>
+							<a href="javascript:void()" class="button disabled">Destroy</a>
+						</span>
+					</div>
+					<pre id="server_listing"></pre>
 				</div>
 				<div id="server_create" style="display: none">
-					Create
+					<table>
+						<tr>
+							<td><label for="server_name">Name: </label></td>
+							<td><input id="server_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="server_source">Source: </label></td>
+							<td><select id="server_source"></select></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:serverChange('server_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitServer();serverChange('server_list')" class="button">Create</a></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div id="sources" style="display: none">
-				Sources
 				<div id="source_list">
-					List
+					<div class="controller">
+						<span class="left">
+							<a href="javascript:sourceChange('source_add')" class="button">Add</a>
+							<a href="javascript:void()" class="button disabled">Remove</a>
+						</span>
+					</div>
+					<pre id="source_listing"></pre>
 				</div>
 				<div id="source_add" style="display: none">
-					Add
+					<table>
+						<tr>
+							<td><label for="source_name">Name: </label></td>
+							<td><input id="source_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="source_bzr">Bzr Address: </label></td>
+							<td><input id="source_bzr" type="text" /></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:sourceChange('source_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitSource();sourceChange('source_list')" class="button">Add</a></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div id="config" style="display: none">

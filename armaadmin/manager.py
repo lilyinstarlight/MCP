@@ -12,24 +12,18 @@ def get(name):
 
 def create(name, source):
 	if name in servers:
-		return 'Server already exists'
+		raise ServerExistsError
 
-	result = server.create(name, source)
-	if result == 'success':
-		servers[name] = Server(name)
-
-	return result
+	server.create(name, source)
+	servers[name] = Server(name)
 
 def destroy(name):
 	if not name in servers:
-		return 'Server does not exist'
+		raise NoServerError
 
 	servers[name].stop()
-	result = server.destroy(name)
-	if result == 'success':
-		del servers[name]
-
-	return result
+	server.destroy(name)
+	del servers[name]
 
 def poll():
 	for server in servers.values():
@@ -57,12 +51,17 @@ class Server:
 		return os.path.exists(self.dir)
 
 	def start(self):
-		if self.exists() and not self.serverStatus():
-			self.status_msg = 'starting'
-			self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=demote, env=env, cwd=self.dir)
-			self.status_msg = 'started'
+		if not self.exists():
+			raise NoServerError
 
-			self.startScript()
+		if self.serverStatus():
+			raise ServerRunningError
+
+		self.status_msg = 'starting'
+		self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=demote, env=env, cwd=self.dir)
+		self.status_msg = 'started'
+
+		self.startScript()
 
 	def startScript(self):
 		if os.path.exists(self.dir + '/scripts/script.py') and self.serverStatus() and not self.scriptStatus():
@@ -85,12 +84,12 @@ class Server:
 
 	def stopScript(self):
 		if self.scriptStatus():
-			self.server.terminate()
+			self.script.terminate()
 			try:
-				self.server.wait(5)
+				self.script.wait(5)
 			except TimeoutExpired:
-				self.server.kill()
-				self.server.wait()
+				self.script.kill()
+				self.script.wait()
 
 		self.script = None
 
@@ -105,6 +104,8 @@ class Server:
 			self.server.stdin.write('INCLUDE settings_custom.cfg')
 			if self.script:
 				self.server.stdin.write('INCLUDE script.cfg')
+		else:
+			raise ServerStoppedError
 
 	def serverStatus(self):
 		if self.server:
@@ -124,6 +125,8 @@ class Server:
 	def sendCommand(self, command):
 		if self.server:
 			self.server.stdin.write(command)
+		else:
+			raise ServerStoppedError
 
 	def getLog(self):
 		with open(self.dir + '/arma.log', 'r') as file:
