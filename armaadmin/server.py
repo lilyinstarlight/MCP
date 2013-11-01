@@ -14,16 +14,16 @@ def create(name, source):
 	if not source in os.listdir(config.sources):
 		raise NoSourceError
 
-	if subprocess.call([ config.sources + '/' + source + '/bootstrap.sh' ]):
+	if subprocess.call([ config.sources + '/' + source + '/bootstrap.sh' ], cwd=config.sources + '/' + source):
 		raise BuildError('Failed to bootstrap server')
 
-	if subprocess.call([ config.sources + '/' + source + '/configure', '--enabled-dedicated', '--enable-armathentication', '--disable-automakedefaults', '--disable-sysinstall', '--disable-useradd', '--disable-etc', '--disable-desktop', '--disable-initscripts', '--disable-uninstall', '--disable-games', '--prefix="' + config.prefix + '/' + name + '"', '--localstatedir="' + config.prefix + '/' + name + '/var"' ]):
+	if subprocess.call([ config.sources + '/' + source + '/configure', '--enabled-dedicated', '--enable-armathentication', '--disable-automakedefaults', '--disable-sysinstall', '--disable-useradd', '--disable-etc', '--disable-desktop', '--disable-initscripts', '--disable-uninstall', '--disable-games', '--prefix="' + config.prefix + '/' + name + '"', '--localstatedir="' + config.prefix + '/' + name + '/var"' ], cwd=config.sources + '/' + source):
 		raise BuildError('Failed to configure server')
 
-	if subprocess.call([ 'make', '-C' + config.sources + '/' + source ]):
+	if subprocess.call([ 'make', '-C' + config.sources + '/' + source ], cwd=config.sources + '/' + source):
 		raise BuildError('Failed to compile server')
 
-	if subprocess.call([ 'make', '-C' + config.sources + '/' + source, 'install' ]):
+	if subprocess.call([ 'make', '-C' + config.sources + '/' + source, 'install' ], cwd=config.sources + '/' + source):
 		raise BuildError('Failed to install server')
 
 	try:
@@ -109,7 +109,7 @@ def addSource(name, bzr):
 	if name in os.listdir(config.sources):
 		raise SourceExistsError
 
-	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + source ]):
+	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ]):
 		raise BzrError('Failed to clone bzr tree')
 
 def removeSource(name):
@@ -131,7 +131,7 @@ def updateSource(name):
 	if not name in os.listdir(config.sources):
 		raise NoSourceError
 
-	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + source ]):
+	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + name ]):
 		raise BzrError('Failed to pull changes')
 
 def getSources():

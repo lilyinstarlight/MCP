@@ -55,11 +55,11 @@ def action(request):
 			except BzrError as e:
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/get/users':
-			return ','.join(users.users)
+			return '\n'.join(users.users)
 		elif request.request == '/admin/get/servers':
-			return ','.join(manager.servers)
+			return '\n,'.join(manager.servers)
 		elif request.request == '/admin/get/sources':
-			return ','.join(server.getSources())
+			return '\n'.join(server.getSources())
 		elif request.request == '/admin/get/config':
 			try:
 				return server.getConfig()

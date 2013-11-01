@@ -101,7 +101,7 @@ function addSource(source, bzr) {
 	}
 	ajax.open('POST', '/admin/add/source', true);
 	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('server=' + encodeURIComponent(server) + '&bzr=' + encodeURIComponent(bzr));
+	ajax.send('source=' + encodeURIComponent(source) + '&bzr=' + encodeURIComponent(bzr));
 }
 
 function removeSource(source) {
