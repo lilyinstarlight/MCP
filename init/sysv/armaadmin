@@ -12,7 +12,7 @@
 case "$1" in
 	start)
 		echo -n "Starting ArmaAdmin: "
-		start-stop-daemon --start --quiet --exec "`which armaadmin`" --background --pidfile /var/run/armaadmin.pid --make-pidfile && echo "OK" || echo "Fail"
+		start-stop-daemon --start --quiet --exec /usr/bin/armaadmin --background --pidfile /var/run/armaadmin.pid --make-pidfile && echo "OK" || echo "Fail"
 		;;
 	stop)
 		echo -n "Stopping ArmaAdmin: "

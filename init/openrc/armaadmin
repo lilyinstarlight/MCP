@@ -2,7 +2,7 @@
 
 start() {
 	ebegin "Starting ArmaAdmin"
-	start-stop-daemon --start --quiet --exec "`which armaadmin`" --background --pidfile /var/run/armaadmin.pid --make-pidfile
+	start-stop-daemon --start --quiet --exec /usr/bin/armaadmin --background --pidfile /var/run/armaadmin.pid --make-pidfile
 	eend $?
 }
 
