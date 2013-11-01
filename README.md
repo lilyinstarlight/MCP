@@ -84,15 +84,24 @@ To create servers, you must be on a unix-like system with a modern compiler.  Ea
 - build-essential
 - automake
 - bison
+- libxml2-dev
+- libprotobuf-dev
+- libboost-thread-dev (optional, 0.4 only)
 - bzr
 - libzthread-dev (optional, 0.2.8 only)
 
 ####Arch####
 - base-devel
+- libxml2
+- protobuf
+- boost (optional, 0.4 only)
 - bzr
 - zthread (optional, 0.2.8 only)
 
 ####Gentoo####
+- dev-libs/libxml2
+- dev-libs/protobuf
+- dev-libs/boost[threads] (optional, 0.4 only)
 - dev-vcs/bzr
 - dev-libs/zthread (optional, 0.2.8 only)
 
