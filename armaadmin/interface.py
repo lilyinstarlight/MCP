@@ -1,6 +1,6 @@
 import os
 
-from armaadmin import manager, sessions
+from armaadmin import errors, manager, sessions
 from armaadmin.routes import root, admin, api
 
 def action(request):
@@ -29,7 +29,7 @@ def action(request):
 		elif request.request == '/status':
 			return server.status()
 		elif request.request == '/sendcommand':
-				server.sendCommand(request.args.get('command'))
+			server.sendCommand(request.args.get('command'))
 		elif request.request == '/get/log':
 			try:
 				return server.getLog()
@@ -60,11 +60,11 @@ def action(request):
 				server.udpateScript(request.args.get('script'))
 			except FileNotFoundError:
 				return 'Script file not found'
-	except NoServerError:
+	except errors.NoServerError:
 		return 'Server does not exist'
-	except ServerRunningError:
+	except errors.ServerRunningError:
 		return 'Server is already running'
-	except ServerStoppedError:
+	except errors.ServerStoppedError:
 		return 'Server is not running'
 	except:
 		return 'Unknown error'

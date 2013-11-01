@@ -3,7 +3,7 @@ import pwd
 import subprocess
 import sys
 
-from armaadmin import config, server
+from armaadmin import config, errors, server
 
 servers = {}
 
@@ -12,14 +12,14 @@ def get(name):
 
 def create(name, source):
 	if name in servers:
-		raise ServerExistsError
+		raise errors.ServerExistsError
 
 	server.create(name, source)
 	servers[name] = Server(name)
 
 def destroy(name):
 	if not name in servers:
-		raise NoServerError
+		raise errors.NoServerError
 
 	servers[name].stop()
 	server.destroy(name)
@@ -52,10 +52,10 @@ class Server:
 
 	def start(self):
 		if not self.exists():
-			raise NoServerError
+			raise errors.NoServerError
 
 		if self.serverStatus():
-			raise ServerRunningError
+			raise errors.ServerRunningError
 
 		self.status_msg = 'starting'
 		self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=demote, env=env, cwd=self.dir)
@@ -73,7 +73,7 @@ class Server:
 			self.server.terminate()
 			try:
 				self.server.wait(5)
-			except TimeoutExpired:
+			except subprocess.TimeoutExpired:
 				self.server.kill()
 				self.server.wait()
 
@@ -87,7 +87,7 @@ class Server:
 			self.script.terminate()
 			try:
 				self.script.wait(5)
-			except TimeoutExpired:
+			except subprocess.TimeoutExpired:
 				self.script.kill()
 				self.script.wait()
 
@@ -105,7 +105,7 @@ class Server:
 			if self.script:
 				self.server.stdin.write('INCLUDE script.cfg')
 		else:
-			raise ServerStoppedError
+			raise errors.ServerStoppedError
 
 	def serverStatus(self):
 		if self.server:
@@ -126,7 +126,7 @@ class Server:
 		if self.server:
 			self.server.stdin.write(command)
 		else:
-			raise ServerStoppedError
+			raise errors.ServerStoppedError
 
 	def getLog(self):
 		with open(self.dir + '/arma.log', 'r') as file:

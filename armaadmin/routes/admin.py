@@ -1,6 +1,6 @@
 import os
 
-from armaadmin import manager, sessions, server, users
+from armaadmin import errors, manager, sessions, server, users
 
 def handle(request):
 	session = sessions.get(request.cookies.get('session'))
@@ -30,29 +30,29 @@ def action(request):
 		elif request.request == '/admin/create/server':
 			try:
 				manager.create(request.args.get('server'), request.args.get('source'))
-			except BuildError as e:
+			except errors.BuildError as e:
 				return 'Error building server: ' + e.msg
-			except ConfigError as e:
+			except errors.ConfigError as e:
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/destroy/server':
 			try:
 				manager.destroy(request.args.get('server'))
-			except ConfigError:
+			except errors.ConfigError:
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/add/source':
 			try:
 				server.addSource(request.args.get('source'), request.args.get('bzr'))
-			except BzrError as e:
+			except errors.BzrError as e:
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/remove/source':
 			try:
 				server.removeSource(request.args.get('source'))
-			except ConfigError:
+			except errors.ConfigError:
 				return 'Error configuring source: ' + e.msg
 		elif request.request == '/admin/update/source':
 			try:
 				server.updateSource(request.args.get('source'))
-			except BzrError as e:
+			except errors.BzrError as e:
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/get/users':
 			return '\n'.join(users.users)
@@ -70,13 +70,13 @@ def action(request):
 				server.updateConfig(request.args.get('config'))
 			except FileNotFoundError:
 				return 'Config file not found'
-	except NoServerCreationError:
+	except errors.NoServerCreationError:
 		return 'Server creation is disabled'
-	except ServerExistsError:
+	except errors.ServerExistsError:
 		return 'Server already exists'
-	except NoSourceError:
+	except errors.NoSourceError:
 		return 'Source not found'
-	except SourceExistsError:
+	except errors.SourceExistsError:
 		return 'Source already exists'
 	except:
 		return 'Unknown error'
