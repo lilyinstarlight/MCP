@@ -7,7 +7,6 @@ import getpass
 import os
 import shutil
 import subprocess
-import sys
 
 class post_install(install):
 	def run(self):
@@ -60,8 +59,7 @@ class post_install(install):
 			file_util.copy_file('init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 			subprocess.call(['systemctl', 'daemon-reload'])
 
-setup(
-	name='ArmaAdmin',
+setup(	name='ArmaAdmin',
 	version='2.0',
 	description='A complete Armagetron Advanced multi-server management framework and web interface',
 	author='Foster McLane',
