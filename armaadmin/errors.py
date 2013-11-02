@@ -27,3 +27,9 @@ class ConfigError(Exception):
 
 class BzrError(Exception):
 	pass
+
+class InvalidServerError(Exception):
+	pass
+
+class InvalidSourceError(Exception):
+	pass

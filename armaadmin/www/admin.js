@@ -67,6 +67,20 @@ function destroyServer(server) {
 	});
 }
 
+function upgradeServer(server) {
+	ajaxPost('/admin/upgrade/server', { 'server': server }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error upgrading server: ' + ajax.responseText);
+	});
+}
+
+function upgradeServers() {
+	ajaxGet('/admin/upgrade/servers', function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error upgrading servers: ' + ajax.responseText);
+	});
+}
+
 function addSource(source, bzr) {
 	ajaxPost('/admin/add/source', { 'source': source, 'bzr': bzr }, function(ajax) {
 		if(ajax.status != 200 || ajax.responseText != 'success')
@@ -85,6 +99,13 @@ function updateSource(source) {
 	ajaxPost('/admin/update/source', { 'source': source }, function(ajax) {
 		if(ajax.status != 200 || ajax.responseText != 'success')
 			alert('Error updating source: ' + ajax.responseText);
+	});
+}
+
+function updateSources() {
+	ajaxGet('/admin/update/sources', function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error updating sources: ' + ajax.responseText);
 	});
 }
 

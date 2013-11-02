@@ -11,6 +11,9 @@ def create(name, source):
 	if name in os.listdir(config.prefix):
 		raise errors.ServerExistsError
 
+	if source == 'config':
+		raise errors.InvalidSourceError
+
 	if not source in os.listdir(config.sources):
 		raise errors.NoSourceError
 
@@ -93,7 +96,7 @@ def destroy(name):
 	except:
 		raise errors.ConfigError('Failed to remove directory')
 
-def updateServer(name):
+def upgrade(name):
 	if not name in os.listdir(config.prefix):
 		raise errors.NoServerError
 
@@ -106,6 +109,9 @@ def addSource(name, bzr):
 	if not config.sources:
 		raise errors.NoServerCreationError
 
+	if name == 'config':
+		raise errors.InvalidSourceError
+
 	if name in os.listdir(config.sources):
 		raise errors.SourceExistsError
 
@@ -115,6 +121,9 @@ def addSource(name, bzr):
 def removeSource(name):
 	if not config.sources:
 		raise errors.NoServerCreationError
+
+	if name == 'config':
+		raise errors.InvalidSourceError
 
 	if not name in os.listdir(config.sources):
 		raise errors.NoSourceError
@@ -127,6 +136,9 @@ def removeSource(name):
 def updateSource(name):
 	if not config.sources:
 		raise errors.NoServerCreationError
+
+	if name == 'config':
+		raise errors.InvalidSourceError
 
 	if not name in os.listdir(config.sources):
 		raise errors.NoSourceError
