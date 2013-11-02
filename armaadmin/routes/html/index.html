@@ -5,6 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
+		<script src="common.js" type="text/javascript"></script>
 		<script src="script.js" type="text/javascript"></script>
 
 		<link href="codemirror/codemirror.css" rel="stylesheet" />
@@ -56,10 +57,10 @@
 				<table id="commands" class="commands">
 					<tr>
 						<td>
-							<input id="command_box" type="text" class="command_box" onkeypress="if(event.keyCode == 13) sendCommand(this.value)" />
+							<input id="command_box" type="text" class="command_box" onkeypress="if(event.keyCode == 13) submitCommand()" />
 						</td>
 						<td>
-							<a id="command_submit" href="javascript:sendCommand(document.getElementById('command_box').value)" class="button">Send</a>
+							<a id="command_submit" href="javascript:submitCommand()" class="button">Send</a>
 						</td>
 					</tr>
 				</table>

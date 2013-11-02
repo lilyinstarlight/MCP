@@ -27,183 +27,112 @@ function sourceChange(element) {
 }
 
 function submitUser() {
-	var servers = ""
-	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers, document.getElementById('user_admin').checked ? 'true' : 'false')
+	var servers = "";
+	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers, document.getElementById('user_admin').checked);
 }
 
 function submitServer() {
-	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value)
+	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value);
 }
 
 function submitSource() {
-	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value)
+	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value);
 }
 
 function createUser(user, password, servers, admin) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error creating user: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/create/user', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('user=' + encodeURIComponent(user) + '&password=' + encodeURIComponent(password)  + '&servers=' + encodeURIComponent(servers) + '&admin=' + encodeURIComponent(admin));
+	ajaxPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error creating user: ' + ajax.responseText);
+	});
 }
 
 function destroyUser(user) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error destroying user: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/destroy/user', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('user=' + encodeURIComponent(user));
+	ajaxPost('/admin/destroy/user', { 'user': user }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error destroying user: ' + ajax.responseText);
+	});
 }
 
 function createServer(server, source) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error creating server: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/create/server', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('server=' + encodeURIComponent(server) + '&source=' + encodeURIComponent(source));
+	ajaxPost('/admin/create/server', { 'server': server, 'source': source }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error creating server: ' + ajax.responseText);
+	});
 }
 
 function destroyServer(server) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error destroying server: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/destroy/server', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('server=' + encodeURIComponent(server));
+	ajaxPost('/admin/destroy/server', { 'server': server }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error destroying server: ' + ajax.responseText);
+	});
 }
 
 function addSource(source, bzr) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error adding source: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/add/source', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('source=' + encodeURIComponent(source) + '&bzr=' + encodeURIComponent(bzr));
+	ajaxPost('/admin/add/source', { 'source': source, 'bzr': bzr }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error adding source: ' + ajax.responseText);
+	});
 }
 
 function removeSource(source) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error removing source: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/remove/source', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('source=' + encodeURIComponent(source));
+	ajaxPost('/admin/remove/source', { 'source': source }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error removing source: ' + ajax.responseText);
+	});
 }
 
 function updateSource(source) {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error updating source: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/update/source', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('source=' + encodeURIComponent(source));
+	ajaxPost('/admin/update/source', { 'source': source }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error updating source: ' + ajax.responseText);
+	});
 }
 
 function getUsers() {
 	if(document.getElementById('users').style.display == 'none' || document.getElementById('user_list').style.display == 'none')
 		return;
 
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('user_listing').innerHTML = ajax.responseText;
-		}
-	}
-	ajax.open('GET', '/admin/get/users', true);
-	ajax.send();
+	ajaxGet('/admin/get/users', function(ajax) {
+		if(ajax.status == 200 && ajax.responseText != '')
+			document.getElementById('user_listing').innerHTML = ajax.responseText;
+	});
 }
 
 function getServers() {
 	if(document.getElementById('servers').style.display == 'none' || document.getElementById('server_list').style.display == 'none')
 		return;
 
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('server_listing').innerHTML = ajax.responseText;
-		}
-	}
-	ajax.open('GET', '/admin/get/servers', true);
-	ajax.send();
+	ajaxGet('/admin/get/servers', function(ajax) {
+		if(ajax.status == 200 && ajax.responseText != '')
+			document.getElementById('server_listing').innerHTML = ajax.responseText;
+	});
 }
 
 function getSources() {
 	if(document.getElementById('sources').style.display == 'none' || document.getElementById('source_list').style.display == 'none')
 		return;
 
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText != '')
-				document.getElementById('source_listing').innerHTML = ajax.responseText;
-		}
-	}
-	ajax.open('GET', '/admin/get/sources', true);
-	ajax.send();
+	ajaxGet('/admin/get/sources', function(ajax) {
+		if(ajax.status == 200 && ajax.responseText != '')
+			document.getElementById('source_listing').innerHTML = ajax.responseText;
+	});
 }
 
 function getConfig() {
 	if(document.getElementById('config').style.display == 'none' || config.hasFocus())
 		return;
 
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status == 200 && ajax.responseText != '')
-				config.setValue(ajax.responseText);
-		}
-	}
-	ajax.open('GET', '/admin/get/config', true);
-	ajax.send();
+	ajaxGet('/admin/get/config', function(ajax) {
+		if(ajax.status == 200 && ajax.responseText != '')
+			config.setValue(ajax.responseText);
+	});
 }
 
 function updateConfig() {
-	if(document.getElementById('config').style.display == 'none')
-		return;
-
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4) {
-			if(ajax.status != 200 || ajax.responseText != 'success')
-				alert('Error updating config: ' + ajax.responseText);
-		}
-	}
-	ajax.open('POST', '/admin/update/config', true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.send('config=' + encodeURIComponent(config.getValue()));
+	ajaxPost('/admin/update/config', { 'config': config.getValue() }, function(ajax) {
+		if(ajax.status != 200 || ajax.responseText != 'success')
+			alert('Error updating config: ' + ajax.responseText);
+	});
 }
 
 function load() {
