@@ -1,5 +1,6 @@
 import http.server
 import os
+import socketserver
 import threading
 import urllib
 
@@ -20,7 +21,7 @@ def destroy():
 	server.server_close()
 	server = None
 
-class HTTPServer(http.server.HTTPServer):
+class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 	def __init__(self, address, port, routes, log=None):
 		self.routes = routes
 
@@ -71,16 +72,21 @@ class HTTPServer(http.server.HTTPServer):
 
 				self.output_headers = {}
 				self.set_header('Content-Type', 'text/html; charset=utf-8')
-				if self.request in self.routes:
-					self.set_status(200)
-					self.response = self.routes[self.request](self)
-				elif '404' in self.routes:
-					self.set_status(404)
-					self.response = self.routes['404'](self)
-				else:
-					self.set_status(404)
+				try:
+					if self.request in self.routes:
+						self.set_status(200)
+						self.response = self.routes[self.request](self)
+					elif '404' in self.routes:
+						self.set_status(404)
+						self.response = self.routes['404'](self)
+					else:
+						self.set_status(404)
+						self.set_header('Content-Type', 'text/plain; charset=utf-8')
+						self.response = '404 - Not Found'
+				except:
+					self.set_status(500)
 					self.set_header('Content-Type', 'text/plain; charset=utf-8')
-					self.response = '404 - Not Found'
+					self.response = '500 - Internal Server Error'
 
 				if not isinstance(self.response, bytes):
 					self.response = self.response.encode('utf-8')
