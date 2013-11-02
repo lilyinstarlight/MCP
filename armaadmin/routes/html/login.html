@@ -22,8 +22,8 @@
 						<td><input id="password" name="password" type="password" /></td>
 					</tr>
 					<tr>
-						<td><input type="submit" style="visibility: hidden" /></td>
-						<td><br /><a href="javascript:document.getElementById('login').submit()" class="button">Submit</a></td>
+						<td></td>
+						<td><br /><a href="javascript:document.getElementById('login').submit()" class="button" onkeypress="if(event.keyCode == 13) this.form.submit()">Submit</a></td>
 					</tr>
 				</table>
 			</form>
