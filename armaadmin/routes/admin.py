@@ -82,3 +82,5 @@ def action(request):
 		return 'Unknown error'
 
 	return 'success'
+
+routes = { '/admin': handle, '/admin/create/user': action, '/admin/destroy/user': action, '/admin/create/server': action, '/admin/destroy/server': action, '/admin/add/source': action, '/admin/remove/source': action, '/admin/update/source': action, '/admin/get/users': action, '/admin/get/servers': action, '/admin/get/sources': action, '/admin/get/config': action, '/admin/update/config': action }

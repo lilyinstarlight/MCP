@@ -12,3 +12,5 @@ def handle(request):
 
 	request.set_header('Content-Type', 'text/plain; charset=utf-8')
 	return 'Sorry, there is no (documented) scripting API.'
+
+routes = { '/api': handle }

@@ -1,6 +1,6 @@
 import os
 
-from armaadmin import sessions, users
+from armaadmin import errors, manager, sessions, users
 
 def handle(request):
 	error = ''
@@ -48,3 +48,73 @@ def handle(request):
 	else:
 		with open(os.path.dirname(__file__) + '/html/login.html', 'r') as file:
 			return file.read() % { 'error': error, 'user': request.args.get('user', '') }
+
+def action(request):
+	request.set_header('Content-Type', 'text/plain; charset=utf8')
+
+	session = sessions.get(request.cookies.get('session'))
+	if not session:
+		return 'Not logged in'
+	if not session.server:
+		return 'No server selected'
+
+	server = manager.get(session.server)
+
+	if not server:
+		return 'Server does not exist'
+
+	try:
+		if request.request == '/start':
+			server.start()
+		elif request.request == '/stop':
+			server.stop()
+		elif request.request == '/reload':
+			server.reload()
+		elif request.request == '/restart':
+			server.restart()
+		elif request.request == '/status':
+			return server.status()
+		elif request.request == '/sendcommand':
+			server.sendCommand(request.args.get('command'))
+		elif request.request == '/get/log':
+			try:
+				return server.getLog()
+			except FileNotFoundError:
+				return 'Log not found'
+		elif request.request == '/get/scriptlog':
+			try:
+				return server.getScriptLog()
+			except FileNotFoundError:
+				return 'Script log not found'
+		elif request.request == '/get/settings':
+			try:
+				return server.getSettings()
+			except FileNotFoundError:
+				return 'Settings file not found'
+		elif request.request == '/get/script':
+			try:
+				return server.getScript()
+			except FileNotFoundError:
+				return 'Script file not found'
+		elif request.request == '/update/settings':
+			try:
+				server.updateSettings(request.args.get('settings'))
+			except FileNotFoundError:
+				return 'Settings file not found'
+		elif request.request == '/update/script':
+			try:
+				server.udpateScript(request.args.get('script'))
+			except FileNotFoundError:
+				return 'Script file not found'
+	except errors.NoServerError:
+		return 'Server does not exist'
+	except errors.ServerRunningError:
+		return 'Server is already running'
+	except errors.ServerStoppedError:
+		return 'Server is not running'
+	except:
+		return 'Unknown error'
+
+	return 'success'
+
+routes = { '/': handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action }
