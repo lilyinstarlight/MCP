@@ -33,7 +33,7 @@
 			</span>
 			<span class="right">
 				<form id="change_server" action="/" method="post" enctype="application/x-www-form-urlencoded">
-					<select name="server" onchange="document.change_server.submit()">%(servers)s
+					<select name="server" onchange="this.form.submit()">%(servers)s
 					</select>
 				</form>
 				%(menu)s<a href="/?logout" class="button">Logout</a>
