@@ -112,8 +112,7 @@ def action(request):
 		return 'Invalid server name'
 	except errors.InvalidSourceError:
 		return 'Invalid source name'
-	except Exception as e:
-		print('Caught exception on admin: ' + str(e))
+	except:
 		return 'Unknown error'
 
 	return 'success'

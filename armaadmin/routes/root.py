@@ -112,8 +112,7 @@ def action(request):
 		return 'Server is already running'
 	except errors.ServerStoppedError:
 		return 'Server is not running'
-	except Exception as e:
-		print('Caught exception on root: ' + str(e))
+	except:
 		return 'Unknown error'
 
 	return 'success'

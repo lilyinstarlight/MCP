@@ -1,4 +1,5 @@
 import os
+import shlex
 import shutil
 import subprocess
 
@@ -17,10 +18,10 @@ def create(name, source):
 	if not source in os.listdir(config.sources):
 		raise errors.NoSourceError
 
-	if subprocess.call([ config.sources + '/' + source + '/bootstrap.sh' ], cwd=config.sources + '/' + source):
+	if subprocess.call([ shlex.quote(config.sources + '/' + source + '/bootstrap.sh') ], cwd=config.sources + '/' + source, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
 
-	if subprocess.call([ config.sources + '/' + source + '/configure', '--enabled-dedicated', '--enable-armathentication', '--disable-automakedefaults', '--disable-sysinstall', '--disable-useradd', '--disable-etc', '--disable-desktop', '--disable-initscripts', '--disable-uninstall', '--disable-games', '--prefix="' + config.prefix + '/' + name + '"', '--localstatedir="' + config.prefix + '/' + name + '/var"' ], cwd=config.sources + '/' + source):
+	if subprocess.call([ shlex.quote(config.sources + '/' + source + '/configure --enabled-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix="' + config.prefix + '/' + name + '" --localstatedir="' + config.prefix + '/' + name + '/var"') ], cwd=config.sources + '/' + source, shell=True):
 		raise errors.BuildError('Failed to configure server')
 
 	if subprocess.call([ 'make', '-C' + config.sources + '/' + source ], cwd=config.sources + '/' + source):
