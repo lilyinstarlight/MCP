@@ -3,31 +3,24 @@ import shlex
 import shutil
 import subprocess
 
-from armaadmin import config, errors
+from armaadmin import config, errors, sources
 
-def create(name, source):
-	if not config.sources:
+def create(name, source_name):
+	if not config.creation:
 		raise errors.NoServerCreationError
 
-	if name in os.listdir(config.prefix):
-		raise errors.ServerExistsError
+	source = sources.get(source_name)
 
-	if source == 'config':
-		raise errors.InvalidSourceError
-
-	if not source in os.listdir(config.sources):
-		raise errors.NoSourceError
-
-	if subprocess.call([ shlex.quote(config.sources + '/' + source + '/bootstrap.sh') ], cwd=config.sources + '/' + source, shell=True):
+	if subprocess.call([ shlex.quote(source.dir + '/bootstrap.sh') ], cwd=source.dir, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
 
-	if subprocess.call([ shlex.quote(config.sources + '/' + source + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(config.prefix + '/' + name) + ' --localstatedir=' + shlex.quote(config.prefix + '/' + name + '/var') ], cwd=config.sources + '/' + source, shell=True):
+	if subprocess.call([ shlex.quote(source.dir + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(config.prefix + '/' + name) + ' --localstatedir=' + shlex.quote(config.prefix + '/' + name + '/var') ], cwd=source.dir, shell=True):
 		raise errors.BuildError('Failed to configure server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(config.sources + '/' + source) ], cwd=config.sources + '/' + source):
+	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir) ], cwd=source.dir):
 		raise errors.BuildError('Failed to compile server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(config.sources + '/' + source), 'install' ], cwd=config.sources + '/' + source):
+	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir), 'install' ], cwd=source.dir):
 		raise errors.BuildError('Failed to install server')
 
 	try:
@@ -41,11 +34,11 @@ def create(name, source):
 		raise errors.ConfigError('Failed to remove "etc" directory')
 
 	try:
-		for entry in os.listdir(config.sources + '/config'):
-			if os.path.isdir(config.sources + '/config/' + entry):
-				shutil.copytree(config.sources + '/config/' + entry, config.prefix + '/' + name + '/config')
+		for entry in os.listdir(config.config):
+			if os.path.isdir(config.config + entry):
+				shutil.copytree(config.config + entry, config.prefix + '/' + name + '/config')
 			else:
-				shutil.copy2(config.sources + '/config/' + entry, config.prefix + '/' + name + '/config')
+				shutil.copy2(config.config + entry, config.prefix + '/' + name + '/config')
 	except:
 		raise errors.ConfigError('Failed to copy configuration files')
 
@@ -83,103 +76,13 @@ def create(name, source):
 			raise errors.ConfigError('Could not make "user" directory')
 
 	with open(config.prefix + '/' + name + '/source', 'w') as file:
-		file.write(source + '|' + getSourceRevision(source))
+		file.write(source.name + '|' + source.getRevision())
 
 def destroy(name):
-	if not name in os.listdir(config.prefix):
+	if not name in os.listdir(config.prefix) or not os.path.isdir(config.prefix + '/' + name):
 		raise errors.NoServerError
 
 	try:
 		shutil.rmtree(config.prefix + '/' + name)
 	except:
 		raise errors.ConfigError('Failed to remove directory')
-
-def upgrade(name):
-	if not name in os.listdir(config.prefix):
-		raise errors.NoServerError
-
-	create(name, getServerSource(name))
-
-def getSource(name):
-	with open(config.prefix + '/' + name + '/source', 'r') as file:
-		return file.read().split('|')[0]
-
-def getRevision(name):
-	with open(config.prefix + '/' + name + '/source', 'r') as file:
-		return file.read().split('|')[1]
-
-def addSource(name, bzr):
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	if name == 'config':
-		raise errors.InvalidSourceError
-
-	if name in os.listdir(config.sources):
-		raise errors.SourceExistsError
-
-	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ]):
-		raise errors.BzrError('Failed to clone bzr tree')
-
-def removeSource(name):
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	if name == 'config':
-		raise errors.InvalidSourceError
-
-	if not name in os.listdir(config.sources):
-		raise errors.NoSourceError
-
-	try:
-		shutil.rmtree(config.sources + '/' + name)
-	except:
-		raise errors.ConfigError('Failed to remove directory')
-
-def updateSource(name):
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	if name == 'config':
-		raise errors.InvalidSourceError
-
-	if not name in os.listdir(config.sources):
-		raise errors.NoSourceError
-
-	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + name ]):
-		raise errors.BzrError('Failed to pull changes')
-
-def getSourceRevision(name):
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	if name == 'config':
-		raise errors.InvalidSourceError
-
-	with open(config.sources + '/' + name + '/.bzr/branch/last-revision', 'r') as file:
-		return file.read().split(' ', 1)[0]
-
-def getSources():
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	sources = []
-	for source in os.listdir(config.sources):
-		if not source == 'config':
-			sources.append(source)
-
-	return sources
-
-def getConfig():
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	with open(config.sources + '/config/server_info.cfg', 'r') as file:
-		return file.read()
-
-def updateConfig(config_text):
-	if not config.sources:
-		raise errors.NoServerCreationError
-
-	with open(config.sources + '/config/server_info.cfg', 'w') as file:
-		file.write(config_text)

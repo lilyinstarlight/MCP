@@ -58,12 +58,9 @@ def action(request):
 	if not session.server:
 		return 'No server selected'
 
-	server = manager.get(session.server)
-
-	if not server:
-		return 'Server does not exist'
-
 	try:
+		server = manager.get(session.server)
+
 		if request.request == '/start':
 			server.start()
 		elif request.request == '/stop':
@@ -101,14 +98,18 @@ def action(request):
 		elif request.request == '/update/script':
 			server.udpateScript(request.args.get('script'))
 	except errors.NoServerError:
+		request.set_status(500)
 		return 'Server does not exist'
 	except errors.ServerRunningError:
+		request.set_status(400)
 		return 'Server is already running'
 	except errors.ServerStoppedError:
+		request.set_status(400)
 		return 'Server is not running'
 	except:
+		request.set_status(500)
 		return 'Unknown error'
 
-	return 'success'
+	return ''
 
 routes = { '/': handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action }

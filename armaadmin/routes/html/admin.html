@@ -5,7 +5,9 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
+		<link href="admin.css" rel="stylesheet" type="text/css" />
 		<script src="common.js" type="text/javascript"></script>
+		<script src="admin_functions.js" type="text/javascript"></script>
 		<script src="admin.js" type="text/javascript"></script>
 
 		<link href="codemirror/codemirror.css" rel="stylesheet" />
@@ -42,7 +44,7 @@
 							<a href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 					</div>
-					<pre id="user_listing"></pre>
+					<select id="user_listing" multiple="multiple" class="multi"></select>
 				</div>
 				<div id="user_create" style="display: none">
 					<table>
@@ -60,10 +62,7 @@
 						</tr>
 						<tr>
 							<td><label for="user_servers">Servers: </label></td>
-							<td><select id="user_servers"></select><input id="server_add" type="button" value="Add" /></td>
-						</tr>
-						<tr>
-							<td colspan="2">TODO: Current Server List</td>
+							<td><select id="user_servers" multiple="multiple" class="multi"></select></td>
 						</tr>
 						<tr>
 							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
@@ -84,7 +83,7 @@
 							<a href="javascript:upgradeServers()" class="button">Upgrade All</a>
 						</span>
 					</div>
-					<pre id="server_listing"></pre>
+					<select id="server_listing" multiple="multiple" class="multi"></select>
 				</div>
 				<div id="server_create" style="display: none">
 					<table>
@@ -115,7 +114,7 @@
 							<a href="javascript:updateSources()" class="button">Update All</a>
 						</span>
 					</div>
-					<pre id="source_listing"></pre>
+					<select id="source_listing" multiple="multiple" class="multi"></select>
 				</div>
 				<div id="source_add" style="display: none">
 					<table>

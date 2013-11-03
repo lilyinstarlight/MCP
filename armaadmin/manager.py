@@ -8,7 +8,10 @@ from armaadmin import config, errors, server
 servers = {}
 
 def get(name):
-	return servers.get(name)
+	if not name in servers:
+		raise NoServerError
+
+	return servers[name]
 
 def create(name, source):
 	if name in servers:
@@ -39,6 +42,7 @@ def demote():
 
 class Server:
 	def __init__(self, name):
+		self.name = name
 		self.dir = config.prefix + '/' + name
 		self.server = None
 		self.script = None
@@ -48,7 +52,7 @@ class Server:
 			self.status_msg = 'nonexistent'
 
 	def exists(self):
-		return os.path.exists(self.dir)
+		return os.path.exists(self.dir) and os.path.isdir(self.dir)
 
 	def start(self):
 		if not self.exists():
@@ -107,6 +111,13 @@ class Server:
 		else:
 			raise errors.ServerStoppedError
 
+	def upgrade(self):
+		status = self.serverStatus()
+		self.stop()
+		server.create(self.name, self.getSource())
+		if status:
+			self.start()
+
 	def serverStatus(self):
 		if self.server:
 			return self.server.poll() == None
@@ -151,6 +162,14 @@ class Server:
 	def updateScript(self, script):
 		with open(self.dir + '/scripts/script.py', 'w') as file:
 			file.write(script)
+
+	def getSource(self):
+		with open(self.dir + '/source', 'r') as file:
+			return file.read().split('|')[0]
+
+	def getRevision(self):
+		with open(self.dir + '/source', 'r') as file:
+			return file.read().split('|')[1]
 
 env = os.environ.copy()
 

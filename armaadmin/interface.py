@@ -23,7 +23,10 @@ def file(request):
 		request.set_header('Content-Type', 'text/plain; charset=utf-8')
 		return '404 - Not Found'
 
-routes = { '404': file }
+def version(request):
+	return name + ' ' + version
+
+routes = { '404': file, '/version': version }
 routes.update(root.routes)
 routes.update(admin.routes)
 routes.update(api.routes)

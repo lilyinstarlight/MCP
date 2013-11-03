@@ -6,6 +6,7 @@
 		<link href="common.css" rel="stylesheet" type="text/css" />
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
 		<script src="common.js" type="text/javascript"></script>
+		<script src="functions.js" type="text/javascript"></script>
 		<script src="script.js" type="text/javascript"></script>
 
 		<link href="codemirror/codemirror.css" rel="stylesheet" />
@@ -57,10 +58,10 @@
 				<table id="commands" class="commands">
 					<tr>
 						<td>
-							<input id="command_box" type="text" class="command_box" onkeypress="if(event.keyCode == 13) submitCommand()" />
+							<input id="command_box" type="text" class="command_box" onkeypress="if(event.keyCode == 13) submitCommand()" disabled="disabled" />
 						</td>
 						<td>
-							<a id="command_submit" href="javascript:submitCommand()" class="button">Send</a>
+							<a id="command_submit" href="javascript:submitCommand()" class="button disabled">Send</a>
 						</td>
 					</tr>
 				</table>

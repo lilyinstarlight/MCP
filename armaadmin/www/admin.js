@@ -1,3 +1,4 @@
+var users, servers, sources;
 var config;
 
 function change(element) {
@@ -39,121 +40,51 @@ function submitSource() {
 	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value);
 }
 
-function createUser(user, password, servers, admin) {
-	ajaxPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error creating user: ' + ajax.responseText);
-	});
-}
+function refresh() {
+	if(document.getElementById('users').style.display != 'none' && document.getElementById('user_list').style.display != 'none') {
+		users = getUsers();
 
-function destroyUser(user) {
-	ajaxPost('/admin/destroy/user', { 'user': user }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error destroying user: ' + ajax.responseText);
-	});
-}
+		var select = document.createElement('select');
+		for(user in users) {
+			var option = document.createElement('option');
+			option.value = user;
+			option.innerHTML = user + (users[user].admin ? ' (Admin) - ' : ' - ') + users[user].servers.join(',');
+			select.appendChild(option);
+		}
+		document.getElementById('user_listing').innerHTML = select.innerHTML;
+	}
 
-function createServer(server, source) {
-	ajaxPost('/admin/create/server', { 'server': server, 'source': source }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error creating server: ' + ajax.responseText);
-	});
-}
+	if(document.getElementById('servers').style.display != 'none' && document.getElementById('server_list').style.display != 'none') {
+		servers = getServers();
 
-function destroyServer(server) {
-	ajaxPost('/admin/destroy/server', { 'server': server }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error destroying server: ' + ajax.responseText);
-	});
-}
+		var select = document.createElement('select');
+		for(server in servers) {
+			var option = document.createElement('option');
+			option.value = server;
+			option.innerHTML = server + ' - ' + servers[server].source + ' (' + servers[server].revision + ')';
+			select.appendChild(option);
+		}
+		document.getElementById('server_listing').innerHTML = select.innerHTML;
+	}
 
-function upgradeServer(server) {
-	ajaxPost('/admin/upgrade/server', { 'server': server }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error upgrading server: ' + ajax.responseText);
-	});
-}
+	if(document.getElementById('sources').style.display != 'none' && document.getElementById('source_list').style.display != 'none') {
+		sources = getSources();
 
-function upgradeServers() {
-	ajaxGet('/admin/upgrade/servers', function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error upgrading servers: ' + ajax.responseText);
-	});
-}
+		var select = document.createElement('select');
+		for(source in sources) {
+			var option = document.createElement('option');
+			option.value = source;
+			option.innerHTML = source + ' - ' + sources[source].revision;
+			select.appendChild(option);
+		}
+		document.getElementById('source_listing').innerHTML = select.innerHTML;
+	}
 
-function addSource(source, bzr) {
-	ajaxPost('/admin/add/source', { 'source': source, 'bzr': bzr }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error adding source: ' + ajax.responseText);
-	});
-}
-
-function removeSource(source) {
-	ajaxPost('/admin/remove/source', { 'source': source }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error removing source: ' + ajax.responseText);
-	});
-}
-
-function updateSource(source) {
-	ajaxPost('/admin/update/source', { 'source': source }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error updating source: ' + ajax.responseText);
-	});
-}
-
-function updateSources() {
-	ajaxGet('/admin/update/sources', function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error updating sources: ' + ajax.responseText);
-	});
-}
-
-function getUsers() {
-	if(document.getElementById('users').style.display == 'none' || document.getElementById('user_list').style.display == 'none')
-		return;
-
-	ajaxGet('/admin/get/users', function(ajax) {
-		if(ajax.status == 200 && ajax.responseText != '')
-			document.getElementById('user_listing').innerHTML = ajax.responseText;
-	});
-}
-
-function getServers() {
-	if(document.getElementById('servers').style.display == 'none' || document.getElementById('server_list').style.display == 'none')
-		return;
-
-	ajaxGet('/admin/get/servers', function(ajax) {
-		if(ajax.status == 200 && ajax.responseText != '')
-			document.getElementById('server_listing').innerHTML = ajax.responseText;
-	});
-}
-
-function getSources() {
-	if(document.getElementById('sources').style.display == 'none' || document.getElementById('source_list').style.display == 'none')
-		return;
-
-	ajaxGet('/admin/get/sources', function(ajax) {
-		if(ajax.status == 200 && ajax.responseText != '')
-			document.getElementById('source_listing').innerHTML = ajax.responseText;
-	});
-}
-
-function getConfig() {
-	if(document.getElementById('config').style.display == 'none' || config.hasFocus())
-		return;
-
-	ajaxGet('/admin/get/config', function(ajax) {
-		if(ajax.status == 200 && ajax.responseText != '')
-			config.setValue(ajax.responseText);
-	});
-}
-
-function updateConfig() {
-	ajaxPost('/admin/update/config', { 'config': config.getValue() }, function(ajax) {
-		if(ajax.status != 200 || ajax.responseText != 'success')
-			alert('Error updating config: ' + ajax.responseText);
-	});
+	if(document.getElementById('config').style.display != 'none' && !config.hasFocus()) {
+		config_text = getConfig();
+		if(config_text != '')
+			config.setValue(config_text);
+	}
 }
 
 function load() {
@@ -166,10 +97,7 @@ function load() {
 		placeholder: 'Here you can specify configuration global to every server.  Generally GLOBAL_ID and TALK_TO_MASTER are turned on here but you should also specify a SERVER_DNS.'
 	});
 
-	setInterval(getUsers, 500);
-	setInterval(getServers, 500);
-	setInterval(getSources, 500);
-	setInterval(getConfig, 500);
+	setInterval(refresh, 500);
 }
 
 window.addEventListener('load', load, false);

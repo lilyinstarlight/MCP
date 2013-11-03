@@ -1,8 +1,14 @@
 #Prefix where servers are kept
 prefix = '/home/armagetron/servers'
 
-#Directory where the sources are kept; None to disable server creation
+#Whether or not to allow server creation
+creation = True
+
+#Directory where the sources are kept; None if creation is disabled
 sources = '/home/armagetron/sources'
+
+#Directory where default configuration is kept; None if creation is disabled
+config = '/home/armagetron/config'
 
 #Directory where the scripting API is kept; None to disable the scripting API
 api = '/home/armagetron/api'

@@ -1,4 +1,5 @@
 import http.server
+import json
 import os
 import socketserver
 import threading
@@ -104,10 +105,15 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 				self.wfile.write(self.response)
 
 			def do_POST(self):
-				if self.headers.get('content-type') == 'application/x-www-form-urlencoded':
-					post = self.rfile.readline(int(self.headers.get('content-length', '-1'))).decode('utf-8')
+				post = self.rfile.readline(int(self.headers.get('content-length', '-1'))).decode('utf-8')
+				content_type = self.headers.get('content-type')
+				if content_type == 'application/x-www-form-urlencoded':
 					self.post_args = {}
 					HTTPHandler.parse_url_params(self.post_args, post)
+				elif content_type == 'multipart/form-data':
+					pass
+				elif content_type == 'application/json':
+					self.json_data = json.loads(post)
 
 				self.do_GET()
 

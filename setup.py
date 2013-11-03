@@ -35,8 +35,8 @@ class post_install(install):
 
 		dir_util.mkpath(config.prefix)
 
-		if config.sources:
-			dir_util.copy_tree('sources', config.sources)
+		if config.creation:
+			dir_util.copy_tree('config', config.config)
 
 		if config.api:
 			print()
