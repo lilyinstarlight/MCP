@@ -48,8 +48,8 @@ def action(request):
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/upgrade/servers':
 			try:
-				for server in manager.servers:
-					server.upgrade(server)
+				for server_name in manager.servers:
+					server.upgrade(server_name)
 			except errors.BuildError as e:
 				return 'Error building server: ' + e.msg
 			except errors.ConfigError as e:
