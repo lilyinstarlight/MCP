@@ -81,11 +81,8 @@ def create(name, source):
 		except:
 			raise errors.ConfigError('Could not make "user" directory')
 
-	with open(config.sources + '/' + source + '/.bzr/branch/last-revision', 'r') as file:
-		revision = file.read().split(' ', 1)[0]
-
 	with open(config.prefix + '/' + name + '/source', 'w') as file:
-		file.write(source + '|' + revision)
+		file.write(source + '|' + getSourceRevision(source))
 
 def destroy(name):
 	if not name in os.listdir(config.prefix):
@@ -100,10 +97,15 @@ def upgrade(name):
 	if not name in os.listdir(config.prefix):
 		raise errors.NoServerError
 
-	with open(config.prefix + '/' + name + '/source', 'r') as file:
-		source = file.read().split('|')[0]
+	create(name, getServerSource(name))
 
-	create(name, source)
+def getSource(name):
+	with open(config.prefix + '/' + name + '/source', 'r') as file:
+		return file.read().split('|')[0]
+
+def getRevision(name):
+	with open(config.prefix + '/' + name + '/source', 'r') as file:
+		return file.read().split('|')[1]
 
 def addSource(name, bzr):
 	if not config.sources:
@@ -145,6 +147,16 @@ def updateSource(name):
 
 	if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + name ]):
 		raise errors.BzrError('Failed to pull changes')
+
+def getSourceRevision(name):
+	if not config.sources:
+		raise errors.NoServerCreationError
+
+	if name == 'config':
+		raise errors.InvalidSourceError
+
+	with open(config.sources + '/' + name + '/.bzr/branch/last-revision', 'r') as file:
+		return file.read().split(' ', 1)[0]
 
 def getSources():
 	if not config.sources:

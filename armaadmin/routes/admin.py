@@ -76,11 +76,20 @@ def action(request):
 			except errors.BzrError as e:
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/get/users':
-			return '\n'.join(users.users)
+			user_list = []
+			for user in users.users:
+				user_list.append(user + ':' + ','.join(users.users[user].servers) + ':' + str(users.users[user].admin))
+			return '\n'.join(user_list)
 		elif request.request == '/admin/get/servers':
-			return '\n,'.join(manager.servers)
+			server_list = []
+			for server_name in manager.servers:
+				server_list.append(server_name + ':' + server.getSource(server_name) + ':' + server.getRevision(server_name))
+			return '\n'.join(server_list)
 		elif request.request == '/admin/get/sources':
-			return '\n'.join(server.getSources())
+			source_list = []
+			for source in server.getSources():
+				source_list.append(source + ':' + server.getSourceRevision(source))
+			return '\n'.join(source_list)
 		elif request.request == '/admin/get/config':
 			try:
 				return server.getConfig()
@@ -103,7 +112,8 @@ def action(request):
 		return 'Invalid server name'
 	except errors.InvalidSourceError:
 		return 'Invalid source name'
-	except:
+	except Exception as e:
+		print('Caught exception on admin: ' + str(e))
 		return 'Unknown error'
 
 	return 'success'
