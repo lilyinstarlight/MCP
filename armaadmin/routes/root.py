@@ -80,32 +80,26 @@ def action(request):
 			try:
 				return server.getLog()
 			except FileNotFoundError:
-				return 'Log not found'
+				return ''
 		elif request.request == '/get/scriptlog':
 			try:
 				return server.getScriptLog()
 			except FileNotFoundError:
-				return 'Script log not found'
+				return ''
 		elif request.request == '/get/settings':
 			try:
 				return server.getSettings()
 			except FileNotFoundError:
-				return 'Settings file not found'
+				return ''
 		elif request.request == '/get/script':
 			try:
 				return server.getScript()
 			except FileNotFoundError:
-				return 'Script file not found'
+				return ''
 		elif request.request == '/update/settings':
-			try:
-				server.updateSettings(request.args.get('settings'))
-			except FileNotFoundError:
-				return 'Settings file not found'
+			server.updateSettings(request.args.get('settings'))
 		elif request.request == '/update/script':
-			try:
-				server.udpateScript(request.args.get('script'))
-			except FileNotFoundError:
-				return 'Script file not found'
+			server.udpateScript(request.args.get('script'))
 	except errors.NoServerError:
 		return 'Server does not exist'
 	except errors.ServerRunningError:

@@ -94,12 +94,9 @@ def action(request):
 			try:
 				return server.getConfig()
 			except FileNotFoundError:
-				return 'Config file not found'
+				return ''
 		elif request.request == '/admin/update/config':
-			try:
-				server.updateConfig(request.args.get('config'))
-			except FileNotFoundError:
-				return 'Config file not found'
+			server.updateConfig(request.args.get('config'))
 	except errors.NoServerCreationError:
 		return 'Server creation is disabled'
 	except errors.ServerExistsError:
