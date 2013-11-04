@@ -23,6 +23,8 @@ class post_install(install):
 
 		armaadmin.users.add(username, password, [], True)
 
+		print()
+
 		install.run(self)
 
 		os.remove('armaadmin/users.db')

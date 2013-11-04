@@ -35,10 +35,11 @@ def create(name, source_name):
 
 	try:
 		for entry in os.listdir(config.config):
-			if os.path.isdir(config.config + entry):
-				shutil.copytree(config.config + entry, config.prefix + '/' + name + '/config')
+			entry = config.config + entry
+			if os.path.isdir(entry):
+				shutil.copytree(entry, config.prefix + '/' + name + '/config')
 			else:
-				shutil.copy2(config.config + entry, config.prefix + '/' + name + '/config')
+				shutil.copy2(entry, config.prefix + '/' + name + '/config')
 	except:
 		raise errors.ConfigError('Failed to copy configuration files')
 
