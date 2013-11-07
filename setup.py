@@ -24,6 +24,7 @@ class post_install(install):
 		armaadmin.users.add(username, password, [], True)
 
 		print()
+		print('Installing...')
 
 		install.run(self)
 
