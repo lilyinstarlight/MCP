@@ -42,48 +42,60 @@ function submitSource() {
 
 function refresh() {
 	if(document.getElementById('users').style.display != 'none' && document.getElementById('user_list').style.display != 'none') {
-		users = getUsers();
-
-		var select = document.createElement('select');
-		for(user in users) {
-			var option = document.createElement('option');
-			option.value = user;
-			option.innerHTML = user + (users[user].admin ? ' (Admin) - ' : ' - ') + users[user].servers.join(',');
-			select.appendChild(option);
-		}
-		document.getElementById('user_listing').innerHTML = select.innerHTML;
+		getUsers(function(response) {
+			users = response;
+			var select = document.createElement('select');
+			for(var user in response) {
+				var option = document.createElement('option');
+				option.value = user;
+				option.innerHTML = user + (response[user].admin ? ' (Admin) - ' : ' - ') + response[user].servers.join(',');
+				select.appendChild(option);
+			}
+			if(document.getElementById('user_listing').innerHTML != select.innerHTML)
+				document.getElementById('user_listing').innerHTML = select.innerHTML;
+		});
 	}
 
 	if(document.getElementById('servers').style.display != 'none' && document.getElementById('server_list').style.display != 'none') {
-		servers = getServers();
-
-		var select = document.createElement('select');
-		for(server in servers) {
-			var option = document.createElement('option');
-			option.value = server;
-			option.innerHTML = server + ' - ' + servers[server].source + ' (' + servers[server].revision + ')';
-			select.appendChild(option);
-		}
-		document.getElementById('server_listing').innerHTML = select.innerHTML;
+		getServers(function(response) {
+			if(servers == response)
+				return;
+			servers = response;
+			var select = document.createElement('select');
+			for(var server in response) {
+				var option = document.createElement('option');
+				option.value = server;
+				option.innerHTML = server + ' - ' + response[server].source + ' (' + response[server].revision + ')';
+				select.appendChild(option);
+			}
+			if(document.getElementById('server_listing').innerHTML != select.innerHTML)
+				document.getElementById('server_listing').innerHTML = select.innerHTML;
+		});
 	}
 
 	if(document.getElementById('sources').style.display != 'none' && document.getElementById('source_list').style.display != 'none') {
-		sources = getSources();
-
-		var select = document.createElement('select');
-		for(source in sources) {
-			var option = document.createElement('option');
-			option.value = source;
-			option.innerHTML = source + ' - ' + sources[source].revision;
-			select.appendChild(option);
-		}
-		document.getElementById('source_listing').innerHTML = select.innerHTML;
+		getSources(function(response) {
+			if(sources == response)
+				return;
+			sources = response;
+			var select = document.createElement('select');
+			for(var source in response) {
+				var option = document.createElement('option');
+				option.value = source;
+				option.innerHTML = source + ' - r' + response[source].revision;
+				select.appendChild(option);
+			}
+			if(document.getElementById('source_listing').innerHTML != select.innerHTML)
+				document.getElementById('source_listing').innerHTML = select.innerHTML;
+		});
 	}
 
-	if(document.getElementById('config').style.display != 'none' && !config.hasFocus()) {
-		config_text = getConfig();
-		if(config_text != '')
-			config.setValue(config_text);
+	if(document.getElementById('config').style.display != 'none') {
+		getConfig(function(response) {
+			if(config.getValue() == response)
+				return;
+			config.setValue(response);
+		});
 	}
 }
 

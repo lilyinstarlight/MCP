@@ -1,45 +1,30 @@
-function ajaxGet(address, handler, response_type='') {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4)
-			handler(ajax);
+function XHR(address, method, data, type, response_type, handler) {
+	var request = new XMLHttpRequest();
+	request.onload = function() {
+		if(request.readyState == 4)
+			handler(request);
 	};
-	ajax.open('GET', address, true);
-	ajax.responseType = response_type;
-	ajax.send();
+	request.responseType = response_type;
+	request.open(method, address, true);
+	if(data != null) {
+		request.setRequestHeader('Content-type', getMIME(type));
+		request.send(encode(data, type));
+	}
+	else {
+		request.send();
+	}
 }
 
-function ajaxPost(address, data, handler, type='urlencoded', response_type='') {
-	var ajax = new XMLHttpRequest();
-	ajax.onload = function() {
-		if(ajax.readyState == 4)
-			handler(ajax);
-	};
-	ajax.open('POST', address, true);
-	ajax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	ajax.responseType = response_type;
-	ajax.send(encode(data, type));
+function getMIME(type) {
+	switch(type) {
+		case 'urlencoded':
+			return 'application/x-www-form-urlencoded';
+		case 'json':
+			return 'application/json';
+		default:
+			return type;
+	}
 }
-
-function sjaxGet(address, response_type='') {
-	var sjax = new XMLHttpRequest();
-	sjax.open('GET', address, false);
-	sjax.responseType = response_type;
-	sjax.send();
-
-	return sjax;
-}
-
-function sjaxPost(address, data, type='urlencoded', response_type='') {
-	var sjax = new XMLHttpRequest();
-	sjax.open('POST', address, false);
-	sjax.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	sjax.responseType = response_type;
-	sjax.send(encode(data, type));
-
-	return sjax;
-}
-
 function encode(data, type) {
 	switch(type) {
 		case 'urlencoded':
@@ -52,4 +37,20 @@ function encode(data, type) {
 		default:
 			return data;
 	}
+}
+
+function textGet(address, handler) {
+	XHR(address, 'GET', null, null, 'text', handler);
+}
+
+function textPost(address, data, handler) {
+	XHR(address, 'POST', data, 'urlencoded', 'text', handler);
+}
+
+function jsonGet(address, handler) {
+	XHR(address, 'GET', null, null, 'json', handler);
+}
+
+function jsonPost(address, data, handler) {
+	XHR(address, 'POST', data, 'urlencoded', 'json', handler);
 }

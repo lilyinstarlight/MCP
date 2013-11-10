@@ -1,5 +1,4 @@
-var settings;
-var script;
+var settings, script;
 
 function change(element) {
 	document.getElementById('console').style.display = 'none';
@@ -20,66 +19,72 @@ function submitCommand() {
 }
 
 function refresh() {
-	switch(getStatus()) {
-		case 'stopped':
-			document.getElementById('started').style.display = 'none';
-			document.getElementById('stopped').style.display = 'inline';
-			document.getElementById('command_box').disabled = true;
-			document.getElementById('command_submit').className = 'button disabled';
-			document.getElementById('status').innerHTML = 'Stopped';
-			break;
-		case 'starting':
-			document.getElementById('started').style.display = 'none';
-			document.getElementById('stopped').style.display = 'inline';
-			document.getElementById('command_box').disabled = true;
-			document.getElementById('command_submit').className = 'button disabled';
-			document.getElementById('status').innerHTML = 'Starting...';
-			break;
-		case 'started':
-			document.getElementById('stopped').style.display = 'none';
-			document.getElementById('started').style.display = 'inline';
-			document.getElementById('command_box').disabled = false;
-			document.getElementById('command_submit').className = 'button';
-			document.getElementById('status').innerHTML = 'Running';
-			break;
-		case 'stopping':
-			document.getElementById('stopped').style.display = 'none';
-			document.getElementById('started').style.display = 'inline';
-			document.getElementById('command_box').disabled = true;
-			document.getElementById('command_submit').className = 'button disabled';
-			document.getElementById('status').innerHTML = 'Stopping...';
-			break;
-		case 'nonexistent':
-			document.getElementById('stopped').style.display = 'none';
-			document.getElementById('started').style.display = 'none';
-			document.getElementById('command_box').disabled = true;
-			document.getElementById('command_submit').className = 'button disabled';
-			document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
-			break;
-	}
+	getStatus(function(status) {
+		switch(status) {
+			case 'stopped':
+				document.getElementById('started').style.display = 'none';
+				document.getElementById('stopped').style.display = 'inline';
+				document.getElementById('command_box').disabled = true;
+				document.getElementById('command_submit').className = 'button disabled';
+				document.getElementById('status').innerHTML = 'Stopped';
+				break;
+			case 'starting':
+				document.getElementById('started').style.display = 'none';
+				document.getElementById('stopped').style.display = 'inline';
+				document.getElementById('command_box').disabled = true;
+				document.getElementById('command_submit').className = 'button disabled';
+				document.getElementById('status').innerHTML = 'Starting...';
+				break;
+			case 'started':
+				document.getElementById('stopped').style.display = 'none';
+				document.getElementById('started').style.display = 'inline';
+				document.getElementById('command_box').disabled = false;
+				document.getElementById('command_submit').className = 'button';
+				document.getElementById('status').innerHTML = 'Running';
+				break;
+			case 'stopping':
+				document.getElementById('stopped').style.display = 'none';
+				document.getElementById('started').style.display = 'inline';
+				document.getElementById('command_box').disabled = true;
+				document.getElementById('command_submit').className = 'button disabled';
+				document.getElementById('status').innerHTML = 'Stopping...';
+				break;
+			case 'nonexistent':
+				document.getElementById('stopped').style.display = 'none';
+				document.getElementById('started').style.display = 'none';
+				document.getElementById('command_box').disabled = true;
+				document.getElementById('command_submit').className = 'button disabled';
+				document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
+				break;
+		}
+	});
 
 	if(document.getElementById('console').style.display != 'none') {
-		log = getLog();
-		if(log != '')
-			document.getElementById('log').innerHTML = log;
+		getLog(function(response) {
+			document.getElementById('log').innerHTML = response;
+		});
 	}
 
 	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_console').style.display != 'none') {
-		script_log = getScriptLog();
-		if(script_log != '')
-			document.getElementById('script_log').innerHTML = script_log;
+		getScriptLog(function(response) {
+			document.getElementById('script_log').innerHTML = response;
+		});
 	}
 
-	if(document.getElementById('settings').style.display != 'none' && !settings.hasFocus()) {
-		settings_text = getSettings();
-		if(settings_text != '')
-			settings.setValue(settings_text);
+	if(document.getElementById('settings').style.display != 'none') {
+		getSettings(function(response) {
+			if(settings.getValue() == response)
+				return;
+			settings.setValue(response);
+		});
 	}
 
-	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_editor').style.display != 'none' && !script.hasFocus()) {
-		script_text = getScript();
-		if(script_text != '')
-			script.setValue(script_text);
+	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_editor').style.display != 'none') {
+		getScript(function(response) {
+			if(script.getValue() == response)
+				return;
+			script.setValue(response);
+		});
 	}
 }
 

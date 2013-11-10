@@ -1,83 +1,83 @@
 function start() {
-	var request = sjaxGet('/start');
-	if(request.status != 200)
-		alert('Error starting server: ' + request.responseText);
+	textGet('/start', function(request) {
+		if(request.status != 200)
+			alert('Error starting server: ' + request.responseText);
+	});
 }
 
 function stop() {
-	var request = sjaxGet('/stop');
-	if(request.status != 200)
-		alert('Error stopping server: ' + request.responseText);
+	textGet('/stop', function(request) {
+		if(request.status != 200)
+			alert('Error stopping server: ' + request.responseText);
+	});
 }
 
 function reload() {
-	var request = sjaxGet('/reload');
-	if(request.status != 200)
-		alert('Error reloading server: ' + request.responseText);
+	textGet('/reload', function(request) {
+		if(request.status != 200)
+			alert('Error reloading server: ' + request.responseText);
+	});
 }
 
 function restart() {
-	var request = sjaxGet('/restart');
-	if(request.status != 200)
-		alert('Error restarting server: ' + request.responseText);
+	textGet('/restart', function(request) {
+		if(request.status != 200)
+			alert('Error restarting server: ' + request.responseText);
+	});
 }
 
 function sendCommand(command) {
-	var request = sjaxPost('/sendcommand', { 'command': command });
-	if(request.status != 200)
-		alert('Error sending command "' + command + '": ' + request.responseText);
+	textPost('/sendcommand', { 'command': command }, function(request) {
+		if(request.status != 200)
+			alert('Error sending command "' + command + '": ' + request.responseText);
+	});
 }
 
-function getStatus() {
-	var request = sjaxGet('/status');
-	if(ajax.status == 200)
-		return request.responseText;
-	else
-		return '';
+function getStatus(handler) {
+	textGet('/status', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
+	});
 }
 
-function getLog() {
-	var request = sjaxGet('/get/log');
-	if(ajax.status == 200)
-		return request.responseText;
-	else
-		return '';
+function getLog(handler) {
+	textGet('/get/log', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
+	});
 }
 
-function getScriptLog() {
-	var request = sjaxGet('/get/scriptlog');
-	if(ajax.status == 200)
-		return request.responseText;
-	else
-		return '';
+function getScriptLog(handler) {
+	textGet('/get/scriptlog', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
+	});
 }
 
-function getSettings() {
-	var request = sjaxGet('/get/settings');
-	if(ajax.status == 200)
-		return request.responseText;
-	else
-		return '';
+function getSettings(handler) {
+	textGet('/get/settings', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
+	});
 }
 
-function getScript() {
-	var request = sjaxGet('/get/script');
-	if(ajax.status == 200)
-		return request.responseText;
-	else
-		return '';
+function getScript(handler) {
+	textGet('/get/script', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
+	});
 }
 
 function updateSettings() {
-	var request = sjaxPost('/update/settings', { 'settings': settings.getValue() });
-	if(request.status != 200)
-		alert('Error updating settings: ' + request.responseText);
+	textPost('/update/settings', { 'settings': settings.getValue() }, function(request) {
+		if(request.status != 200)
+			alert('Error updating settings: ' + request.responseText);
+	});
 }
 
 function updateScript() {
-	var request = sjaxPost('/update/script', { 'script': script.getValue() });
-	if(request.status != 200)
-		alert('Error updating script: ' + request.responseText);
+	textPost('/update/script', { 'script': script.getValue() }, function(request) {
+		if(request.status != 200)
+			alert('Error updating script: ' + request.responseText);
+	});
 }
-
-
