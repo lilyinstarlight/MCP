@@ -48,7 +48,7 @@ function encode(data, type) {
 				request.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
 			return request.join('&');
 		case 'json':
-			return data;
+			return JSON.stringify(data);
 		default:
 			return data;
 	}
