@@ -32,38 +32,47 @@ def action(request):
 			try:
 				manager.create(request.args.get('server'), request.args.get('source'))
 			except errors.BuildError as e:
+				request.set_status(500)
 				return 'Error building server: ' + e.msg
 			except errors.ConfigError as e:
+				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/destroy/server':
 			try:
 				manager.destroy(request.args.get('server'))
 			except errors.ConfigError:
+				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/upgrade/server':
 			try:
 				manager.get(request.args.get('server')).upgrade(request.args.get('server'))
 			except errors.BuildError as e:
+				request.set_status(500)
 				return 'Error building server: ' + e.msg
 			except errors.ConfigError as e:
+				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/upgrade/servers':
 			try:
 				for server in manager.servers:
 					manager.servers[server].upgrade()
 			except errors.BuildError as e:
+				request.set_status(500)
 				return 'Error building server: ' + e.msg
 			except errors.ConfigError as e:
+				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/add/source':
 			try:
 				sources.add(request.args.get('source'), request.args.get('bzr'))
 			except errors.BzrError as e:
+				request.set_status(500)
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/remove/source':
 			try:
 				sources.remove(request.args.get('source'))
 			except errors.ConfigError:
+				request.set_status(500)
 				return 'Error configuring source: ' + e.msg
 		elif request.request == '/admin/update/source':
 			try:
@@ -75,6 +84,7 @@ def action(request):
 				for source in sources.sources:
 					sources.sources[source].update()
 			except errors.BzrError as e:
+				request.set_status(500)
 				return 'Bzr command error: ' + e.msg
 		elif request.request == '/admin/get/users':
 			user_list = {}
@@ -99,19 +109,19 @@ def action(request):
 		elif request.request == '/admin/update/config':
 			sources.updateConfig(request.args.get('config'))
 	except errors.NoServerCreationError:
-		request.set_status(500)
+		request.set_status(501)
 		return 'Server creation is disabled'
 	except errors.NoServerError:
 		request.set_status(404)
 		return 'Server not found'
 	except errors.ServerExistsError:
-		request.set_status(400)
+		request.set_status(409)
 		return 'Server already exists'
 	except errors.NoSourceError:
 		request.set_status(404)
 		return 'Source not found'
 	except errors.SourceExistsError:
-		request.set_status(400)
+		request.set_status(409)
 		return 'Source already exists'
 	except errors.InvalidServerError:
 		request.set_status(400)

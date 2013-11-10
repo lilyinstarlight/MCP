@@ -101,10 +101,10 @@ def action(request):
 		request.set_status(500)
 		return 'Server does not exist'
 	except errors.ServerRunningError:
-		request.set_status(400)
+		request.set_status(409)
 		return 'Server is already running'
 	except errors.ServerStoppedError:
-		request.set_status(400)
+		request.set_status(409)
 		return 'Server is not running'
 	except:
 		request.set_status(500)

@@ -92,7 +92,7 @@ function getConfig() {
 
 function updateConfig() {
 	var request = sjaxPost('/admin/update/config', { 'config': config.getValue() });
-	if(request.status != 200 || request.responseText != 'success')
+	if(request.status != 200)
 		alert('Error updating config: ' + request.responseText);
 }
 
