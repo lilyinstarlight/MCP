@@ -72,10 +72,10 @@ Before you can create your first server, you must download a copy of the Armaget
 After the information is filled in and submitted, the source can then be used in the server creation form in a drop-down list.  The source code will take some time to download, generally up to 30 seconds.
 
 ###Creating a server###
-Once you have added a source, you can create your first server.  To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then click the `Servers` tab in the administration interface.  Click the `Create Server` button and fill out the form with information about the server.  The name of the server is the name by which it will be referred when assigning it to users.  The source is the source version that should be used to create the server.  After the information is filled out and submitted, the manager will then begin server creation.  This process can take up to 10 minutes depending on the processing power and load of the server computer.
+Once you have added a source, you can create your first server.  To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then click the `Servers` tab in the administration interface.  Click the `Create Server` button and fill out the form with information about the server.  The name of the server is the name by which it will be referred when assigning it to users.  The source is the source version that should be used to create the server.  After the information is filled out, click `Create` and the manager will then begin server creation.  This process can take up to 10 minutes depending on the processing power and load of the server computer.
 
 ###Creating a user###
-To create a user, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then make sure you are on the `Users` tab in the administration interface.  Click the `Create User` button and fill out the form with the user's information.  The admin checkbox enables administrative right to the user allowing them access to the administration interface.  From the drop-down menu, choose the user's first server then click on `Add`.  Many servers can be associated with the same user by selecting a those servers and clicking `Add` in between them.  After the information is filled out and submitted, the user will be able to log in be able to manage its servers.
+To create a user, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user.  Click `Admin` in the upper right and then make sure you are on the `Users` tab in the administration interface.  Click the `Create User` button and fill out the form with the user's information.  The admin checkbox enables administrative right to the user allowing them access to the administration interface.  From the multi-select field, choose the user's servers, holding down control to select more than one.  After the information is filled out, click `Create` and the user will be able to log in be able to manage its servers.
 
 ###Server creation dependencies###
 To create servers, you must be on a unix-like system with a modern compiler.  Each server is compiled when it is created with a special set of flags to keep them in their own prefixes and in a sane directory structure.  This allows multiple servers to be kept on one system at the same time and allows easy access and configuration of the servers over FTP or SSH.  Below are the necessary packages that must be installed to be able to download sources and create servers.
@@ -87,23 +87,23 @@ To create servers, you must be on a unix-like system with a modern compiler.  Ea
 - libxml2-dev
 - libprotobuf-dev
 - libboost-thread-dev (optional, 0.4 only)
-- bzr
 - libzthread-dev (optional, 0.2.8 only)
+- bzr
 
 ####Arch####
 - base-devel
 - libxml2
 - protobuf
 - boost (optional, 0.4 only)
-- bzr
 - zthread (optional, 0.2.8 only)
+- bzr
 
 ####Gentoo####
 - dev-libs/libxml2
 - dev-libs/protobuf
 - dev-libs/boost\[threads\] (optional, 0.4 only)
-- dev-vcs/bzr
 - dev-libs/zthread (optional, 0.2.8 only)
+- dev-vcs/bzr
 
 Questions
 ---------
