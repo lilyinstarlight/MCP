@@ -27,10 +27,10 @@ def get(user):
 
 def add(user, password, servers, admin=False):
 	if user in users:
-		return
+		raise errors.UserExistsError
 
 	if not users_allowed.match(user):
-		raise errors.InvalidUsernameError
+		raise errors.InvalidUserError
 
 	with open(os.path.dirname(__file__) + '/users.db', 'a') as file:
 		if admin:
@@ -42,7 +42,7 @@ def add(user, password, servers, admin=False):
 
 def change(user, password=None, servers=None, admin=None):
 	if not user in users:
-		return
+		raise errors.NoUserError
 
 	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		lines = file.readlines()
@@ -71,7 +71,7 @@ def change(user, password=None, servers=None, admin=None):
 
 def remove(user):
 	if not user in users:
-		return
+		raise errors.NoUserError
 
 	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		lines = file.readlines()
