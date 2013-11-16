@@ -114,24 +114,30 @@ def action(request):
 	except errors.NoServerError:
 		request.set_status(404)
 		return 'Server not found'
+	except errors.InvalidServerError:
+		request.set_status(400)
+		return 'Invalid server name'
 	except errors.ServerExistsError:
 		request.set_status(409)
 		return 'Server already exists'
 	except errors.NoSourceError:
 		request.set_status(404)
 		return 'Source not found'
-	except errors.SourceExistsError:
-		request.set_status(409)
-		return 'Source already exists'
-	except errors.InvalidServerError:
-		request.set_status(400)
-		return 'Invalid server name'
 	except errors.InvalidSourceError:
 		request.set_status(400)
 		return 'Invalid source name'
-	except errors.InvalidUsernameError:
+	except errors.SourceExistsError:
+		request.set_status(409)
+		return 'Source already exists'
+	except errors.NoUserError:
+		request.set_status(404)
+		return 'User not found'
+	except errors.InvalidUserError:
 		request.set_status(400)
 		return 'Invalid username'
+	except errors.UserExistsError:
+		request.set_status(409)
+		return 'User already exists'
 	except:
 		request.set_status(500)
 		return 'Unknown error'

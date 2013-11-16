@@ -1,6 +1,9 @@
 class NoServerError(Exception):
 	pass
 
+class InvalidServerError(Exception):
+	pass
+
 class ServerExistsError(Exception):
 	pass
 
@@ -16,6 +19,9 @@ class NoServerCreationError(Exception):
 class NoSourceError(Exception):
 	pass
 
+class InvalidSourceError(Exception):
+	pass
+
 class SourceExistsError(Exception):
 	pass
 
@@ -28,11 +34,11 @@ class ConfigError(Exception):
 class BzrError(Exception):
 	pass
 
-class InvalidServerError(Exception):
+class NoUserError(Exception):
 	pass
 
-class InvalidSourceError(Exception):
+class InvalidUserError(Exception):
 	pass
 
-class InvalidUsernameError(Exception):
+class UserExistsError(Exception):
 	pass
