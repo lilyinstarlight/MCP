@@ -1,0 +1,10 @@
+[Unit]
+Description=A complete Armagetron Advanced multi-server management framework and web interface
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/armaadmin
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
