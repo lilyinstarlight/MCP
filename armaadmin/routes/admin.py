@@ -129,6 +129,9 @@ def action(request):
 	except errors.InvalidSourceError:
 		request.set_status(400)
 		return 'Invalid source name'
+	except errors.InvalidUsernameError:
+		request.set_status(400)
+		return 'Invalid username'
 	except:
 		request.set_status(500)
 		return 'Unknown error'

@@ -1,7 +1,12 @@
 import hashlib
 import os
+import re
+
+from armaadmin import errors
 
 users = {}
+
+users_allowed = re.compile('[0-9a-zA-Z-_]+$')
 
 def parse():
 	users.clear()
@@ -23,6 +28,9 @@ def get(user):
 def add(user, password, servers, admin=False):
 	if user in users:
 		return
+
+	if not users_allowed.match(user):
+		raise errors.InvalidUsernameError
 
 	with open(os.path.dirname(__file__) + '/users.db', 'a') as file:
 		if admin:

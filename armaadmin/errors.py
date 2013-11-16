@@ -33,3 +33,6 @@ class InvalidServerError(Exception):
 
 class InvalidSourceError(Exception):
 	pass
+
+class InvalidUsernameError(Exception):
+	pass

@@ -1,13 +1,19 @@
 import os
+import re
 import shlex
 import shutil
 import subprocess
 
 from armaadmin import config, errors, sources
 
+server_allowed = re.compile('[0-9a-zA-Z-_]+$')
+
 def create(name, source_name):
 	if not config.creation:
 		raise errors.NoServerCreationError
+
+	if not server_allowed.match(name):
+		raise errors.InvalidServerError
 
 	source = sources.get(source_name)
 

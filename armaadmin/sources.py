@@ -1,8 +1,11 @@
 import os
+import re
 
 from armaadmin import config, errors
 
 sources = {}
+
+sources_allowed = re.compile('[0-9a-zA-Z-_]+$')
 
 def get(name):
 	if not name in sources:
@@ -16,6 +19,9 @@ def add(name, bzr):
 
 	if name in sources:
 		raise errors.SourceExistsError
+
+	if not sources_allowed.match(name):
+		raise errors.InvalidSourceError
 
 	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ]):
 		raise errors.BzrError('Failed to clone bzr tree')
