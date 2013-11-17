@@ -8,6 +8,8 @@ import os
 import shutil
 import subprocess
 
+import config
+
 def setupUser():
 	import armaadmin.users
 
@@ -20,8 +22,6 @@ def setupUser():
 	armaadmin.users.add(username, password, [], True)
 
 def setupDirs():
-	import config
-
 	print()
 	print('Making directories...')
 
@@ -30,6 +30,7 @@ def setupDirs():
 	if config.creation:
 		dir_util.copy_tree('config', config.config)
 
+def setupApi():
 	if config.api:
 		print()
 		print('Installing API...')
@@ -67,6 +68,7 @@ class post_install(install):
 		os.remove('armaadmin/users.db')
 
 		setupDirs()
+		setupApi()
 		setupInit()
 
 class upgrade(install):
@@ -78,7 +80,7 @@ class upgrade(install):
 		install.run(self)
 		os.remove('armaadmin/config.py')
 
-		setupDirs()
+		setupApi()
 		setupInit()
 
 setup(	name='ArmaAdmin',
