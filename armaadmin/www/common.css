@@ -23,12 +23,9 @@ label {
 	float: right;
 }
 
-.success {
-	color: green;
-}
-
 .failure {
-	color: red;
+	color: #f44;
+	font-weight: bold;
 }
 
 .header {
