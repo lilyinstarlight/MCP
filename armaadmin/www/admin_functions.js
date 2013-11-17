@@ -1,3 +1,10 @@
+function getUsers(handler) {
+	textGet('/admin/get/users', function(request) {
+		if(request.status == 200)
+			handler(JSON.parse(request.responseText));
+	});
+}
+
 function createUser(user, password, servers, admin) {
 	textPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
 		if(request.status != 200)
@@ -5,10 +12,24 @@ function createUser(user, password, servers, admin) {
 	});
 }
 
+function changeUser(user, password, servers, admin) {
+	textPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
+		if(request.status != 200)
+			alert('Error changing user: ' + request.responseText);
+	});
+}
+
 function destroyUser(user) {
 	textPost('/admin/destroy/user', { 'user': user }, function(request) {
 		if(request.status != 200)
 			alert('Error destroying user: ' + request.responseText);
+	});
+}
+
+function getServers(handler) {
+	jsonGet('/admin/get/servers', function(request) {
+		if(request.status == 200)
+			handler(JSON.parse(request.responseText));
 	});
 }
 
@@ -40,6 +61,13 @@ function upgradeServers() {
 	});
 }
 
+function getSources(handler) {
+	jsonGet('/admin/get/sources', function(request) {
+		if(request.status == 200)
+			handler(JSON.parse(request.responseText));
+	});
+}
+
 function addSource(source, bzr) {
 	textPost('/admin/add/source', { 'source': source, 'bzr': bzr }, function(request) {
 		if(request.status != 200)
@@ -65,27 +93,6 @@ function updateSources() {
 	textGet('/admin/update/sources', function(request) {
 		if(request.status != 200)
 			alert('Error updating sources: ' + request.responseText);
-	});
-}
-
-function getUsers(handler) {
-	textGet('/admin/get/users', function(request) {
-		if(request.status == 200)
-			handler(JSON.parse(request.responseText));
-	});
-}
-
-function getServers(handler) {
-	jsonGet('/admin/get/servers', function(request) {
-		if(request.status == 200)
-			handler(JSON.parse(request.responseText));
-	});
-}
-
-function getSources(handler) {
-	jsonGet('/admin/get/sources', function(request) {
-		if(request.status == 200)
-			handler(JSON.parse(request.responseText));
 	});
 }
 

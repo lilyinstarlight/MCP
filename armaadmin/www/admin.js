@@ -28,8 +28,23 @@ function sourceChange(element) {
 }
 
 function submitUser() {
-	var servers = "";
-	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers, document.getElementById('user_admin').checked);
+	var servers = [];
+	var options = document.getElementById('user_servers').options;
+	for(var option in options) {
+		if(options[option].selected)
+			servers.append(options[option].value)
+	}
+	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers.join(','), document.getElementById('user_admin').checked);
+}
+
+function modifyUser() {
+	var servers = [];
+	var options = document.getElementById('user_change_servers').options;
+	for(var option in options) {
+		if(options[option].selected)
+			servers.append(options[option].value)
+	}
+	changeUser(document.getElementById('user_change_name').value, document.getElementById('user_change_password').value, servers.join(','), document.getElementById('user_change_admin').checked);
 }
 
 function submitServer() {

@@ -41,6 +41,7 @@
 					<div class="controller">
 						<span class="left">
 							<a href="javascript:userChange('user_create')" class="button">Create</a>
+							<a href="javascript:void()" class="button disabled">Change</a>
 							<a href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 					</div>
@@ -67,6 +68,30 @@
 						<tr>
 							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
 							<td><br /><a href="javascript:submitUser();userChange('user_list')" class="button">Create</a></td>
+						</tr>
+					</table>
+				</div>
+				<div id="user_change" style="display: none">
+					<table>
+						<tr>
+							<td><label for="user_change_name">Username: </label></td>
+							<td><input id="user_change_name" type="text" disabled="disabled" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_change_password">Password: </label></td>
+							<td><input id="user_change_password" type="password" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_change_admin">Admin: </label></td>
+							<td><input id="user_change_admin" type="checkbox" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_change_servers">Servers: </label></td>
+							<td><select id="user_change_servers" multiple="multiple" class="multi mini"></select></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:modifyUser();userChange('user_list')" class="button">Change</a></td>
 						</tr>
 					</table>
 				</div>

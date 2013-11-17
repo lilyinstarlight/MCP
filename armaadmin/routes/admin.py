@@ -24,10 +24,22 @@ def action(request):
 		return 'Not an administrator'
 
 	try:
-		if request.request == '/admin/create/user':
+		if request.request == '/admin/get/users':
+			user_list = {}
+			for user in users.users:
+				user_list[user] = { 'servers': users.users[user].servers, 'admin': users.users[user].admin }
+			return json.dumps(user_list)
+		elif request.request == '/admin/create/user':
 			users.add(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
+		elif request.request == '/admin/change/user':
+			users.change(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
 		elif request.request == '/admin/destroy/user':
 			users.remove(request.args.get('user'))
+		elif request.request == '/admin/get/servers':
+			server_list = {}
+			for server in manager.servers:
+				server_list[server] = { 'source': manager.servers[server].getSource(), 'revision': manager.servers[server].getRevision() }
+			return json.dumps(server_list)
 		elif request.request == '/admin/create/server':
 			try:
 				manager.create(request.args.get('server'), request.args.get('source'))
@@ -62,6 +74,11 @@ def action(request):
 			except errors.ConfigError as e:
 				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
+		elif request.request == '/admin/get/sources':
+			source_list = {}
+			for source in sources.sources:
+				source_list[source] = { 'revision': sources.sources[source].getRevision() }
+			return json.dumps(source_list)
 		elif request.request == '/admin/add/source':
 			try:
 				sources.add(request.args.get('source'), request.args.get('bzr'))
@@ -86,21 +103,6 @@ def action(request):
 			except errors.BzrError as e:
 				request.set_status(500)
 				return 'Bzr command error: ' + e.msg
-		elif request.request == '/admin/get/users':
-			user_list = {}
-			for user in users.users:
-				user_list[user] = { 'servers': users.users[user].servers, 'admin': users.users[user].admin }
-			return json.dumps(user_list)
-		elif request.request == '/admin/get/servers':
-			server_list = {}
-			for server in manager.servers:
-				server_list[server] = { 'source': manager.servers[server].getSource(), 'revision': manager.servers[server].getRevision() }
-			return json.dumps(server_list)
-		elif request.request == '/admin/get/sources':
-			source_list = {}
-			for source in sources.sources:
-				source_list[source] = { 'revision': sources.sources[source].getRevision() }
-			return json.dumps(source_list)
 		elif request.request == '/admin/get/config':
 			try:
 				return sources.getConfig()
