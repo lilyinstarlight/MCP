@@ -45,7 +45,7 @@
 							<a href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 					</div>
-					<select id="user_listing" multiple="multiple" class="multi"></select>
+					<select id="user_listing" multiple="multiple" class="multi" onselect="userSelect()"></select>
 				</div>
 				<div id="user_create" style="display: none">
 					<table>
@@ -108,7 +108,7 @@
 							<a href="javascript:upgradeServers()" class="button">Upgrade All</a>
 						</span>
 					</div>
-					<select id="server_listing" multiple="multiple" class="multi"></select>
+					<select id="server_listing" multiple="multiple" class="multi" onselect="serverSelect()"></select>
 				</div>
 				<div id="server_create" style="display: none">
 					<table>
@@ -139,7 +139,7 @@
 							<a href="javascript:updateSources()" class="button">Update All</a>
 						</span>
 					</div>
-					<select id="source_listing" multiple="multiple" class="multi"></select>
+					<select id="source_listing" multiple="multiple" class="multi" onselect="sourceSelect()"></select>
 				</div>
 				<div id="source_add" style="display: none">
 					<table>

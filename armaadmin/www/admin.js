@@ -15,16 +15,7 @@ function userChange(element) {
 	document.getElementById(element).style.display = 'block';
 }
 
-function serverChange(element) {
-	document.getElementById('server_list').style.display = 'none';
-	document.getElementById('server_create').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
-}
-
-function sourceChange(element) {
-	document.getElementById('source_list').style.display = 'none';
-	document.getElementById('source_add').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
+function userSelect() {
 }
 
 function submitUser() {
@@ -47,8 +38,26 @@ function modifyUser() {
 	changeUser(document.getElementById('user_change_name').value, document.getElementById('user_change_password').value, servers.join(','), document.getElementById('user_change_admin').checked);
 }
 
+function serverChange(element) {
+	document.getElementById('server_list').style.display = 'none';
+	document.getElementById('server_create').style.display = 'none';
+	document.getElementById(element).style.display = 'block';
+}
+
+function serverSelect() {
+}
+
 function submitServer() {
 	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value);
+}
+
+function sourceChange(element) {
+	document.getElementById('source_list').style.display = 'none';
+	document.getElementById('source_add').style.display = 'none';
+	document.getElementById(element).style.display = 'block';
+}
+
+function sourceSelect() {
 }
 
 function submitSource() {
