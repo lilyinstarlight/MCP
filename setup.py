@@ -28,6 +28,7 @@ def setupDirs():
 	dir_util.mkpath(config.prefix)
 
 	if config.creation:
+		dir_util.mkpath(config.sources)
 		dir_util.copy_tree('config', config.config)
 
 def setupApi():
