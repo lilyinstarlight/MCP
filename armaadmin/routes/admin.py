@@ -146,4 +146,4 @@ def action(request):
 
 	return ''
 
-routes = { '/admin': handle, '/admin/create/user': action, '/admin/destroy/user': action, '/admin/create/server': action, '/admin/destroy/server': action, '/admin/upgrade/server': action, '/admin/upgrade/servers': action, '/admin/add/source': action, '/admin/remove/source': action, '/admin/update/source': action, '/admin/update/sources': action, '/admin/get/users': action, '/admin/get/servers': action, '/admin/get/sources': action, '/admin/get/config': action, '/admin/update/config': action }
+routes = { '/admin': handle, '/admin/get/users': action, '/admin/create/user': action, '/admin/change/user': action, '/admin/destroy/user': action, '/admin/get/servers': action, '/admin/create/server': action, '/admin/destroy/server': action, '/admin/upgrade/server': action, '/admin/upgrade/servers': action, '/admin/get/sources': action, '/admin/add/source': action, '/admin/remove/source': action, '/admin/update/source': action, '/admin/update/sources': action, '/admin/get/config': action, '/admin/update/config': action }
