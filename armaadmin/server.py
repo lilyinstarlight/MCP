@@ -41,7 +41,7 @@ def create(name, source_name):
 
 	try:
 		for entry in os.listdir(config.config):
-			entry = config.config + entry
+			entry = config.config + '/' + entry
 			if os.path.isdir(entry):
 				shutil.copytree(entry, config.prefix + '/' + name + '/config')
 			else:
