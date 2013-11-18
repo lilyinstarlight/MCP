@@ -1,4 +1,5 @@
-var settings, script;
+var settings, settings_text;
+var script, script_text;
 
 function change(element) {
 	document.getElementById('console').style.display = 'none';
@@ -73,17 +74,19 @@ function refresh() {
 
 	if(document.getElementById('settings').style.display != 'none') {
 		getSettings(function(response) {
-			if(settings.getValue() == response)
+			if(settings_text == response)
 				return;
-			settings.setValue(response);
+			settings_text = response;
+			settings.setValue(settings_text);
 		});
 	}
 
 	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_editor').style.display != 'none') {
 		getScript(function(response) {
-			if(script.getValue() == response)
+			if(script_text == response)
 				return;
-			script.setValue(response);
+			script_text = response;
+			script.setValue(script_text);
 		});
 	}
 }

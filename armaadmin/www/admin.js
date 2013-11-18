@@ -1,5 +1,5 @@
 var users, servers, sources;
-var config;
+var config, config_text;
 
 function change(element) {
 	document.getElementById('users').style.display = 'none';
@@ -117,9 +117,10 @@ function refresh() {
 
 	if(document.getElementById('config').style.display != 'none') {
 		getConfig(function(response) {
-			if(config.getValue() == response)
+			if(config_text == response)
 				return;
-			config.setValue(response);
+			config_text = response;
+			config.setValue(config_text);
 		});
 	}
 }
