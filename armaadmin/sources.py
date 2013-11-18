@@ -5,7 +5,7 @@ from armaadmin import config, errors
 
 sources = {}
 
-sources_allowed = re.compile('[0-9a-zA-Z-_]+$')
+sources_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
 def get(name):
 	if not name in sources:

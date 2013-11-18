@@ -6,7 +6,7 @@ import subprocess
 
 from armaadmin import config, errors, sources
 
-server_allowed = re.compile('[0-9a-zA-Z-_]+$')
+server_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
 def create(name, source_name):
 	if not config.creation:

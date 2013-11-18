@@ -6,7 +6,7 @@ from armaadmin import errors
 
 users = {}
 
-users_allowed = re.compile('[0-9a-zA-Z-_]+$')
+users_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
 def parse():
 	users.clear()
