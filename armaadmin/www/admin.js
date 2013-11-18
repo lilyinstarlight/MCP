@@ -12,6 +12,7 @@ function change(element) {
 function userChange(element) {
 	document.getElementById('user_list').style.display = 'none';
 	document.getElementById('user_create').style.display = 'none';
+	document.getElementById('user_change').style.display = 'none';
 	document.getElementById(element).style.display = 'block';
 }
 
