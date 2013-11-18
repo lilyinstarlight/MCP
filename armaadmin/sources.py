@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 
 from armaadmin import config, errors
 
