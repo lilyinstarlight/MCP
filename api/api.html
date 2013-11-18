@@ -531,27 +531,22 @@ armagetron.setChatHandler("/echo", echo)
 armagetron.run()
 			</code></pre>
 			<br />
-			<h2>Simple map/config rotation:</h2>
+			<h2>Simple map rotation:</h2>
 			<pre><code>
 import armagetron
 
-maps = [ "Anonymous/polygon/regular/square-1.0.1.aamap.xml", None, "fman23/crazysumo/crazysumo-0.0.1.aamap.xml" ]
-config = [ None, "ctfbrawl30.cfg(http://ix.ihptru.net/ctfbrawl30.cfg)", "fman23/crazysumo/crazysumo.cfg" ]
+maps = [ "Anonymous/polygon/regular/square-1.0.1.aamap.xml", "Anonymous/polygon/regular/40-gon-0.2.aamap.xml", "kyle/other/maze-0.0.1.aamap.xml" ]
 
 index = 0
 
 def changeMap(command):
   global index
 
-  armagetron.pauseBeforeRound()
-  armagetron.reload()
+  armagetron.pauseRound()
   index++
   if index &gt; len(maps):
     index = 0
-  if maps[index]:
-    armagetron.setMap(maps[index])
-  if config[index]:
-    armagetron.rinclude(config[index])
+  armagetron.setMap(maps[index])
   armagetron.continueRound()
 
 armagetron.addHandler("NEW_ROUND", changeMap)
