@@ -36,14 +36,14 @@ def sendMessage(player, message):
 	else:
 		sendCommand('PLAYER_MESSAGE ' + player + ' "' + message + '"')
 
-def pauseBeforeRound():
+def pauseRound():
 	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT 1')
 
 def continueRound():
 	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT 0')
 
-def setResourceServer(server):
-	sendCommand('RESOURCE_REPOSITORY_SERVER ' + server)
+def setRepository(address):
+	sendCommand('RESOURCE_REPOSITORY_SERVER ' + address)
 
 def setMap(resource):
 	sendCommand('MAP_FILE ' + resource)
