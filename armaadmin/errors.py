@@ -1,44 +1,48 @@
-class NoServerError(Exception):
+class Error(Exception):
+	def __init__(self, msg):
+		self.msg = msg
+
+class NoServerError(Error):
 	pass
 
-class InvalidServerError(Exception):
+class InvalidServerError(Error):
 	pass
 
-class ServerExistsError(Exception):
+class ServerExistsError(Error):
 	pass
 
-class ServerRunningError(Exception):
+class ServerRunningError(Error):
 	pass
 
-class ServerStoppedError(Exception):
+class ServerStoppedError(Error):
 	pass
 
-class NoServerCreationError(Exception):
+class NoServerCreationError(Error):
 	pass
 
-class NoSourceError(Exception):
+class NoSourceError(Error):
 	pass
 
-class InvalidSourceError(Exception):
+class InvalidSourceError(Error):
 	pass
 
-class SourceExistsError(Exception):
+class SourceExistsError(Error):
 	pass
 
-class BuildError(Exception):
+class BuildError(Error):
 	pass
 
-class ConfigError(Exception):
+class ConfigError(Error):
 	pass
 
-class BzrError(Exception):
+class BzrError(Error):
 	pass
 
-class NoUserError(Exception):
+class NoUserError(Error):
 	pass
 
-class InvalidUserError(Exception):
+class InvalidUserError(Error):
 	pass
 
-class UserExistsError(Exception):
+class UserExistsError(Error):
 	pass
