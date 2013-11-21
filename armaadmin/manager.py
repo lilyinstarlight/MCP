@@ -1,9 +1,8 @@
 import os
-import pwd
 import subprocess
 import sys
 
-from armaadmin import config, errors, server
+from armaadmin import config, env, errors, server
 
 servers = {}
 
@@ -35,11 +34,6 @@ def poll():
 			server.stop()
 			server.start()
 
-def demote():
-	if config.user:
-		os.setgid(passwd.pw_gid)
-		os.setuid(passwd.pw_uid)
-
 class Server:
 	def __init__(self, name):
 		self.name = name
@@ -62,14 +56,14 @@ class Server:
 			raise errors.ServerRunningError
 
 		self.status_msg = 'starting'
-		self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=demote, env=env, cwd=self.dir)
+		self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
 		self.status_msg = 'started'
 
 		self.startScript()
 
 	def startScript(self):
 		if os.path.exists(self.dir + '/scripts/script.py') and self.serverStatus() and not self.scriptStatus():
-			self.script = subprocess.Popen([ sys.executable, self.dir + '/scripts/script.py' ], stdin=open(self.dir + '/var/ladderlog.txt', 'r'), stdout=self.server.stdin, stderr=open(self.dir + '/script-error.log', 'w'), preexec_fn=demote, env=env, cwd=self.dir + '/var')
+			self.script = subprocess.Popen([ sys.executable, self.dir + '/scripts/script.py' ], stdin=open(self.dir + '/var/ladderlog.txt', 'r'), stdout=self.server.stdin, stderr=open(self.dir + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir + '/var')
 
 	def stop(self):
 		if self.serverStatus():
@@ -170,20 +164,6 @@ class Server:
 	def getRevision(self):
 		with open(self.dir + '/source', 'r') as file:
 			return file.read().split('|')[1]
-
-env = os.environ.copy()
-
-if config.user:
-	passwd = pwd.getpwnam(config.user)
-	env['HOME'] = passwd.pw_dir
-	env['LOGNAME'] = passwd.pw_name
-	env['USER'] = passwd.pw_name
-
-if config.api:
-	if env.get('PYTHONPATH'):
-		env['PYTHONPATH'] += ':' + config.api
-	else:
-		env['PYTHONPATH'] = config.api
 
 for dir in os.listdir(config.prefix):
 	if os.path.isdir(config.prefix + '/' + dir):

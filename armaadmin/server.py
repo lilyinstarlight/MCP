@@ -4,7 +4,7 @@ import shlex
 import shutil
 import subprocess
 
-from armaadmin import config, errors, sources
+from armaadmin import config, env, errors, sources
 
 server_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
@@ -62,6 +62,8 @@ def create(name, source_name):
 	if not os.path.exists(config.prefix + '/' + name + '/var'):
 		try:
 			os.makedirs(config.prefix + '/' + name + '/var')
+			if config.user:
+				os.chown(config.prefix + '/' + name + '/var', env.passwd.pw_uid, env.passwd.pw_gid)
 		except:
 			raise errors.ConfigError('Failed to create "var" directory')
 
@@ -79,6 +81,8 @@ def create(name, source_name):
 	if not os.path.exists(config.prefix + '/' + name + '/user'):
 		try:
 			os.makedirs(config.prefix + '/' + name + '/user')
+			if config.user:
+				os.chown(config.prefix + '/' + name + '/user', env.passwd.pw_uid, env.passwd.pw_gid)
 		except:
 			raise errors.ConfigError('Could not make "user" directory')
 
