@@ -8,7 +8,7 @@ from armaadmin import config, env, errors, sources
 
 server_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
-def create(name, source_name):
+def build(name, source_name):
 	if not config.creation:
 		raise errors.NoServerCreationError
 
@@ -88,6 +88,19 @@ def create(name, source_name):
 
 	with open(config.prefix + '/' + name + '/source', 'w') as file:
 		file.write(source.name + '|' + source.getRevision())
+
+def create(name, source_name):
+	try:
+		build(name, source_name)
+	except:
+		try:
+			shutil.rmtree(config.prefix + '/' + name)
+		except:
+			pass
+		raise
+
+def upgrade(name, source_name):
+	build(name, source_name)
 
 def destroy(name):
 	if not name in os.listdir(config.prefix) or not os.path.isdir(config.prefix + '/' + name):
