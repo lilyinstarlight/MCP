@@ -90,7 +90,7 @@ function refresh() {
 			for(var server in response) {
 				var option = document.createElement('option');
 				option.value = server;
-				option.innerHTML = server + ' - ' + response[server].source + ' (' + response[server].revision + ')';
+				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
 				select.appendChild(option);
 			}
 			if(document.getElementById('server_listing').innerHTML != select.innerHTML)
