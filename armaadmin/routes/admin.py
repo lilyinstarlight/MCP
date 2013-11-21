@@ -57,7 +57,7 @@ def action(request):
 				return 'Error configuring server: ' + e.msg
 		elif request.request == '/admin/upgrade/server':
 			try:
-				manager.get(request.args.get('server')).upgrade(request.args.get('server'))
+				manager.get(request.args.get('server')).upgrade()
 			except errors.BuildError as e:
 				request.set_status(500)
 				return 'Error building server: ' + e.msg

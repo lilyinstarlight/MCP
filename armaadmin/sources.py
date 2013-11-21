@@ -63,7 +63,7 @@ class Source:
 		self.dir = config.sources + '/' + name
 
 	def update(self):
-		if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + name ]):
+		if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + self.name ]):
 			raise errors.BzrError('Failed to pull changes')
 
 	def getRevision(self):
