@@ -1,5 +1,5 @@
 class Error(Exception):
-	def __init__(self, msg):
+	def __init__(self, msg=None):
 		self.msg = msg
 
 class NoServerError(Error):

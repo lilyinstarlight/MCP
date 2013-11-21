@@ -9,7 +9,7 @@ servers = {}
 
 def get(name):
 	if not name in servers:
-		raise NoServerError
+		raise errors.NoServerError
 
 	return servers[name]
 

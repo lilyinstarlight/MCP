@@ -13,7 +13,7 @@ function createUser(user, password, servers, admin) {
 }
 
 function changeUser(user, password, servers, admin) {
-	textPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
+	textPost('/admin/change/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
 		if(request.status != 200)
 			alert('Error changing user: ' + request.responseText);
 	});
