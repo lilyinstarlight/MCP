@@ -24,7 +24,7 @@ function submitUser() {
 	var options = document.getElementById('user_servers').options;
 	for(var option in options) {
 		if(options[option].selected)
-			servers.push(options[option].value)
+			servers.push(options[option].value);
 	}
 	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers.join(','), document.getElementById('user_admin').checked);
 }
@@ -34,7 +34,7 @@ function modifyUser() {
 	var options = document.getElementById('user_change_servers').options;
 	for(var option in options) {
 		if(options[option].selected)
-			servers.push(options[option].value)
+			servers.push(options[option].value);
 	}
 	changeUser(document.getElementById('user_change_name').value, document.getElementById('user_change_password').value, servers.join(','), document.getElementById('user_change_admin').checked);
 }
