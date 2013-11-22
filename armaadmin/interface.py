@@ -1,5 +1,6 @@
 import os
 
+from armaadmin import name, version
 from armaadmin.routes import root, admin, api
 
 def file(request):
@@ -23,10 +24,10 @@ def file(request):
 		request.set_header('Content-Type', 'text/plain; charset=utf-8')
 		return '404 - Not Found'
 
-def version(request):
+def ver(request):
 	return name + ' ' + version
 
-routes = { '404': file, '/version': version }
+routes = { '404': file, '/version': ver }
 routes.update(root.routes)
 routes.update(admin.routes)
 routes.update(api.routes)

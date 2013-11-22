@@ -1,7 +1,7 @@
 import signal
 import time
 
-from armaadmin import interface, manager, web
+from armaadmin import interface, log, manager, web
 
 running = True
 
@@ -11,6 +11,7 @@ def sigterm(signum, frame):
 
 signal.signal(signal.SIGTERM, sigterm)
 
+log.init()
 web.init(interface.routes)
 
 for server in manager.servers.values():
@@ -23,3 +24,4 @@ while running:
 	time.sleep(3)
 
 web.destroy()
+log.close()

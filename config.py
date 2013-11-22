@@ -16,6 +16,9 @@ api = '/home/armagetron/api'
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 
+#Path to manager log; None to disable logging
+log = '/var/log/armaadmin/manager.log'
+
 #Address of the web interface (leave blank unless you know what you are doing)
 address = ''
 
@@ -23,4 +26,4 @@ address = ''
 port = 80
 
 #Path to HTTP log; None to disable logging
-log = '/var/log/armaadmin/http.log'
+httplog = '/var/log/armaadmin/http.log'

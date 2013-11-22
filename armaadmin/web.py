@@ -12,7 +12,7 @@ server = None
 def init(routes):
 	global server
 
-	server = HTTPServer(config.address, config.port, routes, config.log)
+	server = HTTPServer(config.address, config.port, routes, config.httplog)
 	threading.Thread(target=server.serve_forever).start()
 
 def destroy():
@@ -119,7 +119,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 			def log_message(self, format, *args):
 				if self.log:
-					self.log.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+					self.log.write('%s - - [%s] %s\n' % (self.address_string(), self.log_date_time_string(), format % args))
 
 			def set_status(self, code):
 				self.status = code

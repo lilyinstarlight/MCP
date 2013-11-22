@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from armaadmin import config, env, errors, server
+from armaadmin import config, env, errors, log, server
 
 servers = {}
 
@@ -33,6 +33,7 @@ def poll():
 			server.server.stdout.write('WARNING: The server did not gracefully quit; now restarting.\n')
 			server.stop()
 			server.start()
+			log.warn(server.name + ' did not gracefully quit and was restarted.')
 
 class Server:
 	def __init__(self, name):
