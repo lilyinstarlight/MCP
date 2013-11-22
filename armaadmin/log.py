@@ -1,3 +1,5 @@
+import time
+
 from armaadmin import config
 from armaadmin import name, version
 
@@ -13,13 +15,20 @@ def init():
 def close():
 	if log:
 		log.close()
+		log = None
 
 def write(format, *args):
 	if log:
-		log.write('[%s] %s\n' % (self.log_date_time_string(), format % args))
+		log.write('[%s] %s\n' % (time.strftime('%Y/%m/%d %H:%M:%S'), format % args))
+
+def info(format, *args):
+	write('INFO: ' + format, args)
 
 def warn(format, *args):
-	write('Warning: ' + format, args)
+	write('WARNING: ' + format, args)
 
-def error(msg):
-	write('Error: ' + format, args)
+def error(format, *args):
+	write('ERROR: ' + format, args)
+
+def exception(msg, e):
+	error('Exception caught in %s: %s')

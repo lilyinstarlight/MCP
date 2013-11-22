@@ -1,5 +1,6 @@
 import http.server
 import json
+import time
 import os
 import socketserver
 import threading
@@ -88,7 +89,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 					self.set_status(500)
 					self.set_header('Content-Type', 'text/plain; charset=utf-8')
 					self.response = '500 - Internal Server Error'
-					self.log_message('Caught exception while accessing \'%s\': %s', self.request, str(e))
+					self.log_message('Caught exception while accessing "%s": %s', self.request, str(e))
 
 				if not isinstance(self.response, bytes):
 					self.response = self.response.encode('utf-8')
@@ -119,7 +120,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 			def log_message(self, format, *args):
 				if self.log:
-					self.log.write('%s - - [%s] %s\n' % (self.address_string(), self.log_date_time_string(), format % args))
+					self.log.write('[%s] %s\n' % (time.strftime('%Y/%m/%d %H:%M:%S'), format % args))
 
 			def set_status(self, code):
 				self.status = code
