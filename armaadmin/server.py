@@ -17,6 +17,9 @@ def build(name, source_name):
 
 	source = sources.get(source_name)
 
+	if not source:
+		raise errors.NoSourceError
+
 	if subprocess.call([ shlex.quote(source.dir + '/bootstrap.sh') ], cwd=source.dir, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
 
