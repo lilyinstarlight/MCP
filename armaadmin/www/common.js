@@ -1,8 +1,8 @@
-function change(parent, child) {
-	var element = document.getElementById(parent);
-	for(var node in element.childNodes) {
-		if(element.childNodes[node].nodeType == 1 && element.childNodes[node].tagName.toLowerCase() == 'div')
-			element.childNodes[node].style.display = 'none';
+function change(element, child) {
+	var root = document.getElementById(element);
+	for(var node in root.childNodes) {
+		if(root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'div')
+			root.childNodes[node].style.display = 'none';
 	}
 	document.getElementById(child).style.display = 'block';
 }

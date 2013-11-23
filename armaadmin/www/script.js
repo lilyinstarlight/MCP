@@ -53,7 +53,7 @@ function refresh() {
 		});
 	}
 
-	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_console').style.display != 'none') {
+	if(document.getElementById('script').style.display != 'none' && document.getElementById('script_console').style.display != 'none') {
 		getScriptLog(function(response) {
 			document.getElementById('script_log').innerHTML = response;
 		});
@@ -68,7 +68,7 @@ function refresh() {
 		});
 	}
 
-	if(document.getElementById('scripting').style.display != 'none' && document.getElementById('script_editor').style.display != 'none') {
+	if(document.getElementById('script').style.display != 'none' && document.getElementById('script_editor').style.display != 'none') {
 		getScript(function(response) {
 			if(script_text == response)
 				return;
