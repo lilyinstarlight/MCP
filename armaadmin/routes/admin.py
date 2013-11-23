@@ -1,7 +1,7 @@
 import json
 import os
 
-from armaadmin import errors, manager, sessions, sources, users
+from armaadmin import errors, log, manager, sessions, sources, users
 
 def handle(request):
 	session = sessions.get(request.cookies.get('session'))
@@ -141,6 +141,7 @@ def action(request):
 		request.set_status(409)
 		return 'User already exists'
 	except:
+		log.exception('accessing "' + request.request + '"')
 		request.set_status(500)
 		return 'Unknown error'
 

@@ -1,3 +1,4 @@
+import sys
 import time
 
 from armaadmin import config
@@ -22,13 +23,14 @@ def write(format, *args):
 		log.write('[%s] %s\n' % (time.strftime('%Y/%m/%d %H:%M:%S'), format % args))
 
 def info(format, *args):
-	write('INFO: ' + format, args)
+	write('INFO: ' + format, *args)
 
 def warn(format, *args):
-	write('WARNING: ' + format, args)
+	write('WARNING: ' + format, *args)
 
 def error(format, *args):
-	write('ERROR: ' + format, args)
+	write('ERROR: ' + format, *args)
 
-def exception(msg, e):
-	error('Exception caught in %s: %s')
+def exception(msg):
+	type, value, traceback = sys.exc_info()
+	error('Caught %s while %s: %s', type.__name__, msg, value)

@@ -3,6 +3,7 @@ import json
 import time
 import os
 import socketserver
+import sys
 import threading
 import urllib
 
@@ -85,11 +86,12 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 						self.set_status(404)
 						self.set_header('Content-Type', 'text/plain; charset=utf-8')
 						self.response = '404 - Not Found'
-				except Exception as e:
+				except:
+					type, value, traceback = sys.exc_info()
 					self.set_status(500)
 					self.set_header('Content-Type', 'text/plain; charset=utf-8')
 					self.response = '500 - Internal Server Error'
-					self.log_message('Caught exception while accessing "%s": %s', self.request, str(e))
+					self.log_message('Caught %s while accessing "%s": %s', type.__name__, self.request, value)
 
 				if not isinstance(self.response, bytes):
 					self.response = self.response.encode('utf-8')
