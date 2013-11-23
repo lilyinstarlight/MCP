@@ -31,8 +31,8 @@ def action(request):
 			return json.dumps(user_list)
 		elif request.request == '/admin/create/user':
 			users.add(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
-		elif request.request == '/admin/change/user':
-			users.change(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
+		elif request.request == '/admin/modify/user':
+			users.modify(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
 		elif request.request == '/admin/destroy/user':
 			users.remove(request.args.get('user'))
 		elif request.request == '/admin/get/servers':

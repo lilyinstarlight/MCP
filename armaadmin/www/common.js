@@ -1,3 +1,12 @@
+function change(parent, child) {
+	var element = document.getElementById(parent);
+	for(var node in element.childNodes) {
+		if(element.childNodes[node].nodeType == 1 && element.childNodes[node].tagName.toLowerCase() == 'div')
+			element.childNodes[node].style.display = 'none';
+	}
+	document.getElementById(child).style.display = 'block';
+}
+
 function XHR(address, method, data, type, response_type, handler) {
 	var request = new XMLHttpRequest();
 	request.onload = function() {

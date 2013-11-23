@@ -92,7 +92,7 @@ setup(	name='ArmaAdmin',
 	url='http://github.com/fkmclane/ArmaAdmin',
 	license='MIT',
 	packages=[ 'armaadmin', 'armaadmin.routes' ],
-	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/codemirror/*' ], 'armaadmin.routes': [ 'html/*' ] },
+	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/admin/*.*', 'www/codemirror/*.*' ], 'armaadmin.routes': [ 'html/*.*' ] },
 	scripts=[ 'bin/armaadmin' ],
 	cmdclass={ 'install': post_install, 'upgrade': upgrade }
 )

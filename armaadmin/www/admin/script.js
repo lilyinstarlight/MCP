@@ -1,21 +1,6 @@
 var users, servers, sources;
 var config, config_text;
 
-function change(element) {
-	document.getElementById('users').style.display = 'none';
-	document.getElementById('servers').style.display = 'none';
-	document.getElementById('sources').style.display = 'none';
-	document.getElementById('config').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
-}
-
-function userChange(element) {
-	document.getElementById('user_list').style.display = 'none';
-	document.getElementById('user_create').style.display = 'none';
-	document.getElementById('user_change').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
-}
-
 function userSelect() {
 }
 
@@ -29,20 +14,14 @@ function submitUser() {
 	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers.join(','), document.getElementById('user_admin').checked);
 }
 
-function modifyUser() {
+function submitModifyUser() {
 	var servers = [];
-	var options = document.getElementById('user_change_servers').options;
+	var options = document.getElementById('user_modfy_servers').options;
 	for(var option in options) {
 		if(options[option].selected)
 			servers.push(options[option].value);
 	}
-	changeUser(document.getElementById('user_change_name').value, document.getElementById('user_change_password').value, servers.join(','), document.getElementById('user_change_admin').checked);
-}
-
-function serverChange(element) {
-	document.getElementById('server_list').style.display = 'none';
-	document.getElementById('server_create').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
+	modifyUser(document.getElementById('user_modfy_name').value, document.getElementById('user_modfy_password').value, servers.join(','), document.getElementById('user_modfy_admin').checked);
 }
 
 function serverSelect() {
@@ -50,12 +29,6 @@ function serverSelect() {
 
 function submitServer() {
 	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value);
-}
-
-function sourceChange(element) {
-	document.getElementById('source_list').style.display = 'none';
-	document.getElementById('source_add').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
 }
 
 function sourceSelect() {
@@ -83,8 +56,6 @@ function refresh() {
 
 	if(document.getElementById('servers').style.display != 'none' && document.getElementById('server_list').style.display != 'none') {
 		getServers(function(response) {
-			if(servers == response)
-				return;
 			servers = response;
 			var select = document.createElement('select');
 			for(var server in response) {
@@ -100,8 +71,6 @@ function refresh() {
 
 	if(document.getElementById('sources').style.display != 'none' && document.getElementById('source_list').style.display != 'none') {
 		getSources(function(response) {
-			if(sources == response)
-				return;
 			sources = response;
 			var select = document.createElement('select');
 			for(var source in response) {

@@ -40,7 +40,7 @@ def add(user, password, servers, admin=False):
 
 	parse()
 
-def change(user, password=None, servers=None, admin=None):
+def modify(user, password=None, servers=None, admin=None):
 	if not user in users:
 		raise errors.NoUserError
 

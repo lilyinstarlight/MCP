@@ -5,10 +5,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
 		<link href="common.css" rel="stylesheet" type="text/css" />
 		<link href="stylesheet.css" rel="stylesheet" type="text/css" />
-		<link href="admin.css" rel="stylesheet" type="text/css" />
+		<link href="admin/stylesheet.css" rel="stylesheet" type="text/css" />
 		<script src="common.js" type="text/javascript"></script>
-		<script src="admin_functions.js" type="text/javascript"></script>
-		<script src="admin.js" type="text/javascript"></script>
+		<script src="admin/functions.js" type="text/javascript"></script>
+		<script src="admin/script.js" type="text/javascript"></script>
 
 		<link href="codemirror/codemirror.css" rel="stylesheet" />
 		<script src="codemirror/codemirror.js" type="text/javascript"></script>
@@ -29,7 +29,7 @@
 		</div>
 		<div class="menu">
 			<span class="left">
-				<a href="javascript:change('users')" class="button">Users</a><a href="javascript:change('servers')" class="button">Servers</a><a href="javascript:change('sources')" class="button">Sources</a><a href="javascript:change('config')" class="button">Config</a>
+				<a href="javascript:change('content', 'users')" class="button">Users</a><a href="javascript:change('content', 'servers')" class="button">Servers</a><a href="javascript:change('content', 'sources')" class="button">Sources</a><a href="javascript:change('content', 'config')" class="button">Config</a>
 			</span>
 			<span class="right">
 				<a href="/" class="button">Servers</a><a href="/?logout" class="button">Logout</a>
@@ -40,8 +40,8 @@
 				<div id="user_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:userChange('user_create')" class="button">Create</a>
-							<a href="javascript:void()" class="button disabled">Change</a>
+							<a href="javascript:change('users', 'user_create')" class="button">Create</a>
+							<a href="javascript:void()" class="button disabled">Modify</a>
 							<a href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 					</div>
@@ -66,32 +66,32 @@
 							<td><select id="user_servers" multiple="multiple" class="multi mini"></select></td>
 						</tr>
 						<tr>
-							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
-							<td><br /><a href="javascript:submitUser();userChange('user_list')" class="button">Create</a></td>
+							<td><br /><a href="javascript:change('users', 'user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitUser();change('users', 'user_list')" class="button">Create</a></td>
 						</tr>
 					</table>
 				</div>
-				<div id="user_change" style="display: none">
+				<div id="user_modify" style="display: none">
 					<table>
 						<tr>
-							<td><label for="user_change_name">Username: </label></td>
-							<td><input id="user_change_name" type="text" disabled="disabled" /></td>
+							<td><label for="user_modify_name">Username: </label></td>
+							<td><input id="user_modify_name" type="text" disabled="disabled" /></td>
 						</tr>
 						<tr>
-							<td><label for="user_change_password">Password: </label></td>
-							<td><input id="user_change_password" type="password" /></td>
+							<td><label for="user_modify_password">Password: </label></td>
+							<td><input id="user_modify_password" type="password" /></td>
 						</tr>
 						<tr>
-							<td><label for="user_change_admin">Admin: </label></td>
-							<td><input id="user_change_admin" type="checkbox" /></td>
+							<td><label for="user_modify_admin">Admin: </label></td>
+							<td><input id="user_modify_admin" type="checkbox" /></td>
 						</tr>
 						<tr>
-							<td><label for="user_change_servers">Servers: </label></td>
-							<td><select id="user_change_servers" multiple="multiple" class="multi mini"></select></td>
+							<td><label for="user_modify_servers">Servers: </label></td>
+							<td><select id="user_modify_servers" multiple="multiple" class="multi mini"></select></td>
 						</tr>
 						<tr>
-							<td><br /><a href="javascript:userChange('user_list')" class="button">Cancel</a></td>
-							<td><br /><a href="javascript:modifyUser();userChange('user_list')" class="button">Change</a></td>
+							<td><br /><a href="javascript:change('users', 'user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitModifyUser();change('users', 'user_list')" class="button">Modify</a></td>
 						</tr>
 					</table>
 				</div>
@@ -100,7 +100,7 @@
 				<div id="server_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:serverChange('server_create')" class="button">Create</a>
+							<a href="javascript:change('servers', 'server_create')" class="button">Create</a>
 							<a href="javascript:void()" class="button disabled">Upgrade</a>
 							<a href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
@@ -121,8 +121,8 @@
 							<td><select id="server_source"></select></td>
 						</tr>
 						<tr>
-							<td><br /><a href="javascript:serverChange('server_list')" class="button">Cancel</a></td>
-							<td><br /><a href="javascript:submitServer();serverChange('server_list')" class="button">Create</a></td>
+							<td><br /><a href="javascript:change('servers', 'server_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitServer();change('servers', 'server_list')" class="button">Create</a></td>
 						</tr>
 					</table>
 				</div>
@@ -131,7 +131,7 @@
 				<div id="source_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:sourceChange('source_add')" class="button">Add</a>
+							<a href="javascript:change('sources', 'source_add')" class="button">Add</a>
 							<a href="javascript:void()" class="button disabled">Update</a>
 							<a href="javascript:void()" class="button disabled">Remove</a>
 						</span>
@@ -152,8 +152,8 @@
 							<td><input id="source_bzr" type="text" /></td>
 						</tr>
 						<tr>
-							<td><br /><a href="javascript:sourceChange('source_list')" class="button">Cancel</a></td>
-							<td><br /><a href="javascript:submitSource();sourceChange('source_list')" class="button">Add</a></td>
+							<td><br /><a href="javascript:change('sources', 'source_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitSource();change('sources', 'source_list')" class="button">Add</a></td>
 						</tr>
 					</table>
 				</div>

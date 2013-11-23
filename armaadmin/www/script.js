@@ -1,19 +1,6 @@
 var settings, settings_text;
 var script, script_text;
 
-function change(element) {
-	document.getElementById('console').style.display = 'none';
-	document.getElementById('settings').style.display = 'none';
-	document.getElementById('scripting').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
-}
-
-function scriptChange(element) {
-	document.getElementById('script_editor').style.display = 'none';
-	document.getElementById('script_console').style.display = 'none';
-	document.getElementById(element).style.display = 'block';
-}
-
 function submitCommand() {
 	sendCommand(document.getElementById('command_box').value);
 	document.getElementById('command_box').value = '';
