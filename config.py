@@ -19,6 +19,9 @@ user = 'armagetron'
 #Path to manager log; None to disable logging
 log = '/var/log/armaadmin/manager.log'
 
+#Path to command output log; None to disable logging
+cmdlog = '/var/log/armaadmin/command.log'
+
 #Address of the web interface (leave blank unless you know what you are doing)
 address = ''
 

@@ -2,21 +2,31 @@ import sys
 import time
 
 from armaadmin import config
-from armaadmin import name, version
 
 log = None
+cmdlog = None
 
 def init():
 	global log
+	global cmdlog
 
 	if config.log:
 		log = open(config.log, 'a', 1)
-		write(name + ' ' + version + ' started')
+
+	if config.cmdlog:
+		cmdlog = open(config.cmdlog, 'a', 1)
 
 def close():
+	global log
+	global cmdlog
+
 	if log:
 		log.close()
 		log = None
+
+	if cmdlog:
+		cmdlog.close()
+		cmdlog = None
 
 def write(format, *args):
 	if log:

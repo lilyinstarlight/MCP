@@ -2,6 +2,7 @@ import signal
 import time
 
 from armaadmin import interface, log, manager, web
+from armaadmin import name, version
 
 running = True
 
@@ -13,6 +14,8 @@ signal.signal(signal.SIGTERM, sigterm)
 
 log.init()
 web.init(interface.routes)
+
+write(name + ' ' + version + ' started')
 
 for server in manager.servers.values():
 	if server.exists():
