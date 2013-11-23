@@ -107,6 +107,7 @@ def action(request):
 		request.set_status(409)
 		return 'Server is not running'
 	except:
+		log.exception('accessing "' + request.request + '"')
 		request.set_status(500)
 		return 'Unknown error'
 
