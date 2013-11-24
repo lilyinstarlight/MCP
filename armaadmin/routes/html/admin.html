@@ -41,8 +41,8 @@
 					<div class="controller">
 						<span class="left">
 							<a id="user_create_button" href="javascript:change('users', 'user_create')" class="button">Create</a>
-							<a id="user_modify_button" href="javascript:void()" class="button disabled">Modify</a>
-							<a id="user_destroy_button" href="javascript:void()" class="button disabled">Destroy</a>
+							<a id="user_modify_button" href="javascript:change('users', 'user_modify')" class="button disabled">Modify</a>
+							<a id="user_destroy_button" href="javascript:userDestroy()" class="button disabled">Destroy</a>
 						</span>
 					</div>
 					<select id="user_listing" multiple="multiple" class="multi" onchange="userSelect()"></select>
@@ -101,8 +101,8 @@
 					<div class="controller">
 						<span class="left">
 							<a id="server_create_button" href="javascript:change('servers', 'server_create')" class="button">Create</a>
-							<a id="server_upgrade_button" href="javascript:void()" class="button disabled">Upgrade</a>
-							<a id="server_destroy_button" href="javascript:void()" class="button disabled">Destroy</a>
+							<a id="server_upgrade_button" href="javascript:serverUpgrade()" class="button disabled">Upgrade</a>
+							<a id="server_destroy_button" href="javascript:serverDestroy()" class="button disabled">Destroy</a>
 						</span>
 						<span class="right">
 							<a href="javascript:upgradeServers()" class="button">Upgrade All</a>
@@ -132,8 +132,8 @@
 					<div class="controller">
 						<span class="left">
 							<a id="source_create_button" href="javascript:change('sources', 'source_add')" class="button">Add</a>
-							<a id="source_update_button" href="javascript:void()" class="button disabled">Update</a>
-							<a id="source_remove_button" href="javascript:void()" class="button disabled">Remove</a>
+							<a id="source_update_button" href="javascript:sourceUpdate()" class="button disabled">Update</a>
+							<a id="source_remove_button" href="javascript:sourceDestroy()" class="button disabled">Remove</a>
 						</span>
 						<span class="right">
 							<a href="javascript:updateSources()" class="button">Update All</a>

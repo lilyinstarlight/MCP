@@ -40,17 +40,17 @@ function createServer(server, source) {
 	});
 }
 
-function destroyServer(server) {
-	textPost('/admin/destroy/server', { 'server': server }, function(request) {
-		if(request.status != 200)
-			alert('Error destroying server: ' + request.responseText);
-	});
-}
-
 function upgradeServer(server) {
 	textPost('/admin/upgrade/server', { 'server': server }, function(request) {
 		if(request.status != 200)
 			alert('Error upgrading server: ' + request.responseText);
+	});
+}
+
+function destroyServer(server) {
+	textPost('/admin/destroy/server', { 'server': server }, function(request) {
+		if(request.status != 200)
+			alert('Error destroying server: ' + request.responseText);
 	});
 }
 
@@ -75,17 +75,17 @@ function addSource(source, bzr) {
 	});
 }
 
-function removeSource(source) {
-	textPost('/admin/remove/source', { 'source': source }, function(request) {
-		if(request.status != 200)
-			alert('Error removing source: ' + request.responseText);
-	});
-}
-
 function updateSource(source) {
 	textPost('/admin/update/source', { 'source': source }, function(request) {
 		if(request.status != 200)
 			alert('Error updating source: ' + request.responseText);
+	});
+}
+
+function removeSource(source) {
+	textPost('/admin/remove/source', { 'source': source }, function(request) {
+		if(request.status != 200)
+			alert('Error removing source: ' + request.responseText);
 	});
 }
 

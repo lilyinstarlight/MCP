@@ -51,6 +51,11 @@ function submitModifyUser() {
 	modifyUser(document.getElementById('user_modfy_name').value, document.getElementById('user_modfy_password').value, servers.join(','), document.getElementById('user_modfy_admin').checked);
 }
 
+function userDestroy() {
+	for(var user in user_selected)
+		destroyUser(user_selected[user])
+}
+
 function serverSelect() {
 	var selected = []
 	var options = document.getElementById('server_listing').options;
@@ -74,6 +79,16 @@ function submitServer() {
 	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value);
 }
 
+function serverUpgrade() {
+	for(var server in server_selected)
+		upgradeServer(server_selected[server])
+}
+
+function serverDestroy() {
+	for(var server in server_selected)
+		destroyServer(server_selected[server])
+}
+
 function sourceSelect() {
 	var selected = []
 	var options = document.getElementById('source_listing').options;
@@ -95,6 +110,16 @@ function sourceSelect() {
 
 function submitSource() {
 	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value);
+}
+
+function sourceUpdate() {
+	for(var source in source_selected)
+		updateSource(source_selected[source])
+}
+
+function sourceRemove() {
+	for(var source in source_selected)
+		removeSource(source_selected[source])
 }
 
 function refresh() {
