@@ -32,6 +32,8 @@ def action(request):
 		elif request.request == '/admin/create/user':
 			users.add(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
 		elif request.request == '/admin/modify/user':
+			if request.args.get('password') == '':
+				request.args['password'] = None
 			users.modify(request.args.get('user'), request.args.get('password'), request.args.get('servers').split(','), request.args.get('admin') == 'true')
 		elif request.request == '/admin/destroy/user':
 			users.remove(request.args.get('user'))
