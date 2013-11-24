@@ -40,12 +40,12 @@
 				<div id="user_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:change('users', 'user_create')" class="button">Create</a>
-							<a href="javascript:void()" class="button disabled">Modify</a>
-							<a href="javascript:void()" class="button disabled">Destroy</a>
+							<a id="user_create_button" href="javascript:change('users', 'user_create')" class="button">Create</a>
+							<a id="user_modify_button" href="javascript:void()" class="button disabled">Modify</a>
+							<a id="user_destroy_button" href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 					</div>
-					<select id="user_listing" multiple="multiple" class="multi" onselect="userSelect()"></select>
+					<select id="user_listing" multiple="multiple" class="multi" onchange="userSelect()"></select>
 				</div>
 				<div id="user_create" style="display: none">
 					<table>
@@ -100,15 +100,15 @@
 				<div id="server_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:change('servers', 'server_create')" class="button">Create</a>
-							<a href="javascript:void()" class="button disabled">Upgrade</a>
-							<a href="javascript:void()" class="button disabled">Destroy</a>
+							<a id="server_create_button" href="javascript:change('servers', 'server_create')" class="button">Create</a>
+							<a id="server_upgrade_button" href="javascript:void()" class="button disabled">Upgrade</a>
+							<a id="server_destroy_button" href="javascript:void()" class="button disabled">Destroy</a>
 						</span>
 						<span class="right">
 							<a href="javascript:upgradeServers()" class="button">Upgrade All</a>
 						</span>
 					</div>
-					<select id="server_listing" multiple="multiple" class="multi" onselect="serverSelect()"></select>
+					<select id="server_listing" multiple="multiple" class="multi" onchange="serverSelect()"></select>
 				</div>
 				<div id="server_create" style="display: none">
 					<table>
@@ -131,15 +131,15 @@
 				<div id="source_list">
 					<div class="controller">
 						<span class="left">
-							<a href="javascript:change('sources', 'source_add')" class="button">Add</a>
-							<a href="javascript:void()" class="button disabled">Update</a>
-							<a href="javascript:void()" class="button disabled">Remove</a>
+							<a id="source_create_button" href="javascript:change('sources', 'source_add')" class="button">Add</a>
+							<a id="source_update_button" href="javascript:void()" class="button disabled">Update</a>
+							<a id="source_remove_button" href="javascript:void()" class="button disabled">Remove</a>
 						</span>
 						<span class="right">
 							<a href="javascript:updateSources()" class="button">Update All</a>
 						</span>
 					</div>
-					<select id="source_listing" multiple="multiple" class="multi" onselect="sourceSelect()"></select>
+					<select id="source_listing" multiple="multiple" class="multi" onchange="sourceSelect()"></select>
 				</div>
 				<div id="source_add" style="display: none">
 					<table>

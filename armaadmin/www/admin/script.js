@@ -1,7 +1,34 @@
 var users, servers, sources;
 var config, config_text;
+var user_selected, server_selected, source_selected;
 
 function userSelect() {
+	var selected = []
+	var options = document.getElementById('user_listing').options;
+	for(var option in options) {
+		if(options[option].selected)
+			selected.push(options[option].value);
+	}
+	user_selected = selected;
+
+	if(selected.length > 0) {
+		document.getElementById('user_modify_button').className = 'button';
+		document.getElementById('user_destroy_button').className = 'button';
+
+		document.getElementById('user_modify_name').value = selected[0];
+		document.getElementById('user_modify_password').value = '';
+		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
+		document.getElementById('user_modify_servers').innerHTML = users[selected[0]].servers;
+	}
+	else {
+		document.getElementById('user_modify_button').className = 'button disabled';
+		document.getElementById('user_destroy_button').className = 'button disabled';
+
+		document.getElementById('user_modify_name').value = '';
+		document.getElementById('user_modify_password').value = '';
+		document.getElementById('user_modify_admin').checked = '';
+		document.getElementById('user_modify_servers').innerHTML = '';
+	}
 }
 
 function submitUser() {
@@ -25,6 +52,22 @@ function submitModifyUser() {
 }
 
 function serverSelect() {
+	var selected = []
+	var options = document.getElementById('server_listing').options;
+	for(var option in options) {
+		if(options[option].selected)
+			selected.push(options[option].value);
+	}
+	server_selected = selected;
+
+	if(selected.length > 0) {
+		document.getElementById('server_upgrade_button').className = 'button';
+		document.getElementById('server_destroy_button').className = 'button';
+	}
+	else {
+		document.getElementById('server_upgrade_button').className = 'button disabled';
+		document.getElementById('server_destroy_button').className = 'button disabled';
+	}
 }
 
 function submitServer() {
@@ -32,6 +75,22 @@ function submitServer() {
 }
 
 function sourceSelect() {
+	var selected = []
+	var options = document.getElementById('source_listing').options;
+	for(var option in options) {
+		if(options[option].selected)
+			selected.push(options[option].value);
+	}
+	source_selected = selected;
+
+	if(selected.length > 0) {
+		document.getElementById('source_update_button').className = 'button';
+		document.getElementById('source_remove_button').className = 'button';
+	}
+	else {
+		document.getElementById('source_update_button').className = 'button disabled';
+		document.getElementById('source_remove_button').className = 'button disabled';
+	}
 }
 
 function submitSource() {
