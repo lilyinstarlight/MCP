@@ -14,10 +14,16 @@ def parse():
 	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		for line in file:
 			data = line.rstrip().split('|')
-			if len(data) > 3:
-				users[data[0]] = User(data[0], data[1], data[2].split(','), data[3] == 'admin')
+
+			if data[2] == '':
+				servers = []
 			else:
-				users[data[0]] = User(data[0], data[1], data[2].split(','))
+				servers = data[2].split(',')
+
+			if len(data) > 3:
+				users[data[0]] = User(data[0], data[1], servers, data[3] == 'admin')
+			else:
+				users[data[0]] = User(data[0], data[1], servers)
 
 def check(user, password):
 	return user in users and users[user].password == hashlib.sha256(password.encode()).hexdigest()
