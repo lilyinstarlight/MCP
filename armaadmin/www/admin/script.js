@@ -202,13 +202,14 @@ function refresh() {
 		}
 	});
 
-	getConfig(function(response) {
-		if(config_text == response)
-			return;
-		config_text = response;
-		if(isVisible(document.getElementById('config_editor')))
-			config.setValue(config_text);
-	});
+	if(isVisible(document.getElementById('config_editor'))) {
+		getConfig(function(response) {
+			if(config_text == response)
+				return;
+			config_text = response;
+			config.setValue(response);
+		});
+	}
 }
 
 function load() {
