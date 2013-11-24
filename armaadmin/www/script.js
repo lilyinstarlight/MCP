@@ -47,19 +47,19 @@ function refresh() {
 		}
 	});
 
-	if(document.getElementById('console').style.display != 'none') {
+	if(isVisible(document.getElementById('log'))) {
 		getLog(function(response) {
 			document.getElementById('log').innerHTML = response;
 		});
 	}
 
-	if(document.getElementById('script').style.display != 'none' && document.getElementById('script_console').style.display != 'none') {
+	if(isVisible(document.getElementById('script_log'))) {
 		getScriptLog(function(response) {
 			document.getElementById('script_log').innerHTML = response;
 		});
 	}
 
-	if(document.getElementById('settings').style.display != 'none') {
+	if(isVisible(document.getElementById('settings_editor'))) {
 		getSettings(function(response) {
 			if(settings_text == response)
 				return;
@@ -68,7 +68,7 @@ function refresh() {
 		});
 	}
 
-	if(document.getElementById('script').style.display != 'none' && document.getElementById('script_editor').style.display != 'none') {
+	if(isVisible(document.getElementById('script_editor'))) {
 		getScript(function(response) {
 			if(script_text == response)
 				return;

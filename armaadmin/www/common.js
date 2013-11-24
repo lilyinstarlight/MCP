@@ -7,6 +7,16 @@ function change(element, child) {
 	document.getElementById(child).style.display = 'block';
 }
 
+function isVisible(element) {
+	if(element == document)
+		return true;
+
+	if(element.style.display == 'none')
+		return false;
+	else
+		return isVisible(element.parentNode);
+}
+
 function XHR(address, method, data, type, response_type, handler) {
 	var request = new XMLHttpRequest();
 	request.onload = function() {

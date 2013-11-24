@@ -18,7 +18,20 @@ function userSelect() {
 		document.getElementById('user_modify_name').value = selected[0];
 		document.getElementById('user_modify_password').value = '';
 		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
-		document.getElementById('user_modify_servers').innerHTML = users[selected[0]].servers;
+
+		var user_servers = users[selected[0]].servers;
+		var select = document.createElement('select');
+		for(var server in servers) {
+			var option = document.createElement('option');
+			option.value = server;
+			option.innerHTML = server;
+			for(var user_server in user_servers) {
+				if(server == user_servers[user_server])
+					option.setAttribute('selected', 'selected');
+			}
+			select.appendChild(option);
+		}
+		document.getElementById('user_modify_servers').innerHTML = select.innerHTML;
 	}
 	else {
 		document.getElementById('user_modify_button').className = 'button disabled';
@@ -26,29 +39,29 @@ function userSelect() {
 
 		document.getElementById('user_modify_name').value = '';
 		document.getElementById('user_modify_password').value = '';
-		document.getElementById('user_modify_admin').checked = '';
+		document.getElementById('user_modify_admin').checked = false;
 		document.getElementById('user_modify_servers').innerHTML = '';
 	}
 }
 
 function submitUser() {
 	var servers = [];
-	var options = document.getElementById('user_servers').options;
+	var options = document.getElementById('user_create_servers').options;
 	for(var option in options) {
 		if(options[option].selected)
 			servers.push(options[option].value);
 	}
-	createUser(document.getElementById('user_name').value, document.getElementById('user_password').value, servers.join(','), document.getElementById('user_admin').checked);
+	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked);
 }
 
 function submitModifyUser() {
 	var servers = [];
-	var options = document.getElementById('user_modfy_servers').options;
+	var options = document.getElementById('user_modify_servers').options;
 	for(var option in options) {
 		if(options[option].selected)
 			servers.push(options[option].value);
 	}
-	modifyUser(document.getElementById('user_modfy_name').value, document.getElementById('user_modfy_password').value, servers.join(','), document.getElementById('user_modfy_admin').checked);
+	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, servers.join(','), document.getElementById('user_modify_admin').checked);
 }
 
 function userDestroy() {
@@ -123,9 +136,10 @@ function sourceRemove() {
 }
 
 function refresh() {
-	if(document.getElementById('users').style.display != 'none' && document.getElementById('user_list').style.display != 'none') {
-		getUsers(function(response) {
-			users = response;
+	getUsers(function(response) {
+		users = response;
+
+		if(isVisible(document.getElementById('user_listing'))) {
 			var select = document.createElement('select');
 			for(var user in response) {
 				var option = document.createElement('option');
@@ -133,14 +147,17 @@ function refresh() {
 				option.innerHTML = user + (response[user].admin ? ' (Admin) - ' : ' - ') + response[user].servers.join(',');
 				select.appendChild(option);
 			}
-			if(document.getElementById('user_listing').innerHTML != select.innerHTML)
+			if(document.getElementById('user_listing').innerHTML != select.innerHTML) {
+				userSelect();
 				document.getElementById('user_listing').innerHTML = select.innerHTML;
-		});
-	}
+			}
+		}
+	});
 
-	if(document.getElementById('servers').style.display != 'none' && document.getElementById('server_list').style.display != 'none') {
-		getServers(function(response) {
-			servers = response;
+	getServers(function(response) {
+		servers = response;
+
+		if(isVisible(document.getElementById('server_listing'))) {
 			var select = document.createElement('select');
 			for(var server in response) {
 				var option = document.createElement('option');
@@ -148,14 +165,29 @@ function refresh() {
 				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
 				select.appendChild(option);
 			}
-			if(document.getElementById('server_listing').innerHTML != select.innerHTML)
+			if(document.getElementById('server_listing').innerHTML != select.innerHTML) {
+				serverSelect();
 				document.getElementById('server_listing').innerHTML = select.innerHTML;
-		});
-	}
+			}
+		}
 
-	if(document.getElementById('sources').style.display != 'none' && document.getElementById('source_list').style.display != 'none') {
-		getSources(function(response) {
-			sources = response;
+		if(isVisible(document.getElementById('user_create_servers'))) {
+			var select = document.createElement('select');
+			for(var server in response) {
+				var option = document.createElement('option');
+				option.value = server;
+				option.innerHTML = server;
+				select.appendChild(option);
+			}
+			if(document.getElementById('user_create_servers').innerHTML != select.innerHTML)
+				document.getElementById('user_create_servers').innerHTML = select.innerHTML;
+		}
+	});
+
+	getSources(function(response) {
+		sources = response;
+
+		if(isVisible(document.getElementById('source_listing'))) {
 			var select = document.createElement('select');
 			for(var source in response) {
 				var option = document.createElement('option');
@@ -163,19 +195,20 @@ function refresh() {
 				option.innerHTML = source + ' - r' + response[source].revision;
 				select.appendChild(option);
 			}
-			if(document.getElementById('source_listing').innerHTML != select.innerHTML)
+			if(document.getElementById('source_listing').innerHTML != select.innerHTML) {
+				sourceSelect();
 				document.getElementById('source_listing').innerHTML = select.innerHTML;
-		});
-	}
+			}
+		}
+	});
 
-	if(document.getElementById('config').style.display != 'none') {
-		getConfig(function(response) {
-			if(config_text == response)
-				return;
-			config_text = response;
+	getConfig(function(response) {
+		if(config_text == response)
+			return;
+		config_text = response;
+		if(isVisible(document.getElementById('config_editor')))
 			config.setValue(config_text);
-		});
-	}
+	});
 }
 
 function load() {
