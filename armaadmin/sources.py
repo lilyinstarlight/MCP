@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 
-from armaadmin import config, errors
+from armaadmin import config, errors, log
 
 sources = {}
 

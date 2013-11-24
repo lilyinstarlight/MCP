@@ -4,7 +4,7 @@ import shlex
 import shutil
 import subprocess
 
-from armaadmin import config, env, errors, sources
+from armaadmin import config, env, errors, log, sources
 
 server_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
