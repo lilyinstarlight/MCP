@@ -148,8 +148,8 @@ function refresh() {
 				select.appendChild(option);
 			}
 			if(document.getElementById('user_listing').innerHTML != select.innerHTML) {
-				userSelect();
 				document.getElementById('user_listing').innerHTML = select.innerHTML;
+				userSelect();
 			}
 		}
 	});
@@ -166,8 +166,8 @@ function refresh() {
 				select.appendChild(option);
 			}
 			if(document.getElementById('server_listing').innerHTML != select.innerHTML) {
-				serverSelect();
 				document.getElementById('server_listing').innerHTML = select.innerHTML;
+				serverSelect();
 			}
 		}
 
@@ -196,8 +196,8 @@ function refresh() {
 				select.appendChild(option);
 			}
 			if(document.getElementById('source_listing').innerHTML != select.innerHTML) {
-				sourceSelect();
 				document.getElementById('source_listing').innerHTML = select.innerHTML;
+				sourceSelect();
 			}
 		}
 	});
