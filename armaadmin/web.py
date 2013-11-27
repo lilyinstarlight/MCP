@@ -7,14 +7,12 @@ import sys
 import threading
 import urllib
 
-from armaadmin import config, log
-
 server = None
 
-def init(routes):
+def init(address, port, log, routes):
 	global server
 
-	server = HTTPServer(config.address, config.port, routes, log.httplog)
+	server = HTTPServer(address, port, log, routes)
 	threading.Thread(target=server.serve_forever).start()
 
 def destroy():
@@ -25,9 +23,9 @@ def destroy():
 	server = None
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-	def __init__(self, address, port, routes, log=None):
-		self.routes = routes
+	def __init__(self, address, port, log=None, routes):
 		self.log = log
+		self.routes = routes
 
 		super(HTTPServer, self).__init__((address, port), self.makeHandler())
 		self.log.write('Serving HTTP on ' + self.server_name + ' port ' + str(self.server_port) + '...\n')

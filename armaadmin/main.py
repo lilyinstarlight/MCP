@@ -1,7 +1,7 @@
 import signal
 import time
 
-from armaadmin import interface, log, manager, web
+from armaadmin import config, interface, log, manager, web
 from armaadmin import name, version
 
 running = True
@@ -13,7 +13,7 @@ def sigterm(signum, frame):
 signal.signal(signal.SIGTERM, sigterm)
 
 log.init()
-web.init(interface.routes)
+web.init(config.address, config.port, log.httplog, interface.routes)
 
 log.info(name + ' ' + version + ' started')
 
