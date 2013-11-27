@@ -5,20 +5,30 @@ from armaadmin import config
 
 log = None
 cmdlog = None
+httplog = None
 
 def init():
 	global log
 	global cmdlog
+	global httplog
 
 	if config.log:
+		os.makedirs(os.path.dirname(config.log), exist_ok=True)
 		log = open(config.log, 'a', 1)
 
 	if config.cmdlog:
+		os.makedirs(os.path.dirname(config.cmdlog), exist_ok=True)
 		cmdlog = open(config.cmdlog, 'a', 1)
+
+	if config.httplog:
+		os.makedirs(os.path.dirname(config.httplog), exist_ok=True)
+		httplog = open(config.httplog, 'a', 1)
+
 
 def close():
 	global log
 	global cmdlog
+	global httplog
 
 	if log:
 		log.close()
@@ -27,6 +37,10 @@ def close():
 	if cmdlog:
 		cmdlog.close()
 		cmdlog = None
+
+	if httplog:
+		httplog.close()
+		httplog = None
 
 def write(format, *args):
 	if log:
