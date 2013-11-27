@@ -53,6 +53,7 @@ def action(request):
 	request.set_header('Content-Type', 'text/plain; charset=utf8')
 
 	session = sessions.get(request.cookies.get('session'))
+
 	if not session:
 		return 'Not logged in'
 	if not session.server:

@@ -5,6 +5,7 @@ from armaadmin import errors, log, manager, sessions, sources, users
 
 def handle(request):
 	session = sessions.get(request.cookies.get('session'))
+
 	if not session or not session.user.admin:
 		request.set_status(307)
 		request.set_header('Location', '/')
