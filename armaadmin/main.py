@@ -13,7 +13,7 @@ def sigterm(signum, frame):
 signal.signal(signal.SIGTERM, sigterm)
 
 log.init()
-web.init(config.address, config.port, log.httplog, interface.routes)
+web.init(config.address, config.port, interface.routes, log.httplog)
 
 log.info(name + ' ' + version + ' started')
 

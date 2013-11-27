@@ -9,10 +9,10 @@ import urllib
 
 server = None
 
-def init(address, port, log, routes):
+def init(address, port, routes, log):
 	global server
 
-	server = HTTPServer(address, port, log, routes)
+	server = HTTPServer(address, port, routes, log)
 	threading.Thread(target=server.serve_forever).start()
 
 def destroy():
@@ -23,9 +23,9 @@ def destroy():
 	server = None
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
-	def __init__(self, address, port, log=None, routes):
-		self.log = log
+	def __init__(self, address, port, routes, log=None):
 		self.routes = routes
+		self.log = log
 
 		super(HTTPServer, self).__init__((address, port), self.makeHandler())
 		self.log.write('Serving HTTP on ' + self.server_name + ' port ' + str(self.server_port) + '...\n')
