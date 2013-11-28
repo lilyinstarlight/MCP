@@ -51,7 +51,12 @@ function submitUser() {
 		if(options[option].selected)
 			servers.push(options[option].value);
 	}
-	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked);
+	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked, function() {
+		document.getElementById('user_create_name').value = '';
+		document.getElementById('user_create_password').value = '';
+		document.getElementById('user_create_admin').checked = false;
+		document.getElementById('user_create_servers').innerHTML = '';
+	});
 }
 
 function submitModifyUser() {
@@ -89,7 +94,10 @@ function serverSelect() {
 }
 
 function submitServer() {
-	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value);
+	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value, function() {
+		document.getElementById('server_name').value = '';
+		document.getElementById('server_source').innerHTML = '';
+	});
 }
 
 function serverUpgrade() {
@@ -122,7 +130,10 @@ function sourceSelect() {
 }
 
 function submitSource() {
-	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value);
+	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value, function() {
+		document.getElementById('source_name').value = '';
+		document.getElementById('source_bzr').value = '';
+	});
 }
 
 function sourceUpdate() {
