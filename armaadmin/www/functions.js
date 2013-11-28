@@ -1,5 +1,5 @@
 function start(callback) {
-	textGet('/start', function(request) {
+	get('/start', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -8,7 +8,7 @@ function start(callback) {
 }
 
 function stop() {
-	textGet('/stop', function(request) {
+	get('/stop', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -17,7 +17,7 @@ function stop() {
 }
 
 function reload() {
-	textGet('/reload', function(request) {
+	get('/reload', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -26,7 +26,7 @@ function reload() {
 }
 
 function restart() {
-	textGet('/restart', function(request) {
+	get('/restart', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -35,7 +35,7 @@ function restart() {
 }
 
 function sendCommand(command) {
-	textPost('/sendcommand', { 'command': command }, function(request) {
+	post('/sendcommand', { 'command': command }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -44,35 +44,35 @@ function sendCommand(command) {
 }
 
 function getStatus(handler) {
-	textGet('/status', function(request) {
+	get('/status', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getLog(handler) {
-	textGet('/get/log', function(request) {
+	get('/get/log', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getScriptLog(handler) {
-	textGet('/get/scriptlog', function(request) {
+	get('/get/scriptlog', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getSettings(handler) {
-	textGet('/get/settings', function(request) {
+	get('/get/settings', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getScript(handler) {
-	textGet('/get/script', function(request) {
+	get('/get/script', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});

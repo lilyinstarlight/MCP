@@ -1,12 +1,12 @@
 function getUsers(handler) {
-	textGet('/admin/get/users', function(request) {
+	get('/admin/get/users', function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function createUser(user, password, servers, admin, callback) {
-	textPost('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
+	post('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -15,7 +15,7 @@ function createUser(user, password, servers, admin, callback) {
 }
 
 function modifyUser(user, password, servers, admin, callback) {
-	textPost('/admin/modify/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
+	post('/admin/modify/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -24,7 +24,7 @@ function modifyUser(user, password, servers, admin, callback) {
 }
 
 function destroyUser(user, callback) {
-	textPost('/admin/destroy/user', { 'user': user }, function(request) {
+	post('/admin/destroy/user', { 'user': user }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -33,14 +33,14 @@ function destroyUser(user, callback) {
 }
 
 function getServers(handler) {
-	jsonGet('/admin/get/servers', function(request) {
+	get('/admin/get/servers', function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function createServer(server, source, callback) {
-	textPost('/admin/create/server', { 'server': server, 'source': source }, function(request) {
+	post('/admin/create/server', { 'server': server, 'source': source }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -49,7 +49,7 @@ function createServer(server, source, callback) {
 }
 
 function upgradeServer(server, callback) {
-	textPost('/admin/upgrade/server', { 'server': server }, function(request) {
+	post('/admin/upgrade/server', { 'server': server }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -58,7 +58,7 @@ function upgradeServer(server, callback) {
 }
 
 function destroyServer(server, callback) {
-	textPost('/admin/destroy/server', { 'server': server }, function(request) {
+	post('/admin/destroy/server', { 'server': server }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -67,7 +67,7 @@ function destroyServer(server, callback) {
 }
 
 function upgradeServers(callback) {
-	textGet('/admin/upgrade/servers', function(request) {
+	get('/admin/upgrade/servers', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -76,14 +76,14 @@ function upgradeServers(callback) {
 }
 
 function getSources(handler) {
-	jsonGet('/admin/get/sources', function(request) {
+	get('/admin/get/sources', function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function addSource(source, bzr, callback) {
-	textPost('/admin/add/source', { 'source': source, 'bzr': bzr }, function(request) {
+	post('/admin/add/source', { 'source': source, 'bzr': bzr }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -92,7 +92,7 @@ function addSource(source, bzr, callback) {
 }
 
 function updateSource(source, callback) {
-	textPost('/admin/update/source', { 'source': source }, function(request) {
+	post('/admin/update/source', { 'source': source }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -101,7 +101,7 @@ function updateSource(source, callback) {
 }
 
 function removeSource(source, callback) {
-	textPost('/admin/remove/source', { 'source': source }, function(request) {
+	post('/admin/remove/source', { 'source': source }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -110,7 +110,7 @@ function removeSource(source, callback) {
 }
 
 function updateSources(callback) {
-	textGet('/admin/update/sources', function(request) {
+	get('/admin/update/sources', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -119,14 +119,14 @@ function updateSources(callback) {
 }
 
 function getConfig(handler) {
-	textGet('/admin/get/config', function(request) {
+	get('/admin/get/config', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateConfig(callback) {
-	textPost('/admin/update/config', { 'config': config.getValue() }, function(request) {
+	post('/admin/update/config', { 'config': config.getValue() }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
