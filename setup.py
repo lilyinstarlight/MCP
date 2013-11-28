@@ -38,6 +38,7 @@ def setupApi():
 		dir_util.copy_tree('api', config.api)
 
 def setupInit():
+	print()
 	response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
 
 	if response == "1":
