@@ -200,6 +200,18 @@ function refresh() {
 				sourceSelect();
 			}
 		}
+
+		if(isVisible(document.getElementById('server_source'))) {
+			var select = document.createElement('select');
+			for(var source in response) {
+				var option = document.createElement('option');
+				option.value = source;
+				option.innerHTML = source;
+				select.appendChild(option);
+			}
+			if(document.getElementById('server_source').innerHTML != select.innerHTML)
+				document.getElementById('server_source').innerHTML = select.innerHTML;
+		}
 	});
 
 	if(isVisible(document.getElementById('config_editor'))) {
