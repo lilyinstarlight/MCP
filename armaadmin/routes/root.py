@@ -64,7 +64,10 @@ def action(request):
 	try:
 		server = manager.get(session.server)
 
-		if request.request == '/start':
+		if request.request == '/get/servers':
+			return json.dumps(session.user.servers)
+
+		elif request.request == '/start':
 			server.start()
 		elif request.request == '/stop':
 			server.stop()
