@@ -55,8 +55,10 @@ def action(request):
 	session = sessions.get(request.cookies.get('session'))
 
 	if not session:
+		request.set_status(401)
 		return 'Not logged in'
 	if not session.server:
+		request.set_status(403)
 		return 'No server selected'
 
 	try:

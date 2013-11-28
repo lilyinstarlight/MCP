@@ -20,8 +20,10 @@ def action(request):
 	session = sessions.get(request.cookies.get('session'))
 
 	if not session:
+		request.set_status(401)
 		return 'Not logged in'
 	if not session.user.admin:
+		request.set_status(403)
 		return 'Not an administrator'
 
 	try:
