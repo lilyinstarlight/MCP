@@ -24,7 +24,7 @@ def add(name, bzr):
 	if not sources_allowed.match(name):
 		raise errors.InvalidSourceError
 
-	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ], stdout=log.cmdlog):
+	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 		raise errors.BzrError('Failed to clone bzr tree')
 
 	sources[name] = Source(name)
@@ -63,7 +63,7 @@ class Source:
 		self.dir = config.sources + '/' + name
 
 	def update(self):
-		if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + self.name ], stdout=log.cmdlog):
+		if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + self.name ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 			raise errors.BzrError('Failed to pull changes')
 
 	def getRevision(self):

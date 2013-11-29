@@ -20,16 +20,16 @@ def build(name, source_name):
 	if not source:
 		raise errors.NoSourceError
 
-	if subprocess.call([ shlex.quote(source.dir + '/bootstrap.sh') ], stdout=log.cmdlog, cwd=source.dir, shell=True):
+	if subprocess.call([ shlex.quote(source.dir + '/bootstrap.sh') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
 
-	if subprocess.call([ shlex.quote(source.dir + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(config.prefix + '/' + name) + ' --localstatedir=' + shlex.quote(config.prefix + '/' + name + '/var') ], stdout=log.cmdlog, cwd=source.dir, shell=True):
+	if subprocess.call([ shlex.quote(source.dir + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(config.prefix + '/' + name) + ' --localstatedir=' + shlex.quote(config.prefix + '/' + name + '/var') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir, shell=True):
 		raise errors.BuildError('Failed to configure server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir) ], stdout=log.cmdlog, cwd=source.dir):
+	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir) ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir):
 		raise errors.BuildError('Failed to compile server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir), 'install' ], stdout=log.cmdlog, cwd=source.dir):
+	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir), 'install' ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir):
 		raise errors.BuildError('Failed to install server')
 
 	try:
