@@ -1,6 +1,6 @@
 import os
 
-from armaadmin import errors, manager, sessions, users
+from armaadmin import errors, log, manager, sessions, users
 
 def handle(request):
 	error = ''
