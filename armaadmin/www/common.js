@@ -45,7 +45,7 @@ function XHR(address, method, data, handler) {
 	setTimeout(function() {
 		if(!completed)
 			document.getElementById('working').style.display = 'inline-block';
-	}, 200);
+	}, 500);
 }
 
 function encode(data) {
