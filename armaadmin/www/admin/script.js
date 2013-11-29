@@ -155,7 +155,7 @@ function refresh() {
 			for(var user in response) {
 				var option = document.createElement('option');
 				option.value = user;
-				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(',') : '');
+				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(', ') : '');
 				select.appendChild(option);
 			}
 			if(document.getElementById('user_listing').innerHTML != select.innerHTML) {
