@@ -1,3 +1,5 @@
+var count = 0;
+
 function change(element, child) {
 	var root = document.getElementById(element);
 	for(var node in root.childNodes) {
@@ -22,6 +24,10 @@ function XHR(address, method, data, handler) {
 	request.onload = function() {
 		if(request.readyState == 4)
 			handler(request);
+
+		count--;
+		if(count == 0)
+			document.getElementById('working').style.display = 'none';
 	};
 	request.open(method, address, true);
 	if(data != null) {
@@ -31,6 +37,8 @@ function XHR(address, method, data, handler) {
 	else {
 		request.send();
 	}
+	count++;
+	document.getElementById('working').style.display = 'inline-block';
 }
 
 function encode(data) {

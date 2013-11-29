@@ -76,3 +76,12 @@ label {
 .disabled:hover {
 	background: #369;
 }
+
+.working {
+	background: url('/working.gif') no-repeat center;
+	background-size: 25px;
+	width: 29px;
+	height: 29px;
+	display: inline-block;
+	vertical-align: top;
+}

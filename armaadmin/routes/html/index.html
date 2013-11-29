@@ -33,6 +33,7 @@
 				<a href="javascript:change('content', 'console')" class="button">Console</a><a href="javascript:change('content', 'settings')" class="button">Settings</a><a href="javascript:change('content', 'script')" class="button">Scripting</a>
 			</span>
 			<span class="right">
+				<span id="working" class="working" style="display: none"></span>
 				<form id="change_server" action="/" method="post" enctype="application/x-www-form-urlencoded">
 					<select name="server" onchange="this.form.submit()">%(servers)s
 					</select>
