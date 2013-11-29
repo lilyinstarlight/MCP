@@ -20,10 +20,13 @@ function isVisible(element) {
 }
 
 function XHR(address, method, data, handler) {
+	var completed = false;
 	var request = new XMLHttpRequest();
 	request.onload = function() {
 		if(request.readyState == 4)
 			handler(request);
+
+		completed = true;
 
 		count--;
 		if(count == 0)
@@ -38,7 +41,11 @@ function XHR(address, method, data, handler) {
 		request.send();
 	}
 	count++;
-	document.getElementById('working').style.display = 'inline-block';
+
+	setTimeout(function() {
+		if(!completed)
+			document.getElementById('working').style.display = 'inline-block';
+	}, 200);
 }
 
 function encode(data) {
