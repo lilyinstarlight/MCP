@@ -93,7 +93,7 @@ def action(request):
 		elif request.request == '/admin/remove/source':
 			try:
 				sources.remove(request.args.get('source'))
-			except errors.ConfigError:
+			except errors.ConfigError as e:
 				request.set_status(500)
 				return 'Error configuring source: ' + e.msg
 		elif request.request == '/admin/update/source':
