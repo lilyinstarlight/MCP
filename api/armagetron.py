@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import time
-import sys
+import sys.stdin as ladderlog
+import sys.stdout as armagetron
 
 def addHandler(command, handler):
 	if not command in commands:
@@ -19,7 +20,7 @@ def removeChatHandler(command):
 		del chatcommands[command]
 
 def sendCommand(command):
-	sys.stdout.write(command + '\n')
+	armagetron.write(command + '\n')
 
 def say(message):
 	sendCommand('SAY ' + message)
@@ -76,7 +77,7 @@ def init(command):
 
 def run():
 	while True:
-		line = sys.stdin.readline()
+		line = ladderlog.readline()
 		if not line:
 			time.sleep(0.1)
 			continue
