@@ -146,11 +146,14 @@ function sourceRemove() {
 		removeSource(source_selected[source])
 }
 
-function refresh() {
+function refresh(force) {
+	if(typeof force != 'boolean')
+		force = false;
+
 	getUsers(function(response) {
 		users = response;
 
-		if(isVisible(document.getElementById('user_listing'))) {
+		if(isVisible(document.getElementById('user_listing')) || force) {
 			var select = document.createElement('select');
 			for(var user in response) {
 				var option = document.createElement('option');
@@ -168,7 +171,7 @@ function refresh() {
 	getServers(function(response) {
 		servers = response;
 
-		if(isVisible(document.getElementById('server_listing'))) {
+		if(isVisible(document.getElementById('server_listing')) || force) {
 			var select = document.createElement('select');
 			for(var server in response) {
 				var option = document.createElement('option');
@@ -182,7 +185,7 @@ function refresh() {
 			}
 		}
 
-		if(isVisible(document.getElementById('user_create_servers'))) {
+		if(isVisible(document.getElementById('user_create_servers')) || force) {
 			var select = document.createElement('select');
 			for(var server in response) {
 				var option = document.createElement('option');
@@ -198,7 +201,7 @@ function refresh() {
 	getSources(function(response) {
 		sources = response;
 
-		if(isVisible(document.getElementById('source_listing'))) {
+		if(isVisible(document.getElementById('source_listing')) || force) {
 			var select = document.createElement('select');
 			for(var source in response) {
 				var option = document.createElement('option');
@@ -212,7 +215,7 @@ function refresh() {
 			}
 		}
 
-		if(isVisible(document.getElementById('server_source'))) {
+		if(isVisible(document.getElementById('server_source')) || force) {
 			var select = document.createElement('select');
 			for(var source in response) {
 				var option = document.createElement('option');
@@ -225,7 +228,7 @@ function refresh() {
 		}
 	});
 
-	if(isVisible(document.getElementById('config_editor'))) {
+	if(isVisible(document.getElementById('config_editor')) || force) {
 		getConfig(function(response) {
 			if(config_text == response)
 				return;
@@ -244,6 +247,8 @@ function load() {
 		theme: 'arma',
 		placeholder: 'Here you can specify configuration global to every server.  Generally GLOBAL_ID and TALK_TO_MASTER are turned on here but you should also specify a SERVER_DNS.'
 	});
+
+	refresh(true);
 
 	setInterval(refresh, 500);
 }

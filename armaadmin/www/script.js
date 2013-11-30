@@ -14,7 +14,10 @@ function scriptUpdate() {
 	updateScript(script.getValue());
 }
 
-function refresh() {
+function refresh(force) {
+	if(typeof force != 'boolean')
+		force = false;
+
 	getStatus(function(status) {
 		switch(status) {
 			case 'stopped':
@@ -55,19 +58,19 @@ function refresh() {
 		}
 	});
 
-	if(isVisible(document.getElementById('log'))) {
+	if(isVisible(document.getElementById('log')) || force) {
 		getLog(function(response) {
 			document.getElementById('log').innerHTML = response;
 		});
 	}
 
-	if(isVisible(document.getElementById('script_log'))) {
+	if(isVisible(document.getElementById('script_log')) || force) {
 		getScriptLog(function(response) {
 			document.getElementById('script_log').innerHTML = response;
 		});
 	}
 
-	if(isVisible(document.getElementById('settings_editor'))) {
+	if(isVisible(document.getElementById('settings_editor')) || force) {
 		getSettings(function(response) {
 			if(settings_text == response)
 				return;
@@ -76,7 +79,7 @@ function refresh() {
 		});
 	}
 
-	if(isVisible(document.getElementById('script_editor'))) {
+	if(isVisible(document.getElementById('script_editor')) || force) {
 		getScript(function(response) {
 			if(script_text == response)
 				return;
@@ -108,6 +111,8 @@ function load() {
 		theme: 'arma',
 		placeholder: 'Here you can add a custom server script written in Python.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details.'
 	});
+
+	refresh(true);
 
 	setInterval(refresh, 500);
 }
