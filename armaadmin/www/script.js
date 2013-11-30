@@ -12,6 +12,7 @@ function settingsUpdate() {
 
 function scriptUpdate() {
 	updateScript(script.getValue());
+}
 
 function refresh() {
 	getStatus(function(status) {
