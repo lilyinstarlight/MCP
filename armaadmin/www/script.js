@@ -6,6 +6,13 @@ function submitCommand() {
 	document.getElementById('command_box').value = '';
 }
 
+function settingsUpdate() {
+	updateSettings(settings.getValue());
+}
+
+function scriptUpdate() {
+	updateScript(script.getValue());
+
 function refresh() {
 	getStatus(function(status) {
 		switch(status) {

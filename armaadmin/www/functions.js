@@ -7,7 +7,7 @@ function start(callback) {
 	});
 }
 
-function stop() {
+function stop(callback) {
 	get('/stop', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
@@ -16,7 +16,7 @@ function stop() {
 	});
 }
 
-function reload() {
+function reload(callback) {
 	get('/reload', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
@@ -25,7 +25,7 @@ function reload() {
 	});
 }
 
-function restart() {
+function restart(callback) {
 	get('/restart', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
@@ -34,7 +34,7 @@ function restart() {
 	});
 }
 
-function sendCommand(command) {
+function sendCommand(command, callback) {
 	post('/sendcommand', { 'command': command }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
@@ -78,8 +78,8 @@ function getScript(handler) {
 	});
 }
 
-function updateSettings() {
-	textPost('/update/settings', { 'settings': settings.getValue() }, function(request) {
+function updateSettings(settings, callback) {
+	textPost('/update/settings', { 'settings': settings }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -87,8 +87,8 @@ function updateSettings() {
 	});
 }
 
-function updateScript() {
-	textPost('/update/script', { 'script': script.getValue() }, function(request) {
+function updateScript(script, callback) {
+	textPost('/update/script', { 'script': script }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
