@@ -71,19 +71,19 @@ function getSettings(handler) {
 	});
 }
 
-function getScript(handler) {
-	get('/get/script', function(request) {
-		if(request.status == 200)
-			handler(request.responseText);
-	});
-}
-
 function updateSettings(settings, callback) {
 	textPost('/update/settings', { 'settings': settings }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error updating settings: ' + request.responseText);
+	});
+}
+
+function getScript(handler) {
+	get('/get/script', function(request) {
+		if(request.status == 200)
+			handler(request.responseText);
 	});
 }
 

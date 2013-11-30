@@ -125,8 +125,8 @@ function getConfig(handler) {
 	});
 }
 
-function updateConfig(callback) {
-	post('/admin/update/config', { 'config': config.getValue() }, function(request) {
+function updateConfig(config, callback) {
+	post('/admin/update/config', { 'config': config }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else

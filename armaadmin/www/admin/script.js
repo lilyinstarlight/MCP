@@ -146,6 +146,11 @@ function sourceRemove() {
 		removeSource(source_selected[source])
 }
 
+function saveConfig() {
+	updateConfig(config.getValue(), function() {
+		alert('Config successfully updated');
+	});
+
 function refresh(force) {
 	if(typeof force != 'boolean')
 		force = false;

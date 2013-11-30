@@ -6,12 +6,16 @@ function submitCommand() {
 	document.getElementById('command_box').value = '';
 }
 
-function settingsUpdate() {
-	updateSettings(settings.getValue());
+function saveSettings() {
+	updateSettings(settings.getValue(), function() {
+		alert('Settings successfully saved');
+	});
 }
 
-function scriptUpdate() {
-	updateScript(script.getValue());
+function saveScript() {
+	updateScript(script.getValue(), function() {
+		alert('Script successfully saved');
+	});
 }
 
 function refresh(force) {
