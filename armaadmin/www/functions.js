@@ -72,7 +72,7 @@ function getSettings(handler) {
 }
 
 function updateSettings(settings, callback) {
-	textPost('/update/settings', { 'settings': settings }, function(request) {
+	post('/update/settings', { 'settings': settings }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -88,7 +88,7 @@ function getScript(handler) {
 }
 
 function updateScript(script, callback) {
-	textPost('/update/script', { 'script': script }, function(request) {
+	post('/update/script', { 'script': script }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else

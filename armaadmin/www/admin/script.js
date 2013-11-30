@@ -148,8 +148,9 @@ function sourceRemove() {
 
 function saveConfig() {
 	updateConfig(config.getValue(), function() {
-		alert('Config successfully updated');
+		alert('Config successfully saved');
 	});
+}
 
 function refresh(force) {
 	if(typeof force != 'boolean')
