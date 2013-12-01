@@ -2,6 +2,7 @@ import http.server
 import json
 import time
 import os
+import re
 import socketserver
 import sys
 import threading
@@ -23,16 +24,23 @@ def destroy():
 	server = None
 
 class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
+	errors = [ '404', '500' ]
+
 	def __init__(self, address, port, routes, log=None):
-		self.routes = routes
+		self.routes = {}
+		self.error_routes = {}
+		for route in routes:
+			if route in HTTPServer.errors:
+				self.error_routes[route] = routes[route]
+			else:
+				self.routes[re.compile('^' + route + '$')] = routes[route];
+
 		self.log = log
 
 		super(HTTPServer, self).__init__((address, port), self.makeHandler())
 		self.log.write('Serving HTTP on ' + self.server_name + ' port ' + str(self.server_port) + '...\n')
 
 	def server_close(self):
-		if self.log:
-			self.log.close()
 		self.socket.close()
 
 	def makeHandler(self):
@@ -68,23 +76,35 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 				self.output_headers = {}
 				self.set_header('Content-Type', 'text/html; charset=utf-8')
+
 				try:
-					if self.request in self.routes:
+					self.match = None
+					for regex in self.routes:
+						self.match = regex.match(self.request)
+						if self.match:
+							self.regex = regex
+							break
+
+					if self.match:
 						self.set_status(200)
-						self.response = self.routes[self.request](self)
-					elif '404' in self.routes:
-						self.set_status(404)
-						self.response = self.routes['404'](self)
+						self.response = self.routes[self.regex](self)
 					else:
 						self.set_status(404)
-						self.set_header('Content-Type', 'text/plain; charset=utf-8')
-						self.response = '404 - Not Found'
+						if '404' in self.error_routes:
+							self.response = self.error_routes['404'](self)
+						else:
+							self.set_header('Content-Type', 'text/plain; charset=utf-8')
+							self.response = '404 - Not Found'
 				except:
 					type, value, traceback = sys.exc_info()
-					self.set_status(500)
-					self.set_header('Content-Type', 'text/plain; charset=utf-8')
-					self.response = '500 - Internal Server Error'
 					self.log_message('Caught %s while accessing "%s": %s', type.__name__, self.request, value)
+
+					self.set_status(500)
+					if '500' in self.error_routes:
+						self.response = self.error_routes['500'](self)
+					else:
+						self.set_header('Content-Type', 'text/plain; charset=utf-8')
+						self.response = '500 - Internal Server Error'
 
 				if not isinstance(self.response, bytes):
 					self.response = self.response.encode('utf-8')
@@ -127,5 +147,6 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 				self.set_header('Set-Cookie', '; '.join('%s=%s' % (k, v) for k, v in values.items()) + '; Max-Age=' + str(time * 3600))
 
 		HTTPHandler.routes = self.routes
+		HTTPHandler.error_routes = self.error_routes
 		HTTPHandler.log = self.log
 		return HTTPHandler
