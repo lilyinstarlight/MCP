@@ -135,28 +135,28 @@ class Server:
 			raise errors.ServerStoppedError
 
 	def getLog(self):
-		with open(self.dir + '/arma.log', 'r') as file:
-			return file.read()
-
-	def getScriptlog(self):
-		with open(self.dir + '/script-error.log', 'r') as file:
+		with open(self.dir + '/arma.log', 'r', encoding='latin_1') as file:
 			return file.read()
 
 	def getSettings(self):
-		with open(self.dir + '/config/settings_custom.cfg', 'r') as file:
+		with open(self.dir + '/config/settings_custom.cfg', 'r', encoding='latin_1') as file:
 			return file.read()
+
+	def updateSettings(self, settings):
+		with open(self.dir + '/config/settings_custom.cfg', 'w', encoding='latin_1') as file:
+			file.write(settings)
 
 	def getScript(self):
 		with open(self.dir + '/scripts/script.py', 'r') as file:
 			return file.read()
 
-	def updateSettings(self, settings):
-		with open(self.dir + '/config/settings_custom.cfg', 'w') as file:
-			file.write(settings)
-
 	def updateScript(self, script):
 		with open(self.dir + '/scripts/script.py', 'w') as file:
 			file.write(script)
+
+	def getScriptlog(self):
+		with open(self.dir + '/script-error.log', 'r') as file:
+			return file.read()
 
 	def getSource(self):
 		with open(self.dir + '/source', 'r') as file:

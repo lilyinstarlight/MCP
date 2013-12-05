@@ -48,14 +48,14 @@ def getConfig():
 	if not config.creation:
 		raise errors.NoServerCreationError
 
-	with open(config.config + '/server_info.cfg', 'r') as file:
+	with open(config.config + '/server_info.cfg', 'r', encoding='latin_1') as file:
 		return file.read()
 
 def updateConfig(config_text):
 	if not config.creation:
 		raise errors.NoServerCreationError
 
-	with open(config.config + '/server_info.cfg', 'w') as file:
+	with open(config.config + '/server_info.cfg', 'w', encoding='latin_1') as file:
 		file.write(config_text)
 
 class Source:
