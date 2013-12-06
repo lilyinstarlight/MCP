@@ -1,0 +1,32 @@
+.menu {
+	background: #369;
+	border-width: 2px 0px 2px 0px;
+	border-style: solid;
+	border-color: #000;
+	overflow: auto;
+}
+
+.menu .button {
+	width: 80px;
+	padding: 5px 0px 5px 0px;
+	border-style: solid;
+	border-color: #000;
+}
+
+.menu .left .button {
+	border-width: 0px 2px 0px 0px;
+}
+
+.menu .right .button {
+	border-width: 0px 0px 0px 2px;
+}
+
+.menu form {
+	display: inline;
+}
+
+.content {
+	border-width: 0px 2px 2px 2px;
+	border-style: solid;
+	border-color: #000;
+}

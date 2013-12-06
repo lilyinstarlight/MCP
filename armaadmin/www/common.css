@@ -54,6 +54,11 @@ label {
 	padding: 20px;
 }
 
+.controller {
+	padding: 10px;
+	overflow: auto;
+}
+
 .button {
 	background: #369;
 	color: #000;
