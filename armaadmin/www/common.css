@@ -11,6 +11,10 @@ body {
 	color: #DDD;
 }
 
+a {
+	color: #CA3;
+}
+
 label {
 	font-weight: bold;
 }
