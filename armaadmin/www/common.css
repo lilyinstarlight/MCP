@@ -17,15 +17,16 @@ a {
 
 input[type=text], input[type=password] {
 	background: rgba(60, 110, 80, 0.6);
+	color: #DDD;
 	border: 1px solid #000;
 	padding: 0px 2px 0px 2px;
 }
 
-textarea, pre {
+textarea, pre, select[multiple=multiple] {
 	background: rgba(0, 0, 0, 0.2);
 	color: #DDD;
-	margin: 0px;
 	border: 1px solid #222;
+	margin: 0px;
 	padding: 5px;
 	overflow: auto;
 }
