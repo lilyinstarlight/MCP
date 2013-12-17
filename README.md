@@ -108,7 +108,7 @@ To create servers, you must be on a unix-like system with a modern compiler.  Ea
 Questions
 ---------
 ###Is there a demo?###
-There is a live demo at http://arma.fkmclane.tk/.  It shows off the web interface and the simplicity of the scripting API by its script to reset the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
+There is a live demo at http://arma.fkmclane.tk/.  It shows off the web interface and the simplicity of the scripting API.  The sample script shows off the API by resetting the server settings when everyone leaves the server.  It does not show off the administration page (yet) for security reasons.  Simply login with user: `demo` and password: `demo`.
 
 ###What if I want to use my own scripting API?###
 Well, you simply need to place it in the `api` folder of the project and reinstall.  You can also (optionally) create your own `api.html`.
@@ -116,7 +116,7 @@ Well, you simply need to place it in the `api` folder of the project and reinsta
 ###Can I run the daemon as a user other than root?###
 Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation and user management may not work.
 
-###I want to use this on Windows but is isn't working!###
+###I want to use this on Windows but it isn't working!###
 Well that isn't a question and I'm afraid I can't help you there.  I don't mess with Windows and don't have time to fiddle with an unsupported operating system for a single person.  This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install Ubuntu then install this software.
 
 ###I found a bug! I found a bug!###
