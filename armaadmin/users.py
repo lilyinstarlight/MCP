@@ -9,7 +9,9 @@ users = {}
 users_allowed = re.compile('[0-9a-zA-Z-_+]+$')
 
 def parse():
-	users.clear()
+	global users
+
+	temp = {}
 
 	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
 		for line in file:
@@ -21,9 +23,20 @@ def parse():
 				servers = data[2].split(',')
 
 			if len(data) > 3:
-				users[data[0]] = User(data[0], data[1], servers, data[3] == 'admin')
+				admin = data[3] == 'admin'
 			else:
-				users[data[0]] = User(data[0], data[1], servers)
+				admin = False
+
+			if data[0] in users:
+				user = users[data[0]]
+				user.password = data[1]
+				user.servers = servers
+				user.admin = admin
+				temp[data[0]] = user
+			else:
+				temp[data[0]] = User(data[0], data[1], servers, admin)
+
+	users = temp
 
 def check(user, password):
 	return user in users and users[user].password == hashlib.sha256(password.encode()).hexdigest()
