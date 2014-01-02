@@ -167,5 +167,6 @@ class Server:
 			return file.read().split('|')[1]
 
 for dir in os.listdir(config.prefix):
-	if os.path.isdir(config.prefix + '/' + dir):
+	path = config.prefix + '/' + dir + '/bin/armagetronad-dedicated'
+	if os.path.isfile(path) and os.access(path, os.X_OK):
 		servers[dir] = Server(dir)
