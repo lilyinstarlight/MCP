@@ -39,6 +39,7 @@ class Server:
 	def __init__(self, name):
 		self.name = name
 		self.dir = config.prefix + '/' + name
+		self.bin = self.dir + '/bin/armagetronad-dedicated'
 		self.server = None
 		self.script = None
 		if self.exists():
@@ -47,8 +48,7 @@ class Server:
 			self.status_msg = 'nonexistent'
 
 	def exists(self):
-		path = self.dir + '/bin/armagetronad-dedicated'
-		return os.path.isfile(path) and os.access(path, os.X_OK)
+		return os.path.isfile(self.bin) and os.access(self.bin, os.X_OK)
 
 	def start(self):
 		if not self.exists():
@@ -58,7 +58,7 @@ class Server:
 			raise errors.ServerRunningError
 
 		self.status_msg = 'starting'
-		self.server = subprocess.Popen([ self.dir + '/bin/armagetronad-dedicated', '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
+		self.server = subprocess.Popen([ self.bin, '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
 		self.status_msg = 'started'
 
 		self.startScript()
