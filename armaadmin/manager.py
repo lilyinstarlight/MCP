@@ -48,7 +48,7 @@ class Server:
 
 	def exists(self):
 		path = self.dir + '/bin/armagetronad-dedicated'
-		return os.path.isfile(path) and os.access(path, os.X_OK):
+		return os.path.isfile(path) and os.access(path, os.X_OK)
 
 	def start(self):
 		if not self.exists():
