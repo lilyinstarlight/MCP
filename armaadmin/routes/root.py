@@ -1,3 +1,4 @@
+import json
 import os
 
 from armaadmin import errors, log, manager, sessions, users
@@ -12,10 +13,6 @@ def handle(request):
 			session = sessions.create()
 			request.set_cookie({'session': session.id})
 			session.user = users.get(request.args.get('user'))
-			if len(session.user.servers) > 0:
-				session.server = session.user.servers[0]
-			else:
-				session.server = None
 		else:
 			error += '<span class="failure">Error: Wrong username and/or password.</span><br /><br />'
 
@@ -27,24 +24,13 @@ def handle(request):
 	if session:
 		request.set_cookie({'session': session.id})
 
-		server = request.args.get('server')
-		if server and server in session.user.servers:
-			session.server = server
-
-		servers = ''
-		for server in session.user.servers:
-			if server == session.server:
-				servers += '\n\t\t\t\t\t\t<option value="' + server + '" selected="selected">' + server + '</option>'
-			else:
-				servers += '\n\t\t\t\t\t\t<option value="' + server + '">' + server + '</option>'
-
 		if session.user.admin:
 			menu = '\n<a href="/admin" class="button">Admin</a>'
 		else:
 			menu = ''
 
 		with open(os.path.dirname(__file__) + '/html/index.html', 'r') as file:
-			return file.read() % { 'server': session.server, 'servers': servers, 'menu': menu }
+			return file.read() % { 'menu': menu }
 	else:
 		with open(os.path.dirname(__file__) + '/html/login.html', 'r') as file:
 			return file.read() % { 'error': error, 'user': request.args.get('user', '') }
@@ -57,52 +43,66 @@ def action(request):
 	if not session:
 		request.set_status(401)
 		return 'Not logged in'
-	if not session.server:
-		request.set_status(403)
-		return 'No server selected'
+
+	servers = session.user.servers
 
 	try:
-		server = manager.get(session.server)
+		if request.request == '/servers':
+			return json.dumps(servers)
 
-		if request.request == '/get/servers':
-			return json.dumps(session.user.servers)
+		server_name = request.match.group(1)
 
-		elif request.request == '/start':
+		if not server_name in servers:
+			request.set_status(403)
+			return 'User not authorized for server'
+
+		server = manager.get(server_name)
+
+		if request.match.lastindex == 1:
+			request.set_status(501)
+			return 'TODO - General server info in JSON'
+
+		action = request.match.group(2)
+
+		if action == 'start':
 			server.start()
-		elif request.request == '/stop':
+		elif action == 'stop':
 			server.stop()
-		elif request.request == '/reload':
+		elif action == 'reload':
 			server.reload()
-		elif request.request == '/restart':
+		elif action == 'restart':
 			server.restart()
-		elif request.request == '/status':
+		elif action == 'status':
 			return server.status()
-		elif request.request == '/sendcommand':
+		elif action == 'sendcommand':
 			server.sendCommand(request.args.get('command'))
-		elif request.request == '/get/log':
+		elif action == 'get/log':
 			try:
 				return server.getLog()
 			except FileNotFoundError:
 				return ''
-		elif request.request == '/get/scriptlog':
+		elif action == 'get/scriptlog':
 			try:
 				return server.getScriptLog()
 			except FileNotFoundError:
 				return ''
-		elif request.request == '/get/settings':
+		elif action == 'get/settings':
 			try:
 				return server.getSettings()
 			except FileNotFoundError:
 				return ''
-		elif request.request == '/get/script':
+		elif action == 'get/script':
 			try:
 				return server.getScript()
 			except FileNotFoundError:
 				return ''
-		elif request.request == '/update/settings':
+		elif action == 'update/settings':
 			server.updateSettings(request.args.get('settings'))
-		elif request.request == '/update/script':
+		elif action == 'update/script':
 			server.udpateScript(request.args.get('script'))
+		else:
+			request.set_status(404)
+			return '404 - Unknown action'
 	except errors.NoServerError:
 		request.set_status(500)
 		return 'Server does not exist'
@@ -119,4 +119,4 @@ def action(request):
 
 	return ''
 
-routes = { '/': handle, '/start': action, '/stop': action, '/reload': action, '/restart': action, '/status': action, '/sendcommand': action, '/get/log': action, '/get/scriptlog': action, '/get/settings': action, '/get/script': action, '/update/settings': action, '/update/script': action }
+routes = { '/': handle, '/servers': action, '/server/([0-9a-zA-Z-_+]+)': action, '/server/([0-9a-zA-Z-_+]+)/([a-z/]+)': action }

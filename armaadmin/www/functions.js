@@ -1,5 +1,12 @@
-function start(callback) {
-	get('/start', function(request) {
+function getServers(handler) {
+	get('/servers', function(request) {
+		if(request.status == 200)
+			handler(JSON.parse(request.responseText));
+	});
+}
+
+function start(server, callback) {
+	get('/server/' + server + '/start', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -7,8 +14,8 @@ function start(callback) {
 	});
 }
 
-function stop(callback) {
-	get('/stop', function(request) {
+function stop(server, callback) {
+	get('/server/' + server + '/stop', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -16,8 +23,8 @@ function stop(callback) {
 	});
 }
 
-function reload(callback) {
-	get('/reload', function(request) {
+function reload(server, callback) {
+	get('/server/' + server + '/reload', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -25,8 +32,8 @@ function reload(callback) {
 	});
 }
 
-function restart(callback) {
-	get('/restart', function(request) {
+function restart(server, callback) {
+	get('/server/' + server + '/restart', function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -34,8 +41,8 @@ function restart(callback) {
 	});
 }
 
-function sendCommand(command, callback) {
-	post('/sendcommand', { 'command': command }, function(request) {
+function sendCommand(server, command, callback) {
+	post('/server/' + server + '/sendcommand', { 'command': command }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -43,36 +50,36 @@ function sendCommand(command, callback) {
 	});
 }
 
-function getStatus(handler) {
-	get('/status', function(request) {
+function getStatus(server, handler) {
+	get('/server/' + server + '/status', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
-function getLog(handler) {
-	get('/get/log', function(request) {
+function getLog(server, handler) {
+	get('/server/' + server + '/get/log', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
-function getScriptLog(handler) {
-	get('/get/scriptlog', function(request) {
+function getScriptLog(server, handler) {
+	get('/server/' + server + '/get/scriptlog', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
-function getSettings(handler) {
-	get('/get/settings', function(request) {
+function getSettings(server, handler) {
+	get('/server/' + server + '/get/settings', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
-function updateSettings(settings, callback) {
-	post('/update/settings', { 'settings': settings }, function(request) {
+function updateSettings(server, settings, callback) {
+	post('/server/' + server + '/update/settings', { 'settings': settings }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -80,15 +87,15 @@ function updateSettings(settings, callback) {
 	});
 }
 
-function getScript(handler) {
-	get('/get/script', function(request) {
+function getScript(server, handler) {
+	get('/server/' + server + '/get/script', function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
-function updateScript(script, callback) {
-	post('/update/script', { 'script': script }, function(request) {
+function updateScript(server, script, callback) {
+	post('/server/' + server + '/update/script', { 'script': script }, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
