@@ -91,6 +91,8 @@ function refresh(force) {
 			script.setValue(script_text);
 		});
 	}
+
+	setTimeout(refresh, 500);
 }
 
 function load() {
@@ -117,8 +119,6 @@ function load() {
 	});
 
 	refresh(true);
-
-	setInterval(refresh, 500);
 }
 
 window.addEventListener('load', load, false);
