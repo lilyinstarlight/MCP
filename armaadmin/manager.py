@@ -47,7 +47,8 @@ class Server:
 			self.status_msg = 'nonexistent'
 
 	def exists(self):
-		return os.path.exists(self.dir) and os.path.isdir(self.dir)
+		path = self.dir + '/bin/armagetronad-dedicated'
+		return os.path.isfile(path) and os.access(path, os.X_OK):
 
 	def start(self):
 		if not self.exists():
@@ -167,6 +168,6 @@ class Server:
 			return file.read().split('|')[1]
 
 for dir in os.listdir(config.prefix):
-	path = config.prefix + '/' + dir + '/bin/armagetronad-dedicated'
-	if os.path.isfile(path) and os.access(path, os.X_OK):
-		servers[dir] = Server(dir)
+	server = Server(dir)
+	if server.exists():
+		servers[dir] = server
