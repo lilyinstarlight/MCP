@@ -168,6 +168,6 @@ class Server:
 			return file.read().split('|')[1]
 
 for dir in os.listdir(config.prefix):
-	server = Server(dir)
-	if server.exists():
-		servers[dir] = server
+	temp = Server(dir)
+	if temp.exists():
+		servers[dir] = temp
