@@ -64,41 +64,41 @@ def action(request):
 
 		action = request.match.group(2)
 
-		if action == 'start':
+		if action == '/start':
 			server.start()
-		elif action == 'stop':
+		elif action == '/stop':
 			server.stop()
-		elif action == 'reload':
+		elif action == '/reload':
 			server.reload()
-		elif action == 'restart':
+		elif action == '/restart':
 			server.restart()
-		elif action == 'status':
+		elif action == '/status':
 			return server.status()
-		elif action == 'sendcommand':
+		elif action == '/sendcommand':
 			server.sendCommand(request.args.get('command'))
-		elif action == 'get/log':
+		elif action == '/get/log':
 			try:
 				return server.getLog()
 			except FileNotFoundError:
 				return ''
-		elif action == 'get/scriptlog':
+		elif action == '/get/scriptlog':
 			try:
 				return server.getScriptLog()
 			except FileNotFoundError:
 				return ''
-		elif action == 'get/settings':
+		elif action == '/get/settings':
 			try:
 				return server.getSettings()
 			except FileNotFoundError:
 				return ''
-		elif action == 'get/script':
+		elif action == '/get/script':
 			try:
 				return server.getScript()
 			except FileNotFoundError:
 				return ''
-		elif action == 'update/settings':
+		elif action == '/update/settings':
 			server.updateSettings(request.args.get('settings'))
-		elif action == 'update/script':
+		elif action == '/update/script':
 			server.udpateScript(request.args.get('script'))
 		else:
 			request.set_status(404)
@@ -119,4 +119,4 @@ def action(request):
 
 	return ''
 
-routes = { '/': handle, '/servers': action, '/server/([0-9a-zA-Z-_+]+)': action, '/server/([0-9a-zA-Z-_+]+)/([a-z/]+)': action }
+routes = { '/': handle, '/servers': action, '/server/([0-9a-zA-Z-_+]+)(/[a-z/]+)?': action }
