@@ -55,7 +55,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 			def do_HEAD(self):
 				request = self.path.split('?', 1)
-				self.request = request[0]
+				self.path = request[0]
 				self.get_args = {}
 				if len(request) > 1:
 					HTTPHandler.parse_url_params(self.get_args, request[1])
@@ -80,7 +80,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 				try:
 					self.match = None
 					for regex in self.routes:
-						self.match = regex.match(self.request)
+						self.match = regex.match(self.path)
 						if self.match:
 							self.regex = regex
 							break
@@ -97,7 +97,7 @@ class HTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 							self.response = '404 - Not Found'
 				except:
 					type, value, traceback = sys.exc_info()
-					self.log_message('Caught %s while accessing "%s": %s', type.__name__, self.request, value)
+					self.log_message('Caught %s while accessing "%s": %s', type.__name__, self.path, value)
 
 					self.set_status(500)
 					if '500' in self.error_routes:

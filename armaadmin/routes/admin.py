@@ -151,7 +151,7 @@ def action(request):
 		request.set_status(409)
 		return 'User already exists'
 	except:
-		log.exception('accessing "' + request.request + '"')
+		log.exception('accessing "' + request.path + '"')
 		request.set_status(500)
 		return 'Unknown error'
 
