@@ -58,7 +58,11 @@ def action(request):
 				return 'Error configuring server: ' + e.msg
 		elif action == 'destroy/server':
 			try:
-				manager.destroy(request.args.get('server'))
+				server = request.args.get('server')
+				manager.destroy(server)
+				for user in users.users:
+					if server in user.servers:
+						user.servers.remove(server)
 			except errors.ConfigError:
 				request.set_status(500)
 				return 'Error configuring server: ' + e.msg
