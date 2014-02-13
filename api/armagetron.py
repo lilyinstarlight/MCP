@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import time
 import sys.stdin as ladderlog
-import sys.stdout as armagetron
+import sys.stdout as server
 
 def addHandler(command, handler):
 	if not command in commands:
@@ -20,7 +20,7 @@ def removeChatHandler(command):
 		del chatcommands[command]
 
 def sendCommand(command):
-	armagetron.write(command + '\n')
+	server.write(command + '\n')
 
 def say(message):
 	sendCommand('SAY ' + message)
@@ -56,10 +56,10 @@ def rinclude(config):
 	sendCommand('RINCLUDE ' + config)
 
 def reload():
-	sendCommand('INCLUDE settings.cfg')
-	sendCommand('INCLUDE server_info.cfg')
-	sendCommand('INCLUDE settings_custom.cfg')
-	sendCommand('INCLUDE script.cfg')
+	include('settings.cfg')
+	include('server_info.cfg')
+	include('settings_custom.cfg')
+	include('script.cfg')
 	sendCommand('START_NEW_MATCH')
 
 def endRound():
@@ -73,7 +73,7 @@ def chatCommand(command):
 		sendMessage(command[2], 'Unknown chat command "' + command[1] + '".')
 
 def init(command):
-	sendCommand('INCLUDE script.cfg')
+	include('script.cfg')
 
 def run():
 	while True:
