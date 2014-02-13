@@ -55,7 +55,7 @@ def setupInit():
 		file_util.copy_file('init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
 		subprocess.call(['systemctl', 'daemon-reload'])
 
-class post_install(install):
+class cmd_install(install):
 	def run(self):
 		open('armaadmin/users.db', 'w').close()
 		setupUser()
@@ -73,7 +73,7 @@ class post_install(install):
 		setupApi()
 		setupInit()
 
-class upgrade(install):
+class cmd_upgrade(install):
 	def run(self):
 		print()
 		print('Upgrading...')
@@ -95,5 +95,5 @@ setup(	name='ArmaAdmin',
 	packages=[ 'armaadmin', 'armaadmin.routes' ],
 	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/admin/*.*', 'www/codemirror/*.*' ], 'armaadmin.routes': [ 'html/*.*' ] },
 	scripts=[ 'bin/armaadmin' ],
-	cmdclass={ 'install': post_install, 'upgrade': upgrade }
+	cmdclass={ 'install': cmd_install, 'upgrade': cmd_upgrade }
 )
