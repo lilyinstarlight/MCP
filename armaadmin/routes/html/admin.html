@@ -29,7 +29,7 @@
 		</div>
 		<div class="menu">
 			<span class="left">
-				<a href="javascript:change('content', 'users')" class="button">Users</a><a href="javascript:change('content', 'servers')" class="button">Servers</a><a href="javascript:change('content', 'sources')" class="button">Sources</a><a href="javascript:change('content', 'config')" class="button">Config</a>
+				<a id="users_button" href="javascript:change('content', 'users')" class="button">Users</a><a id="servers_button" href="javascript:change('content', 'servers')" class="button">Servers</a><a id="sources_button" href="javascript:change('content', 'sources')" class="button">Sources</a><a id="config_button" href="javascript:change('content', 'config')" class="button disabled">Config</a>
 			</span>
 			<span class="right">
 				<span id="working" class="working" style="display: none"></span>
@@ -101,7 +101,7 @@
 				<div id="server_list">
 					<div class="controller">
 						<span class="left">
-							<a id="server_create_button" href="javascript:change('servers', 'server_create')" class="button">Create</a>
+							<a id="server_create_button" href="javascript:change('servers', 'server_create')" class="button disabled">Create</a>
 							<a id="server_upgrade_button" href="javascript:serverUpgrade()" class="button disabled">Upgrade</a>
 							<a id="server_destroy_button" href="javascript:serverDestroy()" class="button disabled">Destroy</a>
 						</span>

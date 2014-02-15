@@ -1,3 +1,10 @@
+function getFeatures(handler) {
+	get('/admin/features', function(request) {
+		if(request.status == 200)
+			handler(JSON.parse(request.responseText));
+	});
+}
+
 function getUsers(handler) {
 	get('/admin/get/users', function(request) {
 		if(request.status == 200)

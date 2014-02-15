@@ -1,7 +1,7 @@
 import json
 import os
 
-from armaadmin import errors, log, manager, sessions, sources, users
+from armaadmin import config, errors, log, manager, sessions, sources, users
 
 def handle(request):
 	session = sessions.get(request.cookies.get('session'))
@@ -29,7 +29,9 @@ def action(request):
 	try:
 		action = request.match.group(1)
 
-		if action == 'get/users':
+		if action == 'features':
+			return json.dumps({ 'creation': config.creation })
+		elif action == 'get/users':
 			user_list = {}
 			for user in users.users:
 				user_list[user] = { 'servers': users.users[user].servers, 'admin': users.users[user].admin }

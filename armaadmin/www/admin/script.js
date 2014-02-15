@@ -1,3 +1,4 @@
+var features = {};
 var users, servers, sources;
 var config, config_text;
 var user_selected, server_selected, source_selected;
@@ -156,6 +157,21 @@ function refresh(force) {
 	if(typeof force != 'boolean')
 		force = false;
 
+	getFeatures(function(response) {
+		features = response;
+
+		if(features.creation) {
+			document.getElementById('config_button').className = 'button';
+			if(isVisible(document.getElementById('server_create_button')) || force)
+				document.getElementById('server_create_button').className = 'button';
+		}
+		else {
+			document.getElementById('config_button').className = 'button disabled';
+			if(isVisible(document.getElementById('server_create_button')) || force)
+				document.getElementById('server_create_button').className = 'button disabled';
+		}
+	});
+
 	getUsers(function(response) {
 		users = response;
 
@@ -234,7 +250,7 @@ function refresh(force) {
 		}
 	});
 
-	if(isVisible(document.getElementById('config_editor')) || force) {
+	if((isVisible(document.getElementById('config_editor')) || force) && features.creation) {
 		getConfig(function(response) {
 			if(config_text == response)
 				return;
