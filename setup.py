@@ -10,6 +10,8 @@ import subprocess
 
 import config
 
+from armaadmin import name, version
+
 def setupUser():
 	import armaadmin.users
 
@@ -85,8 +87,8 @@ class cmd_upgrade(install):
 		setupApi()
 		setupInit()
 
-setup(	name='ArmaAdmin',
-	version='2.0',
+setup(	name=name,
+	version=version,
 	description='A complete Armagetron Advanced multi-server management framework and web interface',
 	author='Foster McLane',
 	author_email='fkmclane@gmail.com',
