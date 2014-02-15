@@ -105,6 +105,15 @@ To create servers, you must be on a unix-like system with a modern compiler.  Ea
 - dev-libs/zthread (optional, 0.2.8 only)
 - dev-vcs/bzr
 
+Upgrading
+---------
+To upgrade the software, follow the steps for setup under the installation section however replacing the install command with the uprade command:
+```
+# ./setup.py upgrade
+```
+
+The upgrade differs in that it does not create an initial user database and does not overwrite configuration files.
+
 Questions
 ---------
 ###Is there a demo?###
