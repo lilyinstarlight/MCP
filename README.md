@@ -64,8 +64,8 @@ Before you can create your first server, you must download a copy of the Armaget
 
 | Version         | Bzr Address                                                     |
 | --------------- | --------------------------------------------------------------- |
-| 0.2.8           | `bzr branch lp:armagetronad/0.2.8`                              |
-| 0.4             | `bzr branch lp:armagetronad/0.4`                                |
+| 0.2.8           | `lp:armagetronad/0.2.8`                                         |
+| 0.4             | `lp:armagetronad/0.4`                                           |
 | 0.2.8 sty+ct    | `lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct`    |
 | 0.2.9 sty+ct+ap | `lp:~armagetronad-ap/armagetronad/0.2.9-armagetronad-sty+ct+ap` |
 
