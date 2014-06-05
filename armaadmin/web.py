@@ -144,34 +144,6 @@ class HTTPHandler(object):
 		self.response.headers.set('Content-Length', len(response))
 		return status, ''
 
-class HTTPHeaders(object):
-	def __init__(self):
-		self.headers = {}
-
-	def __iter__(self):
-		for key in self.headers.keys():
-			yield self.retrieve(key)
-		yield '\r\n'
-
-	def __len__(self):
-		return len(self.headers)
-
-	def add(self, header):
-		key, value = (item.strip() for item in header.rstrip('\r\n').split(':', 1))
-		self.set(key, value)
-
-	def get(self, key):
-		return self.headers[key.lower()]
-
-	def set(self, key, value):
-		self.headers[key.lower()] = str(value)
-
-	def unset(self, key):
-		del self.headers[key.lower()]
-
-	def retrieve(self, key):
-		return key.lower().title() + ': ' + self.get(key) + '\r\n'
-
 class DummyHandler(HTTPHandler):
 	nonatomic = [ 'options', 'head', 'get', 'post', 'put', 'patch', 'delete' ]
 
@@ -217,6 +189,34 @@ class HTTPLog(object):
 
 	def error(self, host, message, rfc931='-', authuser='-'):
 		self.write(host, rfc931, authuser, 'ERROR: ' + message)
+
+class HTTPHeaders(object):
+	def __init__(self):
+		self.headers = {}
+
+	def __iter__(self):
+		for key in self.headers.keys():
+			yield self.retrieve(key)
+		yield '\r\n'
+
+	def __len__(self):
+		return len(self.headers)
+
+	def add(self, header):
+		key, value = (item.strip() for item in header.rstrip('\r\n').split(':', 1))
+		self.set(key, value)
+
+	def get(self, key):
+		return self.headers[key.lower()]
+
+	def set(self, key, value):
+		self.headers[key.lower()] = str(value)
+
+	def unset(self, key):
+		del self.headers[key.lower()]
+
+	def retrieve(self, key):
+		return key.lower().title() + ': ' + self.get(key) + '\r\n'
 
 class HTTPResponse(object):
 	def __init__(self, request):
@@ -373,7 +373,7 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 		self.server_port = port
 
 def init(address, routes, error_routes={}, log=HTTPLog(None), keyfile=None, certfile=None):
-	global httpd, _routes, _log
+	global httpd, _routes, _error_routes, _log
 
 	#Compile the regex routes and add them
 	for regex, handler in routes.items():
@@ -389,12 +389,16 @@ def init(address, routes, error_routes={}, log=HTTPLog(None), keyfile=None, cert
 	if keyfile and certfile:
 		httpd.socket = ssl.wrap_socket(httpd.socket, keyfile, certfile, server_side=True)
 
-def destroy():
-	global httpd
+def deinit():
+	global httpd, _routes, _error_routes, _log
 
 	httpd.server_close()
-
 	httpd = None
+
+	_log = None
+
+	del _routes[:]
+	del _error_routes[:]
 
 def start():
 	global httpd
@@ -405,3 +409,9 @@ def stop():
 	global httpd
 
 	httpd.shutdown()
+
+def is_running():
+	if httpd == None:
+		return False
+
+	return httpd.__is_shut_down.is_set()
