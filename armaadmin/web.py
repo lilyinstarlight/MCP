@@ -15,8 +15,7 @@ http_encoding = 'iso-8859-1'
 default_encoding = 'utf-8'
 
 #Constraints
-max_request_size = 4096
-max_line_size = 1024
+max_line_size = 4096
 max_headers = 64
 
 #Standard HTTP status messages
@@ -101,20 +100,14 @@ port = 0
 #The HTTPServer object
 httpd = None
 
-#Dictionaries of routes
-_routes = {}
-_error_routes = {}
-
 #HTTPLog object
 _log = None
 
-#For atomic handling of some resources
-_locks = []
-
 class HTTPError(Exception):
-	def __init__(self, error, message=None):
-		self.error = error
+	def __init__(self, code, message=None, status_message=None):
+		self.code = code
 		self.message = message
+		self.status_message = status_message
 
 class HTTPHandler(object):
 	nonatomic = [ 'options', 'head', 'get' ]
@@ -135,15 +128,19 @@ class HTTPHandler(object):
 			self.check_continue()
 			self.response.wfile.write(http_version + ' 100 ' + status_messages[100] + '\r\n\r\n')
 
-		#Get the body for the do_* method
-		body_length = int(self.request.headers.get('Content-Length', '0'))
-		self.request.body = self.request.rfile.read(body_length)
+		#Get the body for the do_* method if wanted
+		if self.get_body():
+			body_length = int(self.request.headers.get('Content-Length', '0'))
+			self.request.body = self.request.rfile.read(body_length)
 
 		#Run the do_* method of the implementation
 		return getattr(self, self.method)()
 
 	def check_continue(self):
 		pass
+
+	def get_body(self):
+		return self.method == 'do_post' or self.method == 'do_put' or self.method == 'do_patch'
 
 	def do_options(self):
 		#Lots of magic for finding all attributes beginning with 'do_', removing the 'do_' and making it upper case, and joining the list with commas
@@ -164,25 +161,31 @@ class HTTPHandler(object):
 class DummyHandler(HTTPHandler):
 	nonatomic = True
 
-	def __init__(self, request, response, groups, error=500):
+	def __init__(self, request, response, groups, error=HTTPError(500)):
 		HTTPHandler.__init__(self, request, response, groups)
 		self.error = error
 
 	def respond(self):
-		raise HTTPError(self.error)
+		raise self.error
 
 class HTTPErrorHandler(HTTPHandler):
 	nonatomic = True
 
-	def __init__(self, request, response, groups, error=500, message=None):
+	def __init__(self, request, response, groups, error=HTTPError(500)):
 		self.error = error
-		self.message = message
 
 	def respond(self):
-		if self.message:
-			return self.error, status_messages[self.error], self.message
+		if self.error.status_message:
+			status_message = self.error.status_message
 		else:
-			return self.error, status_messages[self.error], str(self.error) + ' - ' + status_messages[self.error]
+			status_message = status_messages[self.error.code]
+
+		if self.error.message:
+			message = self.error.message
+		else:
+			message = str(self.error.code) + ' - ' + status_message
+
+		return self.error.code, status_message, message
 
 class HTTPLog(object):
 	def __init__(self, httpd_log, access_log):
@@ -252,6 +255,7 @@ class HTTPResponse(object):
 	def __init__(self, request):
 		self.request = request
 		self.wfile = request.wfile
+		self.server = request.server
 		self.headers = HTTPHeaders()
 
 	def handle(self):
@@ -263,37 +267,33 @@ class HTTPResponse(object):
 
 			#Atomic handling of resources - wait for resource to become available if necessary
 			if atomic:
-				while self.request.resource in _locks:
+				while self.request.resource in self.server.locks:
 					time.sleep(0.01)
 
 			#Do appropriate resource locks and try to get HTTP status, response text, and possibly status message
 			if atomic:
-				_locks.append(self.request.resource)
+				self.server.locks.append(self.request.resource)
 			try:
 				response = self.request.handler.respond()
-			except Exception as e:
-				#Extract info from an HTTPError
-				if isinstance(e, HTTPError):
-					error = e.error
-					message = e.message
-				else:
+			except Exception as error:
+				#If it isn't a standard HTTPError, log it and send a 500
+				if not isinstance(error, HTTPError):
 					_log.exception()
-					error = 500
-					message = None
+					error = HTTPError(500)
 
 				#Find an appropriate error handler, defaulting to HTTPErrorHandler
-				s_error = str(error)
-				error_handler = HTTPErrorHandler(self.request.handler.request, self.request.handler.response, self.request.handler.groups, error, message)
-				for regex, handler in _error_routes.items():
-					match = regex.match(s_error)
+				s_code = str(error.code)
+				error_handler = HTTPErrorHandler(self.request.handler.request, self.request.handler.response, self.request.handler.groups, error)
+				for regex, handler in self.server.error_routes.items():
+					match = regex.match(s_code)
 					if match:
-						error_handler = handler(self.request.handler.request, self.request.handler.response, self.request.handler.groups, error, message)
+						error_handler = handler(self.request.handler.request, self.request.handler.response, self.request.handler.groups, error)
 
 				#Use the error response as normal
 				response = error_handler.respond()
 			finally:
 				if atomic:
-					_locks.remove(self.request.resource)
+					self.server.locks.remove(self.request.resource)
 
 			#Get data from response
 			try:
@@ -306,19 +306,20 @@ class HTTPResponse(object):
 			if not isinstance(response, bytes):
 				response = response.encode(default_encoding)
 
+			#If Content-Length has not already been set, do it
+			if not self.headers.get('Content-Length'):
+				self.headers.set('Content-Length', len(response))
+
 			#Set a few necessary headers (that the handler should not change)
 			self.headers.set('Server', server_version)
 			self.headers.set('Date', time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.gmtime()))
-
-			#If length is 0, the response is likely not one that needs a Content-Length or it has already been filled by a HEAD command
-			length = len(response)
-			if length > 0:
-				self.headers.set('Content-Length', length)
 		except:
 			#Catch the most general errors and tell the client with the least likelihood of throwing another exception
 			status = 500
 			status_msg = status_messages[500]
 			response = ('500 - ' + status_messages[500]).encode(default_encoding)
+			self.headers.set('Content-Length', len(response))
+
 			_log.exception()
 		finally:
 			_log.request(self.request.client_address[0], self.request.request_line, code=str(status), size=str(len(response)))
@@ -338,20 +339,32 @@ class HTTPResponse(object):
 				pass
 
 class HTTPRequest(socketserver.StreamRequestHandler):
+	def __init__(self, request, client_address, server, timeout=None):
+		self.timeout = timeout
+		socketserver.StreamRequestHandler.__init__(self, request, client_address, server)
+
 	def handle(self):
-		#Set some reasonable defaults and create a response in case of the worst
+		#Get request line
+		try:
+			request = str(self.rfile.readline(max_line_size), http_encoding)
+		#If read hits timeout or has some other error, ignore the request
+		except:
+			self.keepalive = False
+			return
+
+		self.request_line = request.rstrip('\r\n')
+
+		#Set some reasonable defaults and create a response in case the worst happens and we need to tell the client
 		self.method = ''
 		self.resource = ''
-		self.request_line = ''
+		self.headers = HTTPHeaders()
 		self.response = HTTPResponse(self)
-		try:
-			#Get request line
-			request = str(self.rfile.readline(max_request_size), http_encoding)
-			self.request_line = request.rstrip('\r\n')
+		self.keepalive = True
 
+		try:
 			#HTTP Status 414
 			#If line does not end in \r\n, it must be longer than the buffer
-			if len(request) == max_request_size and request[-2:] != '\r\n':
+			if len(request) == max_line_size and request[-2:] != '\r\n':
 				raise HTTPError(414)
 
 			#Try the request line and error out if can't parse it
@@ -366,7 +379,6 @@ class HTTPRequest(socketserver.StreamRequestHandler):
 				raise HTTPError(505)
 
 			#Read and parse request headers
-			self.headers = HTTPHeaders()
 			while True:
 				line = str(self.rfile.readline(max_line_size), http_encoding)
 
@@ -385,9 +397,13 @@ class HTTPRequest(socketserver.StreamRequestHandler):
 
 				self.headers.add(line)
 
+			#If we are requested to close the connection after we finish, do so
+			if self.headers.get('Connection') == 'close':
+				self.keepalive = False
+
 			#Find a matching regex to handle the request with
 			self.handler = None
-			for regex, handler in _routes.items():
+			for regex, handler in self.server.routes.items():
 				match = regex.match(self.resource)
 				if match:
 					self.handler = handler(self, self.response,  match.groups())
@@ -396,60 +412,71 @@ class HTTPRequest(socketserver.StreamRequestHandler):
 			if self.handler == None:
 				raise HTTPError(404)
 		#Use DummyHandler so the error is raised again when ready for response
-		except HTTPError as e:
-			self.handler = DummyHandler(self, self.response, None, e.error)
-		except:
-			self.handler = DummyHandler(self, self.response, None, 500)
+		except Exception as error:
+			self.handler = DummyHandler(self, self.response, None, error)
 		finally:
 			#We finished listening and handling early errors and so let a response class now finish up the job of talking
 			self.response.handle()
 
 class HTTPServer(socketserver.ThreadingTCPServer):
+	def __init__(self, address, routes, error_routes={}, keepalive=5, timeout=8, keyfile=None, certfile=None):
+		self.keepalive = keepalive
+		self.request_timeout = timeout
+
+		#For atomic handling of resources
+		self.locks = []
+
+		#Make route dictionaries
+		self.routes = {}
+		self.error_routes = {}
+
+		#Compile the regex routes and add them
+		for regex, handler in routes.items():
+			self.routes[re.compile('^' + regex + '$')] = handler
+		for regex, handler in error_routes.items():
+			self.error_routes[re.compile('^' + regex + '$')] = handler
+
+		socketserver.ThreadingTCPServer.__init__(self, address, None)
+
+		#Add SSL if necessary information specified
+		if keyfile and certfile:
+			self.socket = ssl.wrap_socket(self.socket, keyfile, certfile, server_side=True)
+
 	def server_bind(self):
 		global host, port
 		socketserver.TCPServer.server_bind(self)
-		host, port = self.socket.getsockname()[:2]
+		host, port = self.server_address[:2]
 		_log.info('Serving HTTP on ' + host + ':' + str(port))
 
-def init(address, routes, error_routes={}, log=HTTPLog(None, None), keyfile=None, certfile=None):
-	global httpd, _routes, _error_routes, _log
+	def finish_request(self, request, client_address):
+		#Keep alive by continually accepting requests - set self.keepalive to None (or 0) to effectively disable
+		handler = HTTPRequest(request, client_address, self, self.request_timeout)
+		while self.keepalive and handler.keepalive:
+			#Give them self.keepalive after each request to make another
+			handler = HTTPRequest(request, client_address, self, self.keepalive)
 
-	#Compile the regex routes and add them
-	for regex, handler in routes.items():
-		_routes[re.compile('^' + regex + '$')] = handler
-	for regex, handler in error_routes.items():
-		_error_routes[re.compile('^' + regex + '$')] = handler
+def init(address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=8, keyfile=None, certfile=None):
+	global httpd, _log
 
 	_log = log
 
-	httpd = HTTPServer(address, HTTPRequest)
-
-	#Add SSL if specified
-	if keyfile and certfile:
-		httpd.socket = ssl.wrap_socket(httpd.socket, keyfile, certfile, server_side=True)
+	httpd = HTTPServer(address, routes, error_routes, keepalive, timeout, keyfile, certfile)
 
 def deinit():
-	global httpd, _routes, _error_routes, _log
+	global httpd, _log
 
 	httpd.server_close()
 	httpd = None
 
 	_log = None
 
-	_routes = {}
-	_error_routes = {}
-
-	_locks = []
-
 def start():
-	global httpd
-
 	threading.Thread(target=httpd.serve_forever).start()
+	_log.info('Server started')
 
 def stop():
-	global httpd
-
 	httpd.shutdown()
+	_log.info('Server stopped')
 
 def is_running():
 	if httpd == None:
