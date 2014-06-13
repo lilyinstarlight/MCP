@@ -22,11 +22,14 @@ log = '/var/log/armaadmin/manager.log'
 #Path to command output log; None to disable logging
 cmdlog = '/var/log/armaadmin/command.log'
 
-#Address of the web interface (leave blank unless you know what you are doing)
-address = ''
+#Host of the web interface (leave blank unless you know what you are doing)
+host = ''
 
 #Port to listen on for the web interface
 port = 80
 
 #Path to HTTP log; None to disable logging
-httplog = '/var/log/armaadmin/http.log'
+httpdlog = '/var/log/armaadmin/httpd.log'
+
+#Path to HTTP access log; None to disable logging
+accesslog = '/var/log/armaadmin/access.log'

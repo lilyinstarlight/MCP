@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import socket
@@ -17,6 +18,8 @@ default_encoding = 'utf-8'
 #Constraints
 max_line_size = 4096
 max_headers = 64
+max_request_size = 1048576 #1 MB
+stream_chunk_size = 8192
 
 #Standard HTTP status messages
 status_messages = {
@@ -131,6 +134,9 @@ class HTTPHandler(object):
 		#Get the body for the do_* method if wanted
 		if self.get_body():
 			body_length = int(self.request.headers.get('Content-Length', '0'))
+			#HTTP Status 413
+			if max_request_size and body_length > max_request_size:
+				raise HTTPError(413)
 			self.request.body = self.request.rfile.read(body_length)
 
 		#Run the do_* method of the implementation
@@ -155,7 +161,10 @@ class HTTPHandler(object):
 		status = response[0]
 		#Response is always last
 		response = response[-1]
-		self.response.headers.set('Content-Length', len(response))
+		#Do not bother with Content-Length for streams
+		if not isinstance(response, io.IOBase) and not self.response.headers.get('Content-Length'):
+			self.response.headers.set('Content-Length', len(response))
+
 		return status, ''
 
 class DummyHandler(HTTPHandler):
@@ -201,31 +210,39 @@ class HTTPLog(object):
 		else:
 			self.access_log = sys.stderr
 
+	def timestamp(self):
+		return time.strftime('[%d/%b/%Y:%H:%M:%S %z]')
 
-	def write(self, message):
-		self.httpd_log.write(message + '\n')
+	def write(self, string):
+		self.httpd_log.write(string)
 
-	def access_write(self, message):
-		self.access_log.write(message + '\n')
+	def message(self, message):
+		self.write(self.timestamp() + ' ' + message + '\n')
 
-	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
-		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + time.strftime('[%d/%b/%Y:%H:%M:%S %z]') + ' "' + request + '" ' + code + ' ' + size)
+	def access_write(self, string):
+		self.access_log.write(string)
 
 	def info(self, message):
-		self.write('INFO: ' + message)
+		self.message('INFO: ' + message)
 
 	def warn(self, message):
-		self.write('WARN: ' + message)
+		self.message('WARN: ' + message)
 
 	def error(self, message):
-		self.write('ERROR: ' + message)
+		self.message('ERROR: ' + message)
 
 	def exception(self):
 		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
 
+	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
+		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
+
 class HTTPHeaders(object):
 	def __init__(self):
+		#Lower case header -> value
 		self.headers = {}
+		#Lower case header -> actual case header
+		self.headers_actual = {}
 
 	def __iter__(self):
 		for key in self.headers.keys():
@@ -234,6 +251,10 @@ class HTTPHeaders(object):
 
 	def __len__(self):
 		return len(self.headers)
+
+	def clear(self):
+		self.headers.clear()
+		self.headers_actual.clear()
 
 	def add(self, header):
 		key, value = (item.strip() for item in header.rstrip('\r\n').split(':', 1))
@@ -244,19 +265,25 @@ class HTTPHeaders(object):
 
 	def set(self, key, value):
 		self.headers[key.lower()] = str(value)
+		self.headers_actual[key.lower()] = key
 
 	def unset(self, key):
 		del self.headers[key.lower()]
+		del self.headers_actual[key.lower()]
 
 	def retrieve(self, key):
-		return key.lower().title() + ': ' + self.get(key) + '\r\n'
+		return self.headers_actual[key.lower()] + ': ' + self.get(key) + '\r\n'
 
 class HTTPResponse(object):
-	def __init__(self, request):
+	def __init__(self, connection, server, request):
+		self.connection = connection
+		self.server = server
 		self.request = request
-		self.wfile = request.wfile
-		self.server = request.server
+
 		self.headers = HTTPHeaders()
+
+	def setup(self):
+		self.wfile = self.connection.makefile('wb', 0)
 
 	def handle(self):
 		try:
@@ -276,6 +303,9 @@ class HTTPResponse(object):
 			try:
 				response = self.request.handler.respond()
 			except Exception as error:
+				#Clear any set headers
+				self.headers.clear()
+
 				#If it isn't a standard HTTPError, log it and send a 500
 				if not isinstance(error, HTTPError):
 					_log.exception()
@@ -302,13 +332,15 @@ class HTTPResponse(object):
 			except ValueError:
 				status, status_msg, response = response
 
-			#Convert response to bytes if necessary
-			if not isinstance(response, bytes):
-				response = response.encode(default_encoding)
+			#If response is not a stream, take care of encoding and headers
+			if not isinstance(response, io.IOBase):
+				#Convert response to bytes if necessary
+				if not isinstance(response, bytes):
+					response = response.encode(default_encoding)
 
-			#If Content-Length has not already been set, do it
-			if not self.headers.get('Content-Length'):
-				self.headers.set('Content-Length', len(response))
+				#If Content-Length has not already been set, do it
+				if not self.headers.get('Content-Length'):
+					self.headers.set('Content-Length', len(response))
 
 			#Set a few necessary headers (that the handler should not change)
 			self.headers.set('Server', server_version)
@@ -322,7 +354,8 @@ class HTTPResponse(object):
 
 			_log.exception()
 		finally:
-			_log.request(self.request.client_address[0], self.request.request_line, code=str(status), size=str(len(response)))
+			#Prepare response_length
+			response_length = 0
 
 			#If writes fail, the streams are probably closed so ignore the error
 			try:
@@ -334,31 +367,75 @@ class HTTPResponse(object):
 					self.wfile.write(header.encode(http_encoding))
 
 				#Write response
-				self.wfile.write(response)
+				if isinstance(response, io.IOBase):
+					#For a stream, write chunk by chunk and add each chunk size to response_length
+					try:
+						while True:
+							chunk = response.read(stream_chunk_size)
+							if not chunk:
+								break
+							response_length += len(chunk)
+							self.wfile.write(chunk)
+					#Cleanup
+					finally:
+						response.close()
+				else:
+					#Else just get length and write the whole response
+					response_length = len(response)
+					self.wfile.write(response)
 			except:
 				pass
 
-class HTTPRequest(socketserver.StreamRequestHandler):
-	def __init__(self, request, client_address, server, timeout=None):
+			_log.request(self.request.client_address[0], self.request.request_line, code=str(status), size=str(response_length))
+
+	def finish(self):
+		self.wfile.close()
+
+class HTTPRequest(object):
+	def __init__(self, connection, client_address, server, timeout=None, keepalive_timeout=None):
+		self.connection = connection
+		self.client_address = client_address
+		self.server = server
 		self.timeout = timeout
-		socketserver.StreamRequestHandler.__init__(self, request, client_address, server)
+		self.keepalive_timeout = keepalive_timeout
+
+		self.response = HTTPResponse(connection, server, self)
+		self.headers = HTTPHeaders()
+
+		self.setup()
+		try:
+			self.handle()
+		finally:
+			self.finish()
+
+	def setup(self):
+		#Enable nagle's algorithm, prepare buffered read file, and create response with unbuffered write file
+		self.connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, True)
+		self.rfile = self.connection.makefile('rb', -1)
+		self.response.setup()
 
 	def handle(self):
+		if self.keepalive_timeout:
+			self.connection.settimeout(self.keepalive_timeout)
+		else:
+			self.connection.settimeout(self.timeout)
+
 		#Get request line
 		try:
-			request = str(self.rfile.readline(max_line_size), http_encoding)
+			request = self.rfile.readline(max_line_size).decode(http_encoding)
 		#If read hits timeout or has some other error, ignore the request
 		except:
 			self.keepalive = False
 			return
+
+		if self.keepalive_timeout:
+			self.connection.settimeout(self.timeout)
 
 		self.request_line = request.rstrip('\r\n')
 
 		#Set some reasonable defaults and create a response in case the worst happens and we need to tell the client
 		self.method = ''
 		self.resource = ''
-		self.headers = HTTPHeaders()
-		self.response = HTTPResponse(self)
 		self.keepalive = True
 
 		try:
@@ -380,7 +457,7 @@ class HTTPRequest(socketserver.StreamRequestHandler):
 
 			#Read and parse request headers
 			while True:
-				line = str(self.rfile.readline(max_line_size), http_encoding)
+				line = self.rfile.readline(max_line_size).decode(http_encoding)
 
 				#HTTP Status 431
 				#If line does not end in \r\n, it must be longer than the buffer
@@ -418,9 +495,13 @@ class HTTPRequest(socketserver.StreamRequestHandler):
 			#We finished listening and handling early errors and so let a response class now finish up the job of talking
 			self.response.handle()
 
+	def finish(self):
+		self.rfile.close()
+		self.response.finish()
+
 class HTTPServer(socketserver.ThreadingTCPServer):
 	def __init__(self, address, routes, error_routes={}, keepalive=5, timeout=8, keyfile=None, certfile=None):
-		self.keepalive = keepalive
+		self.keepalive_timeout = keepalive
 		self.request_timeout = timeout
 
 		#For atomic handling of resources
@@ -449,11 +530,11 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 		_log.info('Serving HTTP on ' + host + ':' + str(port))
 
 	def finish_request(self, request, client_address):
-		#Keep alive by continually accepting requests - set self.keepalive to None (or 0) to effectively disable
+		#Keep alive by continually accepting requests - set self.keepalive_timeout to None (or 0) to effectively disable
 		handler = HTTPRequest(request, client_address, self, self.request_timeout)
-		while self.keepalive and handler.keepalive:
-			#Give them self.keepalive after each request to make another
-			handler = HTTPRequest(request, client_address, self, self.keepalive)
+		while self.keepalive_timeout and handler.keepalive:
+			#Give them self.keepalive_timeout after each request to make another
+			handler = HTTPRequest(request, client_address, self, self.request_timeout, self.keepalive_timeout)
 
 def init(address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=8, keyfile=None, certfile=None):
 	global httpd, _log
