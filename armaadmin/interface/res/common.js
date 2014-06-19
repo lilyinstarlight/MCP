@@ -19,46 +19,69 @@ function isVisible(element) {
 		return isVisible(element.parentNode);
 }
 
-function XHR(address, method, data, handler) {
+function XHR(address, method, auth, data, handler) {
 	var completed = false;
 	var request = new XMLHttpRequest();
-	request.onload = function() {
-		if(request.readyState == 4)
+	request.onreadystatechange = function() {
+		if(request.readyState == 4) {
 			handler(request);
 
-		completed = true;
+			completed = true;
 
-		count--;
-		if(count == 0)
-			document.getElementById('working').style.display = 'none';
+			count--;
+			working = document.getElementById('working');
+			if(count == 0 && element != null)
+				element.style.display = 'none';
+		}
 	};
 	request.open(method, address, true);
+	request.setRequestHeader('Authorization', auth);
 	if(data != null) {
-		request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		request.send(encode(data));
+		json = JSON.stringify(data);
+		request.setRequestHeader('Content-Type', 'application/json');
+		request.setRequestHeader('Content-Length', json.length);
+		request.send(json);
 	}
 	else {
 		request.send();
 	}
-	count++;
 
+	count++;
 	setTimeout(function() {
-		if(!completed)
-			document.getElementById('working').style.display = 'inline-block';
+		working = document.getElementById('working');
+		if(!completed && working != null)
+			working.style.display = 'inline-block';
 	}, 500);
 }
 
-function encode(data) {
-	var request = [];
-	for(var key in data)
-		request.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-	return request.join('&');
+function get(address, auth, handler) {
+	XHR(address, 'GET', auth, null, handler);
 }
 
-function get(address, handler) {
-	XHR(address, 'GET', null, handler);
+function post(address, auth, data, handler) {
+	XHR(address, 'POST', auth, data, handler);
 }
 
-function post(address, data, handler) {
-	XHR(address, 'POST', data, handler);
+function put(address, auth, data, handler) {
+	XHR(address, 'PUT', auth, data, handler);
+}
+
+function patch(address, auth, data, handler) {
+	XHR(address, 'PATCH', auth, data, handler);
+}
+
+function delete(address, auth, handler) {
+	XHR(address, 'DELETE', auth, null, handler);
+}
+
+function setLoginCookie(username, key) {
+	document.cookie = JSON.stringify({ 'username': username, 'key': key });
+}
+
+function unsetLoginCookie() {
+	document.cookie = '';
+}
+
+function getLoginCookie() {
+	return JSON.parse(document.cookie);
 }

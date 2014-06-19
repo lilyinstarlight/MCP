@@ -35,8 +35,3 @@ class PageHandler(web.HTTPHandler):
 		with open(os.path.dirname(__file__) + '/html/' + self.page, 'r') as file:
 			self.response.headers.set('Content-Type', 'text/html')
 			return 200, file.read()
-
-class AuthPageHandler(PageHandler, AuthorizedHandler):
-	def unauthorized(self):
-		self.response.headers.set('Location', '/login')
-		return 307, ''

@@ -36,7 +36,9 @@
 			<span class="right">
 				<span id="working" class="working" style="display: none"></span>
 				<select id="servers" onchange="changeServer(this.value)"></select>
-				%(menu)s<a href="/?logout" class="button">Logout</a>
+				<a href="/admin" class="button" style="display: none">Admin</a>
+				<a href="/user" class="button">User</a>
+				<a id="logout" href="javascript:unsetLoginCookie()" class="button">Logout</a>
 			</span>
 		</div>
 		<div id="content" class="content" style="display: none">

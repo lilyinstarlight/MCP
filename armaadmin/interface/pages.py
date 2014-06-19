@@ -1,12 +1,12 @@
 import common
 
-class RootHandler(common.AuthPageHandler):
+class RootHandler(common.PageHandler):
 	page = 'index.html'
 
-class AdminHandler(common.AuthPageHandler):
+class AdminHandler(common.PageHandler):
 	page = 'admin.html'
 
-class UserHandler(common.AuthPageHandler):
+class UserHandler(common.PageHandler):
 	page = 'user.html'
 
 class LoginHandler(common.PageHandler):
