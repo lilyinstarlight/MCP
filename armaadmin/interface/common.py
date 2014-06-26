@@ -34,4 +34,4 @@ class PageHandler(web.HTTPHandler):
 	def do_get(self):
 		with open(os.path.dirname(__file__) + '/html/' + self.page, 'r') as file:
 			self.response.headers.set('Content-Type', 'text/html')
-			return 200, file.read()
+			return 200, file
