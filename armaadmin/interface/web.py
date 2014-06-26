@@ -126,7 +126,7 @@ class HTTPHandler(object):
 		if not hasattr(self, self.method):
 			raise HTTPError(405)
 
-		#If client is expecting a 100, give self a chance to check it and throw an HTTPError if necessary
+		#If client is expecting a 100, give self a chance to check it and raise an HTTPError if necessary
 		if self.request.headers.get('Expect') == '100-continue':
 			self.check_continue()
 			self.response.wfile.write(http_version + ' 100 ' + status_messages[100] + '\r\n\r\n')
@@ -154,18 +154,12 @@ class HTTPHandler(object):
 		return 200, ''
 
 	def do_head(self):
+		#Tell response to not write the body
+		self.response.write_body = False
+
 		#Try self again with do_get
 		self.method = 'do_get'
-		response = self.respond()
-		#Status is always first
-		status = response[0]
-		#Response is always last
-		response = response[-1]
-		#Do not bother with Content-Length for streams
-		if not isinstance(response, io.IOBase) and not self.response.headers.get('Content-Length'):
-			self.response.headers.set('Content-Length', len(response))
-
-		return status, ''
+		return self.respond()
 
 class DummyHandler(HTTPHandler):
 	nonatomic = True
@@ -192,7 +186,7 @@ class HTTPErrorHandler(HTTPHandler):
 		if self.error.message:
 			message = self.error.message
 		else:
-			message = str(self.error.code) + ' - ' + status_message
+			message = str(self.error.code) + ' - ' + status_message + '\n'
 
 		return self.error.code, status_message, message
 
@@ -282,6 +276,8 @@ class HTTPResponse(object):
 
 		self.headers = HTTPHeaders()
 
+		self.write_body = True
+
 	def setup(self):
 		self.wfile = self.connection.makefile('wb', 0)
 
@@ -332,8 +328,12 @@ class HTTPResponse(object):
 			except ValueError:
 				status, status_msg, response = response
 
-			#If response is not a stream, take care of encoding and headers
-			if not isinstance(response, io.IOBase):
+			#Take care of encoding and headers
+			if isinstance(response, io.IOBase):
+				#Use chunked encoding if Content-Length not set
+				if not self.headers.get('Content-Length'):
+					self.headers.set('Transfer-Encoding', 'chunked')
+			else:
 				#Convert response to bytes if necessary
 				if not isinstance(response, bytes):
 					response = response.encode(default_encoding)
@@ -349,7 +349,7 @@ class HTTPResponse(object):
 			#Catch the most general errors and tell the client with the least likelihood of throwing another exception
 			status = 500
 			status_msg = status_messages[500]
-			response = ('500 - ' + status_messages[500]).encode(default_encoding)
+			response = ('500 - ' + status_messages[500] + '\n').encode(default_encoding)
 			self.headers.set('Content-Length', len(response))
 
 			_log.exception()
@@ -366,23 +366,39 @@ class HTTPResponse(object):
 				for header in self.headers:
 					self.wfile.write(header.encode(http_encoding))
 
-				#Write response
+				#Write body
 				if isinstance(response, io.IOBase):
 					#For a stream, write chunk by chunk and add each chunk size to response_length
 					try:
-						while True:
-							chunk = response.read(stream_chunk_size)
-							if not chunk:
-								break
-							response_length += len(chunk)
-							self.wfile.write(chunk)
+						#Check whether body needs to be written
+						if self.write_body:
+							content_length = self.headers.get('Content-Length')
+							if content_length:
+								#If there is a Content-Length, write that much from the stream
+								bytes_left = int(content_length)
+								while True:
+									chunk = response.read(min(bytes_left, stream_chunk_size))
+									#Give up if chunk length is zero (when content-length is longer than the stream)
+									if not chunk:
+										break
+									bytes_left -= len(chunk)
+									response_length += self.wfile.write(chunk)
+							else:
+								#If no Content-Length, used chunked encoding
+								while True:
+									chunk = response.read(stream_chunk_size)
+									response_length += self.wfile.write((str(len(chunk)) + '\r\n').encode(http_encoding) + chunk + '\r\n'.encode(http_encoding))
+									#After chunk length is 0, break
+									if not chunk:
+										break
 					#Cleanup
 					finally:
 						response.close()
 				else:
-					#Else just get length and write the whole response
-					response_length = len(response)
-					self.wfile.write(response)
+					#Check whether body needs to be written
+					if self.write_body:
+						#Just write the whole response and get length
+						response_length += self.wfile.write(response)
 			except:
 				pass
 
