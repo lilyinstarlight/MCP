@@ -10,10 +10,10 @@ import subprocess
 
 import config
 
-from armaadmin import name, version
+from .mcp import name, version
 
 def setupUser():
-	import armaadmin.users
+	import mcp.users
 
 	print()
 	print('Please set up the administrator account.')
@@ -21,7 +21,7 @@ def setupUser():
 	username = input('Username: ')
 	password = getpass.getpass('Password: ')
 
-	armaadmin.users.add(username, password, [], True)
+	mcp.users.add(username, password, [], True)
 
 def setupDirs():
 	print()
@@ -46,30 +46,30 @@ def setupInit():
 	if response == "1":
 		print()
 		print('Installing SysV init script...')
-		file_util.copy_file('init/sysv/armaadmin', '/etc/init.d/')
+		file_util.copy_file('init/sysv/mcp', '/etc/init.d/')
 	elif response == "2":
 		print()
 		print('Installing OpenRC init script...')
-		file_util.copy_file('init/openrc/armaadmin', '/etc/init.d/')
+		file_util.copy_file('init/openrc/mcp', '/etc/init.d/')
 	elif response == "3":
 		print()
 		print('Installing Systemd init script...')
-		file_util.copy_file('init/systemd/armaadmin.service', '/usr/lib/systemd/system/')
+		file_util.copy_file('init/systemd/mcp.service', '/usr/lib/systemd/system/')
 		subprocess.call(['systemctl', 'daemon-reload'])
 
 class cmd_install(install):
 	def run(self):
-		open('armaadmin/users.db', 'w').close()
+		open('mcp/users.db', 'w').close()
 		setupUser()
 
 		print()
 		print('Installing...')
 
-		shutil.copy('config.py', 'armaadmin/')
+		shutil.copy('config.py', 'mcp/')
 		install.run(self)
-		os.remove('armaadmin/config.py')
+		os.remove('mcp/config.py')
 
-		os.remove('armaadmin/users.db')
+		os.remove('mcp/users.db')
 
 		setupDirs()
 		setupScripting()
@@ -80,9 +80,9 @@ class cmd_upgrade(install):
 		print()
 		print('Upgrading...')
 
-		shutil.copy('config.py', 'armaadmin/')
+		shutil.copy('config.py', 'mcp/')
 		install.run(self)
-		os.remove('armaadmin/config.py')
+		os.remove('mcp/config.py')
 
 		setupScripting()
 		setupInit()
@@ -92,10 +92,10 @@ setup(	name=name,
 	description='A complete Armagetron Advanced multi-server management framework and web interface',
 	author='Foster McLane',
 	author_email='fkmclane@gmail.com',
-	url='http://github.com/fkmclane/ArmaAdmin',
+	url='http://github.com/fkmclane/MCP',
 	license='MIT',
-	packages=[ 'armaadmin', 'armaadmin.routes' ],
-	package_data={ 'armaadmin': [ 'config.py', 'users.db', 'www/*.*', 'www/admin/*.*', 'www/codemirror/*.*' ], 'armaadmin.routes': [ 'html/*.*' ] },
-	scripts=[ 'bin/armaadmin' ],
+	packages=[ 'mcp', 'mcp.routes' ],
+	package_data={ 'mcp': [ 'config.py', 'users.db', 'www/*.*', 'www/admin/*.*', 'www/codemirror/*.*' ], 'mcp.routes': [ 'html/*.*' ] },
+	scripts=[ 'bin/mcp' ],
 	cmdclass={ 'install': cmd_install, 'upgrade': cmd_upgrade }
 )

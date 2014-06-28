@@ -1,8 +1,8 @@
 import signal
 import time
 
-from armaadmin import config, interface, log, manager, web
-from armaadmin import name, version
+import config, interface, log, manager, web
+from mcp import name, version
 
 running = True
 

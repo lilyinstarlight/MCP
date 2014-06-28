@@ -2,11 +2,18 @@ import hashlib
 import os
 import re
 
-from armaadmin import errors
+import errors
 
 users = {}
 
 users_allowed = re.compile('[0-9a-zA-Z-_+]+$')
+
+class User:
+	def __init__(self, name, password, servers, admin=False):
+		self.name = name
+		self.password = password
+		self.servers = servers
+		self.admin = admin
 
 def parse():
 	global users
@@ -101,12 +108,5 @@ def remove(user):
 				file.write(line)
 
 	parse()
-
-class User:
-	def __init__(self, name, password, servers, admin=False):
-		self.name = name
-		self.password = password
-		self.servers = servers
-		self.admin = admin
 
 parse()

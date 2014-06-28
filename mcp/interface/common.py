@@ -1,7 +1,8 @@
 import base64
 import os
 
-from armaadmin import users, web
+import web
+from .. import users
 
 class AuthorizedHandler(web.HTTPHandler):
 	auth = [ 'Basic', 'Key' ]

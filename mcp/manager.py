@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from armaadmin import config, env, errors, log, server
+import config, env, errors, log, server
 
 servers = {}
 

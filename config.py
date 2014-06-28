@@ -17,10 +17,10 @@ scripting = '/home/armagetron/scripting'
 user = 'armagetron'
 
 #Path to manager log; None to disable logging
-log = '/var/log/armaadmin/manager.log'
+log = '/var/log/mcp/manager.log'
 
 #Path to command output log; None to disable logging
-cmdlog = '/var/log/armaadmin/command.log'
+cmdlog = '/var/log/mcp/command.log'
 
 #Host of the web interface (leave blank unless you know what you are doing)
 host = ''
@@ -29,7 +29,7 @@ host = ''
 port = 80
 
 #Path to HTTP log; None to disable logging
-httpdlog = '/var/log/armaadmin/httpd.log'
+httpdlog = '/var/log/mcp/httpd.log'
 
 #Path to HTTP access log; None to disable logging
-accesslog = '/var/log/armaadmin/access.log'
+accesslog = '/var/log/mcp/access.log'

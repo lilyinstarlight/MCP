@@ -1,7 +1,7 @@
 import os
 import pwd
 
-from armaadmin import config
+import config
 
 def demote():
 	if config.user:

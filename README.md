@@ -1,10 +1,10 @@
-ArmaAdmin
+MCP
 =========
-ArmaAdmin is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org). For more information see the forum post [here](http://forums3.armagetronad.net/viewtopic.php?f=2&t=23250).
+MCP, short for [Master Control Program](http://tron.wikia.com/wiki/MCP), is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org). For more information see the forum post [here](http://forums3.armagetronad.net/viewtopic.php?f=2&t=23250).
 
 What is this?
 -------------
-ArmaAdmin is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting API for Armagetron Advanced. It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface. Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques. This project solves these problems in a simple Python daemon that serves a RESTful HTTP API and a set of web pages that use it for control. This project is designed for a unix-like system and should run well on Linux, Mac OS, or FreeBSD, but also should work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
+MCP is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting library for Armagetron Advanced. It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface. Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques. This project solves these problems in a simple Python daemon that serves a RESTful HTTP API and a set of web pages that use it for control. This project is designed for a unix-like system and should run well on Linux, Mac OS, or FreeBSD, but also should work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
 
 Features
 --------
@@ -57,7 +57,7 @@ After the configuration is complete, run the setup script:
 ```
 The setup script will ask a few questions about your system then automatically install the files. It additionally creates the folders specified in `config.py` if they don't exist. The administrator user has access to all of the servers and to the administration interface.
 
-Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `armaadmin` as root.
+Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `mcp` as root.
 
 ###Downloading sources###
 Before you can create your first server, you must download a copy of the Armagetron Advanced source code. To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user. Click `Admin` in the upper right and then click the `Sources` tab in the administration interface. Click the `Add Source` button and fill out the form with the appropriate information. The source name is the name by which this source will be referred. For example, you can call one `sty+ct` if you download ct's patched version. The bzr address is the location of the bzr repository for the source code. For example, for `0.2.8-sty+ct`, the source is located at `lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct`. Use the table below for a list of common versions and their bzr addresses.
@@ -129,7 +129,7 @@ Theoretically, the daemon could run as a non-root user but it is not recommended
 Well that isn't a question and I'm afraid I can't help you there. I don't mess with Windows often and don't have time to fiddle with an unsupported operating system for a single person. This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install Ubuntu then install this software.
 
 ###I found a bug! I found a bug!###
-Again, that isn't a question, but could you please report it on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues)?
+Again, that isn't a question, but could you please report it on [GitHub](https://github.com/fkmclane/MCP/issues)?
 
 Troubleshooting
 ---------------
@@ -140,7 +140,7 @@ Make sure you have the dependencies and try again. Maybe your distribution does 
 Quit using Internet Explorer.
 
 ###The scripting API crashes!###
-Make sure it is running with Python 3. If it is, please report the crash and error log on [GitHub](https://github.com/fkmclane/ArmaAdmin/issues).
+Make sure it is running with Python 3. If it is, please report the crash and error log on [GitHub](https://github.com/fkmclane/MCP/issues).
 
 ###None of it works!###
 Make sure you installed the package with Python 3 and started the daemon properly.

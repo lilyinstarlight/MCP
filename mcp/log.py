@@ -2,7 +2,7 @@ import os
 import sys
 import time
 
-from armaadmin import config
+import config
 
 log = None
 cmdlog = None

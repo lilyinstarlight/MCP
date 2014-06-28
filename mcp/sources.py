@@ -3,7 +3,7 @@ import re
 import shutil
 import subprocess
 
-from armaadmin import config, errors, log
+import config, errors, log
 
 sources = {}
 
