@@ -10,8 +10,8 @@ sources = '/home/armagetron/sources'
 #Directory where default configuration is kept; None if creation is disabled
 config = '/home/armagetron/config'
 
-#Directory where the scripting API is kept; None to disable the scripting API
-api = '/home/armagetron/api'
+#Directory where the scripting library is kept; None to disable the scripting library
+scripting = '/home/armagetron/scripting'
 
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'

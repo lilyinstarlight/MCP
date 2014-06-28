@@ -16,8 +16,8 @@ if config.user:
 	env['LOGNAME'] = passwd.pw_name
 	env['USER'] = passwd.pw_name
 
-if config.api:
+if config.scripting:
 	if env.get('PYTHONPATH'):
-		env['PYTHONPATH'] += ':' + config.api
+		env['PYTHONPATH'] += ':' + config.scripting
 	else:
-		env['PYTHONPATH'] = config.api
+		env['PYTHONPATH'] = config.scripting

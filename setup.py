@@ -33,11 +33,11 @@ def setupDirs():
 		dir_util.mkpath(config.sources)
 		dir_util.copy_tree('config', config.config)
 
-def setupApi():
-	if config.api:
+def setupScripting():
+	if config.scripting:
 		print()
-		print('Installing API...')
-		dir_util.copy_tree('api', config.api)
+		print('Installing scripting library...')
+		dir_util.copy_tree('scripting', config.scripting)
 
 def setupInit():
 	print()
@@ -72,7 +72,7 @@ class cmd_install(install):
 		os.remove('armaadmin/users.db')
 
 		setupDirs()
-		setupApi()
+		setupScripting()
 		setupInit()
 
 class cmd_upgrade(install):
@@ -84,7 +84,7 @@ class cmd_upgrade(install):
 		install.run(self)
 		os.remove('armaadmin/config.py')
 
-		setupApi()
+		setupScripting()
 		setupInit()
 
 setup(	name=name,
