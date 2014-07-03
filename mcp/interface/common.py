@@ -42,7 +42,7 @@ class AuthorizedHandler(web.HTTPHandler):
 
 		try:
 			if self.auth_type == 'Basic':
-				username, password = base64.b64decode(self.auth_string).split(':', 1)
+				username, password = base64.b64decode(self.auth_string).decode('utf-8').split(':', 1)
 				self.user = users.check_user(username, password)
 			elif self.auth_type == 'Key':
 				self.user = users.check_key(self.auth_string)
