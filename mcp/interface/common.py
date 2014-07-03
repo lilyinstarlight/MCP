@@ -26,8 +26,7 @@ class AuthorizedHandler(web.HTTPHandler):
 		web.HTTPHandler.respond(self)
 
 	def unauthorized(self):
-		self.response.headers.set('WWW-Authenticate', ','.join(self.auth) + ' realm="' + self.realm + '"')
-		raise web.HTTPError(401)
+		raise web.HTTPError(401, headers=web.HTTPHeaders().set('WWW-Authenticate', ','.join(self.auth) + ' realm="' + self.realm + '"'))
 
 class PageHandler(web.HTTPHandler):
 	page = 'index.html'
