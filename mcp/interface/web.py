@@ -151,7 +151,7 @@ class HTTPHandler(object):
 	def do_options(self):
 		#Lots of magic for finding all attributes beginning with 'do_', removing the 'do_' and making it upper case, and joining the list with commas
 		self.response.headers.set('Allow', ','.join([option[3:].upper() for option in dir(self) if option.startswith('do_')]))
-		return 200, ''
+		return 204, ''
 
 	def do_head(self):
 		#Tell response to not write the body
@@ -251,7 +251,8 @@ class HTTPHeaders(object):
 		self.headers_actual.clear()
 
 	def add(self, header):
-		key, value = (item.strip() for item in header.rstrip('\r\n').split(':', 1))
+		#Magic for removing newline on header, splitting at the first colon, and removing all extraneous whitespace
+		key, value = (item.strip() for item in header[:-2].split(':', 1))
 		self.set(key.lower(), value)
 
 	def get(self, key, default=None):
@@ -289,9 +290,8 @@ class HTTPResponse(object):
 				atomic = not self.request.handler.nonatomic
 
 			#Atomic handling of resources - wait for resource to become available if necessary
-			if atomic:
-				while self.request.resource in self.server.locks:
-					time.sleep(0.01)
+			while self.request.resource in self.server.locks:
+				time.sleep(0.01)
 
 			#Do appropriate resource locks and try to get HTTP status, response text, and possibly status message
 			if atomic:
@@ -343,6 +343,8 @@ class HTTPResponse(object):
 					self.headers.set('Content-Length', len(response))
 
 			#Set a few necessary headers (that the handler should not change)
+			if not self.request.keepalive:
+				self.headers.set('Connection', 'close')
 			self.headers.set('Server', server_version)
 			self.headers.set('Date', time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.gmtime()))
 		except:
@@ -387,7 +389,8 @@ class HTTPResponse(object):
 								#If no Content-Length, used chunked encoding
 								while True:
 									chunk = response.read(stream_chunk_size)
-									response_length += self.wfile.write((str(len(chunk)) + '\r\n').encode(http_encoding) + chunk + '\r\n'.encode(http_encoding))
+									#Write a hex representation (without any decorations) of the length of the chunk and the chunk separated by newlines
+									response_length += self.wfile.write(('{:x}'.format(len(chunk)) + '\r\n').encode(http_encoding) + chunk + '\r\n'.encode(http_encoding))
 									#After chunk length is 0, break
 									if not chunk:
 										break
@@ -418,6 +421,8 @@ class HTTPRequest(object):
 		self.response = HTTPResponse(connection, server, self)
 		self.headers = HTTPHeaders()
 
+		self.keepalive = False
+
 		self.setup()
 		try:
 			self.handle()
@@ -438,27 +443,36 @@ class HTTPRequest(object):
 
 		#Get request line
 		try:
-			request = self.rfile.readline(max_line_size).decode(http_encoding)
+			request = self.rfile.readline(max_line_size + 1).decode(http_encoding)
 		#If read hits timeout or has some other error, ignore the request
 		except:
-			self.keepalive = False
+			return
+
+		#Ignore empty requests
+		if not request:
 			return
 
 		if self.keepalive_timeout:
 			self.connection.settimeout(self.timeout)
 
-		self.request_line = request.rstrip('\r\n')
+		#Remove \r\n from the end
+		self.request_line = request[:-2]
 
-		#Set some reasonable defaults and create a response in case the worst happens and we need to tell the client
+		#Since we are sure we have a request, keepalive for more
+		self.keepalive = True
+
+		#Set some reasonable defaults in case the worst happens and we need to tell the client
 		self.method = ''
 		self.resource = ''
-		self.keepalive = True
 
 		try:
 			#HTTP Status 414
-			#If line does not end in \r\n, it must be longer than the buffer
-			if len(request) == max_line_size and request[-2:] != '\r\n':
+			if len(request) > max_line_size:
 				raise HTTPError(414)
+
+			#HTTP Status 400
+			if request[-2:] != '\r\n':
+				raise HTTPError(400)
 
 			#Try the request line and error out if can't parse it
 			try:
@@ -473,20 +487,26 @@ class HTTPRequest(object):
 
 			#Read and parse request headers
 			while True:
-				line = self.rfile.readline(max_line_size).decode(http_encoding)
-
-				#HTTP Status 431
-				#If line does not end in \r\n, it must be longer than the buffer
-				if line[-2:] != '\r\n':
-					raise HTTPError(431)
+				line = self.rfile.readline(max_line_size + 1).decode(http_encoding)
 
 				#Hit end of headers
 				if line == '\r\n':
 					break
 
 				#HTTP Status 431
+				#Check if an individual header is too large
+				if len(line) > max_line_size:
+					raise HTTPError(431, status_message=(line.split(':', 1)[0] + ' Header Too Large'))
+
+				#HTTP Status 431
+				#Check if there are too many headers
 				if len(self.headers) >= max_headers:
 					raise HTTPError(431)
+
+				#HTTP Status 400
+				#Sanity checks for headers
+				if line[-2:] != '\r\n' or not ':' in line:
+					raise HTTPError(400)
 
 				self.headers.add(line)
 
@@ -506,7 +526,7 @@ class HTTPRequest(object):
 				raise HTTPError(404)
 		#Use DummyHandler so the error is raised again when ready for response
 		except Exception as error:
-			self.handler = DummyHandler(self, self.response, None, error)
+			self.handler = DummyHandler(self, self.response, (), error)
 		finally:
 			#We finished listening and handling early errors and so let a response class now finish up the job of talking
 			self.response.handle()
@@ -516,7 +536,7 @@ class HTTPRequest(object):
 		self.response.finish()
 
 class HTTPServer(socketserver.ThreadingTCPServer):
-	def __init__(self, address, routes, error_routes={}, keepalive=5, timeout=8, keyfile=None, certfile=None):
+	def __init__(self, address, routes, error_routes={}, keepalive=5, timeout=20, keyfile=None, certfile=None):
 		self.keepalive_timeout = keepalive
 		self.request_timeout = timeout
 
@@ -541,7 +561,9 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 
 	def server_bind(self):
 		global host, port
+
 		socketserver.TCPServer.server_bind(self)
+
 		host, port = self.server_address[:2]
 		_log.info('Serving HTTP on ' + host + ':' + str(port))
 
@@ -552,7 +574,7 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 			#Give them self.keepalive_timeout after each request to make another
 			handler = HTTPRequest(request, client_address, self, self.request_timeout, self.keepalive_timeout)
 
-def init(address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=8, keyfile=None, certfile=None):
+def init(address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=20, keyfile=None, certfile=None):
 	global httpd, _log
 
 	_log = log
@@ -568,15 +590,27 @@ def deinit():
 	_log = None
 
 def start():
+	global httpd, _log
+
+	if not httpd:
+		return
+
 	threading.Thread(target=httpd.serve_forever).start()
 	_log.info('Server started')
 
 def stop():
+	global httpd, _log
+
+	if not httpd:
+		return
+
 	httpd.shutdown()
 	_log.info('Server stopped')
 
 def is_running():
-	if httpd == None:
+	global httpd, _log
+
+	if not httpd:
 		return False
 
 	return not httpd._BaseServer__is_shut_down.is_set()

@@ -5,17 +5,15 @@ import shutil
 
 import web
 
-_local = None
-_remote = None
-_dir_index = False
-_modify = False
-
 routes = {}
 
 class FileHandler(web.HTTPHandler):
+	filename = None
+
 	def __init__(self, request, response, groups):
 		web.HTTPHandler.__init__(self, request, response, groups)
-		self.filename = _local + self.groups[0]
+		if not self.filename:
+			self.filename = self.local + self.groups[0]
 
 	def get_body(self):
 		return False
@@ -35,10 +33,11 @@ class FileHandler(web.HTTPHandler):
 					file = open(index, 'rb')
 					self.response.headers.set('Content-Type', 'text/html')
 					self.response.headers.set('Content-Length', os.path.getsize(index))
+
 					return 200, file
-				elif _dir_index:
-					#If no index and directory indexing enabled, return a list of what is in the directory
-					return 200, '\n'.join(os.listdir(self.filename))
+				elif self.dir_index:
+					#If no index and directory indexing enabled, return a list of what is in the directory separated by newlines
+					return 200, ''.join(file + '\n' for file in os.listdir(self.filename))
 				else:
 					raise web.HTTPError(403)
 			else:
@@ -47,6 +46,9 @@ class FileHandler(web.HTTPHandler):
 				#Get file size from metadata
 				size = os.path.getsize(self.filename)
 				length = size
+
+				#HTTP status that changes if partial data is sent
+				status = 200
 
 				#Handle range header and modify file pointer and content length as necessary
 				range_header = self.request.headers.get('Range')
@@ -65,8 +67,9 @@ class FileHandler(web.HTTPHandler):
 						#Sanity checks
 						if upper < size and upper >= lower:
 							file.seek(lower)
-							length = upper - lower + 1
 							self.response.headers.set('Content-Range', 'bytes ' + str(lower) + '-' + str(upper) + '/' + str(size))
+							length = upper - lower + 1
+							status = 206
 
 				self.response.headers.set('Content-Length', str(length))
 
@@ -76,16 +79,14 @@ class FileHandler(web.HTTPHandler):
 				#Guess MIME by extension
 				self.response.headers.set('Content-Type', mimetypes.guess_type(self.filename)[0])
 
-				return 200, file
+				return status, file
 		except FileNotFoundError:
 			raise web.HTTPError(404)
 		except IOError:
 			raise web.HTTPError(403)
 
+class ModifyFileHandler(FileHandler):
 	def do_put(self):
-		if not _modify:
-			raise web.HTTPError(403)
-
 		try:
 			#Make sure directories are there (including the given one if not given a file)
 			os.makedirs(os.path.dirname(self.filename), exist_ok=True)
@@ -101,14 +102,11 @@ class FileHandler(web.HTTPHandler):
 						bytes_left -= len(chunk)
 						file.write(chunk)
 
-			return 200, ''
+			return 204, ''
 		except IOError:
 			raise web.HTTPError(403)
 
 	def do_delete(self):
-		if not _modify:
-			raise web.HTTPError(403)
-
 		try:
 			if os.path.isdir(self.filename):
 				#Recursively remove directory
@@ -117,30 +115,32 @@ class FileHandler(web.HTTPHandler):
 				#Remove single file
 				os.remove(self.filename)
 
-			return 200, ''
+			return 204, ''
 		except FileNotFoundError:
 			raise web.HTTPError(404)
 		except IOError:
 			raise web.HTTPError(403)
 
 def init(local, remote='/', dir_index=False, modify=False):
-	global _local, _remote, _dir_index, _modify, routes
+	global routes
 
-	if not local.endswith('/'):
-		local += '/'
-	if not remote.endswith('/'):
-		remote += '/'
+	#Set the appropriate handler if modification is allowed
+	if modify:
+		handler = ModifyFileHandler
+	else:
+		handler = FileHandler
 
-	_local = local
-	_remote = remote
-	_dir_index = dir_index
-	_modify = modify
+	#Remove trailing slashes if necessary
+	if local.endswith('/'):
+		local = local[:-1]
+	if remote.endswith('/'):
+		remote = remote[:-1]
 
-	#If modification is allowed, get rid of max_request_size
-	if _modify:
-		web.max_request_size = None
+	handler.local = local
+	handler.remote = remote
+	handler.dir_index = dir_index
 
-	routes = { _remote + '(.*)': FileHandler }
+	routes.update({ remote + '(.*)': handler })
 
 if __name__ == "__main__":
 	from argparse import ArgumentParser
@@ -154,5 +154,5 @@ if __name__ == "__main__":
 
 	init(args.local_dir, dir_index=args.indexing, modify=args.modify)
 
-	web.init(('localhost', 8080), routes)
+	web.init(('', 8080), routes)
 	web.start()
