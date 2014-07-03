@@ -5,28 +5,54 @@ import web
 from .. import users
 
 class AuthorizedHandler(web.HTTPHandler):
-	auth = [ 'Basic', 'Key' ]
+	auth_types = [ 'Basic', 'Key' ]
 	realm = 'unknown'
 
 	def respond(self):
-		auth_header = self.request.headers.get('Authorization')
+		auth = self.request.headers.get('Authorization')
 
-		if not auth_header:
-			return unauthorized()
+		if not auth:
+			auth_error()
 
 		try:
-			self.auth_type, self.auth_string = auth_header.split(' ', 1)
+			self.auth_type, self.auth_string = auth.split(' ', 1)
 		#Ignore bad Authorization headers
 		except:
-			return unauthorized()
+			auth_error()
 
-		if not self.auth_type in self.auth:
-			return unauthorized()
+		if not self.auth_type in self.auth_types:
+			auth_error()
+
+		if not authorized():
+			auth_error()
+
+		if not user.admin and forbidden():
+			forbidden_error()
 
 		web.HTTPHandler.respond(self)
 
-	def unauthorized(self):
-		raise web.HTTPError(401, headers=web.HTTPHeaders().set('WWW-Authenticate', ','.join(self.auth) + ' realm="' + self.realm + '"'))
+	def auth_error(self):
+		raise web.HTTPError(401, headers=web.HTTPHeaders().set('WWW-Authenticate', ','.join(self.auth_types) + ' realm="' + self.realm + '"'))
+
+	def forbidden_error(self):
+		raise web.HTTPError(403)
+
+	def authorized(self):
+		self.user = None
+
+		try:
+			if self.auth_type == 'Basic':
+				username, password = base64.b64decode(self.auth_string).split(':', 1)
+				self.user = users.check_user(username, password)
+			elif self.auth_type == 'Key':
+				self.user = users.check_key(self.auth_string)
+		except:
+			auth_error()
+
+		return self.user != None
+
+	def forbidden(self):
+		return False
 
 class PageHandler(web.HTTPHandler):
 	page = 'index.html'
