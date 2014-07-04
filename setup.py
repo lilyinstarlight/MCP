@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+import sys
+
+if sys.version_info < (3, 3):
+    print('Only Python 3.3 or later is supported')
+    sys.exit(1)
+
 from distutils.core import setup
 from distutils.command.install import install
 from distutils import dir_util
@@ -87,7 +93,8 @@ class cmd_upgrade(install):
 		setupScripting()
 		setupInit()
 
-setup(	name=name,
+setup(
+	name=name,
 	version=version,
 	description='A complete Armagetron Advanced multi-server management framework and web interface',
 	author='Foster McLane',
