@@ -1,2 +1,2 @@
 name = 'ArmaAdmin'
-version = 'v2.0a0'
+version = '1.0a0'
