@@ -4,7 +4,7 @@ MCP, short for [Master Control Program](http://tron.wikia.com/wiki/MCP), is a co
 
 What is this?
 -------------
-MCP is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting library for Armagetron Advanced. It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface. Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques. This project solves these problems in a simple Python daemon that serves a RESTful HTTP API and a set of web pages that use it for control. This project is designed for a unix-like system and should run well on Linux, Mac OS, or FreeBSD, but also should work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
+MCP is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting library for Armagetron Advanced. It was created out of a frustration with poorly created and unintuitive Armagetron server managers none of which provided a nice web interface. Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques. This project solves these problems in a simple Python daemon that serves a RESTful HTTP API and a set of web pages that use it for control. This project is designed for a unix-like system and should run well on Linux, Mac OS, and FreeBSD but should also work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
 
 Features
 --------
