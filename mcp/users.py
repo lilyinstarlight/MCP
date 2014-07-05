@@ -1,112 +1,68 @@
 import hashlib
 import os
+import random
 import re
+import string
 
-import errors
+import db, errors
 
-users = {}
+users_allowed = re.compile('^[0-9a-zA-Z-_+]+$')
 
-users_allowed = re.compile('[0-9a-zA-Z-_+]+$')
+key_length = 24
+key_chars = string.ascii_letters + string.digits
+key_rnd = random.SystemRandom()
 
-class User:
-	def __init__(self, name, password, servers, admin=False):
-		self.name = name
-		self.password = password
-		self.servers = servers
-		self.admin = admin
+def hash(password):
+	return hashlib.sha256(password.encode()).hexdigest()
 
-def parse():
-	global users
+def check_user(username, password):
+	user = user_db.get(username)
 
-	temp = {}
+	if user and user.hash == hash(password):
+		return user
+	else:
+		return None
 
-	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
-		for line in file:
-			data = line.rstrip().split('|')
+def check_key(key):
+	for user in user_db:
+		if user.key == key:
+			return user
 
-			if data[2] == '':
-				servers = []
-			else:
-				servers = data[2].split(',')
+	return None
 
-			if len(data) > 3:
-				admin = data[3] == 'admin'
-			else:
-				admin = False
+def gen_key(user):
+	user.hash = ''.join(key_rnd.choice(key_chars) for _ in range(key_length))
 
-			if data[0] in users:
-				user = users[data[0]]
-				user.password = data[1]
-				user.servers = servers
-				user.admin = admin
-				temp[data[0]] = user
-			else:
-				temp[data[0]] = User(data[0], data[1], servers, admin)
+def get(username):
+	return user_db.get(username)
 
-	users = temp
+def add(username, password, key='', admin=False, active=True, servers=[]):
+	if user_db.get(username):
+		raise errors.UserExistsError()
 
-def check(user, password):
-	return user in users and users[user].password == hashlib.sha256(password.encode()).hexdigest()
+	user_db.add(username, hash(password), key, admin, active, ','.join(servers))
 
-def get(user):
-	return users.get(user)
+def modify(username, password=None, key=None, admin=None, active=None, servers=None):
+	user = user_db.get(username)
 
-def add(user, password, servers, admin=False):
-	if user in users:
-		raise errors.UserExistsError
+	if not user:
+		raise errors.NoUserError()
 
-	if not users_allowed.match(user):
-		raise errors.InvalidUserError
+	if password:
+		user.hash = hash(password)
+	if key:
+		user.key = key
+	if admin:
+		user.admin = admin
+	if active:
+		user.active = active
+	if servers:
+		user.servers = ','.join(servers)
 
-	with open(os.path.dirname(__file__) + '/users.db', 'a') as file:
-		if admin:
-			file.write(user + '|' + hashlib.sha256(password.encode()).hexdigest() + '|' + ','.join(servers) + '|admin\n')
-		else:
-			file.write(user + '|' + hashlib.sha256(password.encode()).hexdigest() + '|' + ','.join(servers) + '\n')
+def remove(username)
+	if not user_db.get(username):
+		raise errors.NoUserError()
 
-	parse()
+	user_db.remove(username)
 
-def modify(user, password=None, servers=None, admin=None):
-	if not user in users:
-		raise errors.NoUserError
-
-	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
-		lines = file.readlines()
-
-	with open(os.path.dirname(__file__) + '/users.db', 'w') as file:
-		for line in lines:
-			if line.startswith(user + '|'):
-				if password:
-					new_pass = hashlib.sha256(password.encode()).hexdigest()
-				else:
-					new_pass = users[user].password
-
-				if servers:
-					new_servers = servers
-				else:
-					new_servers = users[user].servers
-
-				if admin:
-					file.write(user + '|' + new_pass + '|' + ','.join(new_servers) + '|admin\n')
-				else:
-					file.write(user + '|' + new_pass + '|' + ','.join(new_servers) + '\n')
-			else:
-				file.write(line)
-
-	parse()
-
-def remove(user):
-	if not user in users:
-		raise errors.NoUserError
-
-	with open(os.path.dirname(__file__) + '/users.db', 'r') as file:
-		lines = file.readlines()
-
-	with open(os.path.dirname(__file__) + '/users.db', 'w') as file:
-		for line in lines:
-			if not line.startswith(user + '|'):
-				file.write(line)
-
-	parse()
-
-parse()
+user_db = db.Database(os.path.dirname(__file__) + '/db/users.db')
