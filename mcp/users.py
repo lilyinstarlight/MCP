@@ -40,7 +40,7 @@ def add(username, password, key='', admin=False, active=True, servers=[]):
 	if user_db.get(username):
 		raise errors.UserExistsError()
 
-	user_db.add(username, hash(password), key, admin, active, ','.join(servers))
+	user_db.add(username, hash(password), key, admin, active, servers)
 
 def modify(username, password=None, key=None, admin=None, active=None, servers=None):
 	user = user_db.get(username)
@@ -57,7 +57,7 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
 	if active:
 		user.active = active
 	if servers:
-		user.servers = ','.join(servers)
+		user.servers = servers
 
 def remove(username)
 	if not user_db.get(username):
