@@ -9,11 +9,7 @@ routes = {}
 
 class FileHandler(web.HTTPHandler):
 	filename = None
-
-	def __init__(self, request, response, groups):
-		web.HTTPHandler.__init__(self, request, response, groups)
-		if not self.filename:
-			self.filename = self.local + self.groups[0]
+	dir_index = False
 
 	def get_body(self):
 		return False
@@ -32,7 +28,7 @@ class FileHandler(web.HTTPHandler):
 				if os.path.exists(index) and os.path.isfile(index):
 					file = open(index, 'rb')
 					self.response.headers.set('Content-Type', 'text/html')
-					self.response.headers.set('Content-Length', os.path.getsize(index))
+					self.response.headers.set('Content-Length', str(os.path.getsize(index)))
 
 					return 200, file
 				elif self.dir_index:
@@ -77,10 +73,14 @@ class FileHandler(web.HTTPHandler):
 				self.response.headers.set('Accept-Ranges', 'bytes')
 
 				#Guess MIME by extension
-				self.response.headers.set('Content-Type', mimetypes.guess_type(self.filename)[0])
+				mime = mimetypes.guess_type(self.filename)[0]
+				if mime:
+					self.response.headers.set('Content-Type', mime)
 
 				return status, file
 		except FileNotFoundError:
+			raise web.HTTPError(404)
+		except NotADirectoryError:
 			raise web.HTTPError(404)
 		except IOError:
 			raise web.HTTPError(403)
@@ -124,25 +124,28 @@ class ModifyFileHandler(FileHandler):
 def init(local, remote='/', dir_index=False, modify=False):
 	global routes
 
-	#Set the appropriate handler if modification is allowed
-	if modify:
-		handler = ModifyFileHandler
-	else:
-		handler = FileHandler
-
 	#Remove trailing slashes if necessary
 	if local.endswith('/'):
 		local = local[:-1]
 	if remote.endswith('/'):
 		remote = remote[:-1]
 
-	handler.local = local
-	handler.remote = remote
-	handler.dir_index = dir_index
+	#Set the appropriate handler if modification is allowed
+	if modify:
+		handler = ModifyFileHandler
+	else:
+		handler = FileHandler
 
-	routes.update({ remote + '(.*)': handler })
+	#Create a file handler for routes
+	class GenFileHandler(handler):
+		def __init__(self, request, response, groups):
+			FileHandler.__init__(self, request, response, groups)
+			self.filename = local + self.groups[0]
+			self.dir_index = dir_index
 
-if __name__ == "__main__":
+	routes.update({ remote + '(|/.*)': GenFileHandler })
+
+if __name__ == '__main__':
 	from argparse import ArgumentParser
 
 	parser = ArgumentParser(description='Quickly serve up local files over HTTP')

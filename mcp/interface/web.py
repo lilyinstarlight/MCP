@@ -9,8 +9,12 @@ import time
 import traceback
 import threading
 
+#Module details
+name = 'web.py'
+version = '0.1b'
+
 #Server details
-server_version = 'web.py/0.1'
+server_version = name + '/' + version
 http_version = 'HTTP/1.1'
 http_encoding = 'iso-8859-1'
 default_encoding = 'utf-8'
@@ -96,15 +100,88 @@ status_messages = {
 	511: 'Network Authentication Required',
 }
 
-#Server runtime details
-host = ''
-port = 0
+class HTTPLog(object):
+	def __init__(self, httpd_log, access_log):
+		if httpd_log:
+			os.makedirs(os.path.dirname(httpd_log), exist_ok=True)
+			self.httpd_log = open(httpd_log, 'a', 1)
+		else:
+			self.httpd_log = sys.stderr
 
-#The HTTPServer object
-httpd = None
+		if access_log:
+			os.makedirs(os.path.dirname(access_log), exist_ok=True)
+			self.access_log = open(access_log, 'a', 1)
+		else:
+			self.access_log = sys.stderr
 
-#HTTPLog object
-_log = None
+	def timestamp(self):
+		return time.strftime('[%d/%b/%Y:%H:%M:%S %z]')
+
+	def write(self, string):
+		self.httpd_log.write(string)
+
+	def message(self, message):
+		self.write(self.timestamp() + ' ' + message + '\n')
+
+	def access_write(self, string):
+		self.access_log.write(string)
+
+	def info(self, message):
+		self.message('INFO: ' + message)
+
+	def warn(self, message):
+		self.message('WARN: ' + message)
+
+	def error(self, message):
+		self.message('ERROR: ' + message)
+
+	def exception(self):
+		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
+
+	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
+		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
+
+class HTTPHeaders(object):
+	def __init__(self):
+		#Lower case header -> value
+		self.headers = {}
+		#Lower case header -> actual case header
+		self.headers_actual = {}
+
+	def __iter__(self):
+		for key in self.headers.keys():
+			yield self.retrieve(key)
+		yield '\r\n'
+
+	def __len__(self):
+		return len(self.headers)
+
+	def clear(self):
+		self.headers.clear()
+		self.headers_actual.clear()
+
+	def add(self, header):
+		#Magic for removing newline on header, splitting at the first colon, and removing all extraneous whitespace
+		key, value = (item.strip() for item in header[:-2].split(':', 1))
+		self.set(key.lower(), value)
+
+	def get(self, key, default=None):
+		return self.headers.get(key.lower(), default)
+
+	def set(self, key, value):
+		dict_key = key.lower()
+		if not isinstance(value, str):
+			raise TypeError('\'value\' can only be a str')
+		self.headers[dict_key] = value
+		self.headers_actual[dict_key] = key
+
+	def remove(self, key):
+		dict_key = key.lower()
+		del self.headers[dict_key]
+		del self.headers_actual[dict_key]
+
+	def retrieve(self, key):
+		return self.headers_actual[key.lower()] + ': ' + self.get(key) + '\r\n'
 
 class HTTPError(Exception):
 	def __init__(self, code, message=None, headers=HTTPHeaders(), status_message=None):
@@ -191,85 +268,6 @@ class HTTPErrorHandler(HTTPHandler):
 
 		return self.error.code, status_message, message
 
-class HTTPLog(object):
-	def __init__(self, httpd_log, access_log):
-		if httpd_log:
-			os.makedirs(os.path.dirname(httpd_log), exist_ok=True)
-			self.httpd_log = open(httpd_log, 'a', 1)
-		else:
-			self.httpd_log = sys.stderr
-
-		if access_log:
-			os.makedirs(os.path.dirname(access_log), exist_ok=True)
-			self.access_log = open(access_log, 'a', 1)
-		else:
-			self.access_log = sys.stderr
-
-	def timestamp(self):
-		return time.strftime('[%d/%b/%Y:%H:%M:%S %z]')
-
-	def write(self, string):
-		self.httpd_log.write(string)
-
-	def message(self, message):
-		self.write(self.timestamp() + ' ' + message + '\n')
-
-	def access_write(self, string):
-		self.access_log.write(string)
-
-	def info(self, message):
-		self.message('INFO: ' + message)
-
-	def warn(self, message):
-		self.message('WARN: ' + message)
-
-	def error(self, message):
-		self.message('ERROR: ' + message)
-
-	def exception(self):
-		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
-
-	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
-		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
-
-class HTTPHeaders(object):
-	def __init__(self):
-		#Lower case header -> value
-		self.headers = {}
-		#Lower case header -> actual case header
-		self.headers_actual = {}
-
-	def __iter__(self):
-		for key in self.headers.keys():
-			yield self.retrieve(key)
-		yield '\r\n'
-
-	def __len__(self):
-		return len(self.headers)
-
-	def clear(self):
-		self.headers.clear()
-		self.headers_actual.clear()
-
-	def add(self, header):
-		#Magic for removing newline on header, splitting at the first colon, and removing all extraneous whitespace
-		key, value = (item.strip() for item in header[:-2].split(':', 1))
-		self.set(key.lower(), value)
-
-	def get(self, key, default=None):
-		return self.headers.get(key.lower(), default)
-
-	def set(self, key, value):
-		self.headers[key.lower()] = str(value)
-		self.headers_actual[key.lower()] = key
-
-	def unset(self, key):
-		del self.headers[key.lower()]
-		del self.headers_actual[key.lower()]
-
-	def retrieve(self, key):
-		return self.headers_actual[key.lower()] + ': ' + self.get(key) + '\r\n'
-
 class HTTPResponse(object):
 	def __init__(self, connection, server, request):
 		self.connection = connection
@@ -302,7 +300,7 @@ class HTTPResponse(object):
 			except Exception as error:
 				#If it isn't a standard HTTPError, log it and send a 500
 				if not isinstance(error, HTTPError):
-					_log.exception()
+					self.server.log.exception()
 					error = HTTPError(500)
 
 				#Set headers to the error headers
@@ -341,7 +339,7 @@ class HTTPResponse(object):
 
 				#If Content-Length has not already been set, do it
 				if not self.headers.get('Content-Length'):
-					self.headers.set('Content-Length', len(response))
+					self.headers.set('Content-Length', str(len(response)))
 
 			#Set a few necessary headers (that the handler should not change)
 			if not self.request.keepalive:
@@ -353,14 +351,15 @@ class HTTPResponse(object):
 			status = 500
 			status_msg = status_messages[500]
 			response = ('500 - ' + status_messages[500] + '\n').encode(default_encoding)
-			self.headers.set('Content-Length', len(response))
+			self.headers.clear()
+			self.headers.set('Content-Length', str(len(response)))
 
-			_log.exception()
+			self.server.log.exception()
 		finally:
 			#Prepare response_length
 			response_length = 0
 
-			#If writes fail, the streams are probably closed so ignore the error
+			#If writes fail, the streams are probably closed so log and ignore the error
 			try:
 				#Send HTTP response
 				self.wfile.write((http_version + ' ' + str(status) + ' ' + status_msg + '\r\n').encode(http_encoding))
@@ -400,13 +399,13 @@ class HTTPResponse(object):
 						response.close()
 				else:
 					#Check whether body needs to be written
-					if self.write_body:
+					if self.write_body and response:
 						#Just write the whole response and get length
 						response_length += self.wfile.write(response)
 			except:
-				pass
+				self.server.log.exception()
 
-			_log.request(self.request.client_address[0], self.request.request_line, code=str(status), size=str(response_length))
+			self.server.log.request(self.request.client_address[0], self.request.request_line, code=str(status), size=str(response_length))
 
 	def finish(self):
 		self.wfile.close()
@@ -537,7 +536,8 @@ class HTTPRequest(object):
 		self.response.finish()
 
 class HTTPServer(socketserver.ThreadingTCPServer):
-	def __init__(self, address, routes, error_routes={}, keepalive=5, timeout=20, keyfile=None, certfile=None):
+	def __init__(self, address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=20, keyfile=None, certfile=None):
+		self.log = log
 		self.keepalive_timeout = keepalive
 		self.request_timeout = timeout
 
@@ -560,13 +560,27 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 		if keyfile and certfile:
 			self.socket = ssl.wrap_socket(self.socket, keyfile, certfile, server_side=True)
 
+	def close(self):
+		self.server_close()
+
+	def start(self):
+		threading.Thread(target=self.serve_forever).start()
+		self.log.info('Server started')
+
+	def stop(self):
+		self.shutdown()
+		self.log.info('Server stopped')
+
+	def is_running(self):
+		return self._BaseServer__is_shut_down.is_set()
+
 	def server_bind(self):
 		global host, port
 
 		socketserver.TCPServer.server_bind(self)
 
 		host, port = self.server_address[:2]
-		_log.info('Serving HTTP on ' + host + ':' + str(port))
+		self.log.info('Serving HTTP on ' + host + ':' + str(port))
 
 	def finish_request(self, request, client_address):
 		#Keep alive by continually accepting requests - set self.keepalive_timeout to None (or 0) to effectively disable
@@ -574,44 +588,3 @@ class HTTPServer(socketserver.ThreadingTCPServer):
 		while self.keepalive_timeout and handler.keepalive:
 			#Give them self.keepalive_timeout after each request to make another
 			handler = HTTPRequest(request, client_address, self, self.request_timeout, self.keepalive_timeout)
-
-def init(address, routes, error_routes={}, log=HTTPLog(None, None), keepalive=5, timeout=20, keyfile=None, certfile=None):
-	global httpd, _log
-
-	_log = log
-
-	httpd = HTTPServer(address, routes, error_routes, keepalive, timeout, keyfile, certfile)
-
-def deinit():
-	global httpd, _log
-
-	httpd.server_close()
-	httpd = None
-
-	_log = None
-
-def start():
-	global httpd, _log
-
-	if not httpd:
-		return
-
-	threading.Thread(target=httpd.serve_forever).start()
-	_log.info('Server started')
-
-def stop():
-	global httpd, _log
-
-	if not httpd:
-		return
-
-	httpd.shutdown()
-	_log.info('Server stopped')
-
-def is_running():
-	global httpd, _log
-
-	if not httpd:
-		return False
-
-	return not httpd._BaseServer__is_shut_down.is_set()
