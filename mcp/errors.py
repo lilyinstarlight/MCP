@@ -26,6 +26,9 @@ class NoSourceError(Error):
 class InvalidSourceError(Error):
 	pass
 
+class InvalidSourceRevisionError(Error):
+	pass
+
 class SourceExistsError(Error):
 	pass
 
