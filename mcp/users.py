@@ -24,6 +24,9 @@ def check_user(username, password):
 		return None
 
 def check_key(key):
+	if key == '':
+		return None
+
 	for user in user_db:
 		if user.key == key:
 			return user
