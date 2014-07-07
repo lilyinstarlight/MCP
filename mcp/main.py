@@ -2,7 +2,7 @@ import signal
 import time
 
 import config, interface, log, manager, web
-from mcp import name, version
+from . import name, version
 
 running = True
 
