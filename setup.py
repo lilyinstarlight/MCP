@@ -2,8 +2,8 @@
 import sys
 
 if sys.version_info < (3, 3):
-    print('Only Python 3.3 or later is supported')
-    sys.exit(1)
+	print('Only Python 3.3 or later is supported')
+	sys.exit(1)
 
 from distutils.core import setup
 from distutils.command.install import install
@@ -16,7 +16,7 @@ import subprocess
 
 import config
 
-from .mcp import name, version
+from mcp import name, version
 
 def setupUser():
 	import mcp.users
