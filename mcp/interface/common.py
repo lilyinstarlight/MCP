@@ -26,7 +26,7 @@ class AuthorizedHandler(web.HTTPHandler):
 		if not authorized():
 			auth_error()
 
-		if not user.admin and forbidden():
+		if not self.user.admin and forbidden():
 			forbidden_error()
 
 		web.HTTPHandler.respond(self)
@@ -47,7 +47,7 @@ class AuthorizedHandler(web.HTTPHandler):
 			elif self.auth_type == 'Key':
 				self.user = users.check_key(self.auth_string)
 		except:
-			auth_error()
+			return False
 
 		return self.user != None
 
