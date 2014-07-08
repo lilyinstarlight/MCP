@@ -16,6 +16,9 @@ scripting = '/home/armagetron/scripting'
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 
+#Temprorary directory to build under; ignored if creation is disabled
+tmp = '/tmp/mcp'
+
 #Path to manager log; None to disable logging
 log = '/var/log/mcp/manager.log'
 

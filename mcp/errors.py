@@ -38,6 +38,9 @@ class BuildError(Error):
 class ConfigError(Error):
 	pass
 
+class MergeError(Error):
+	pass
+
 class BzrError(Error):
 	pass
 

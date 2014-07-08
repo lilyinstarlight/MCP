@@ -1,115 +1,130 @@
 import os
-import re
 import shlex
 import shutil
 import subprocess
 
-import config, env, errors, log, sources
+import config, env, errors, log, source
 
-server_allowed = re.compile('[0-9a-zA-Z-_+]+$')
+def copy_contents(src, dst):
+	for entry in os.listdir(src):
+		entry = src + '/' + entry
+		if os.path.isdir(entry):
+			copy_contents(entry, dst + '/' + entry)
+		else:
+			shutil.copy2(entry, dst + '/' + entry)
 
-def build(name, source_name):
+def chown_contents(path, uid, gid):
+	for entry in os.listdir(path):
+		entry = path + '/' + entry
+		if os.path.isdir(entry):
+			chown_contents(entry, uid, gid)
+		else:
+			os.chown(entry, uid, gid)
+
+def build(server_name, source_name, source_revision=None):
 	if not config.creation:
-		raise errors.NoServerCreationError
+		raise errors.NoServerCreationError()
 
-	if not server_allowed.match(name):
-		raise errors.InvalidServerError
+	if not server_allowed.match(server_name):
+		raise errors.InvalidServerError()
 
-	source = sources.get(source_name)
+	prefix = config.prefix + '/' + server_name
+	tmp_build = config.tmp + '/' + server_name + '/build'
+	tmp_install = config.tmp + '/' + server_name + '/install'
 
-	if not source:
-		raise errors.NoSourceError
+	source.prepare(source_name, tmp_build)
 
-	if subprocess.call([ shlex.quote(source.dir + '/bootstrap.sh') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir, shell=True):
+	#Build
+	message = 'Building ' + name
+	log.cmdlog.write(message + '\n' + '=' * len(message))
+
+	if subprocess.call([ shlex.quote(tmp_build + '/bootstrap.sh') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
 
-	if subprocess.call([ shlex.quote(source.dir + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(config.prefix + '/' + name) + ' --localstatedir=' + shlex.quote(config.prefix + '/' + name + '/var') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir, shell=True):
+	if subprocess.call([ shlex.quote(tmp_build + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(prefix) + ' --localstatedir=' + shlex.quote(prefix + '/var') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
 		raise errors.BuildError('Failed to configure server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir) ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir):
+	if subprocess.call([ 'make', '-C' + shlex.quote(tmp_build) ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build):
 		raise errors.BuildError('Failed to compile server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(source.dir), 'install' ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=source.dir):
+	if subprocess.call([ 'make', '-C' + shlex.quote(tmp_build), 'install' ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, env=env.build_env(tmp_install)):
 		raise errors.BuildError('Failed to install server')
 
-	try:
-		shutil.copytree(config.prefix + '/' + name + '/etc/armagetronad-dedicated', config.prefix + '/' + name + '/config')
-	except:
-		raise errors.ConfigError('Failed to set up configuration files')
+	#Configure
+	message = 'Configuring ' + name
+	log.cmdlog.write(message + '\n' + '=' * len(message))
 
 	try:
-		shutil.rmtree(config.prefix + '/' + name + '/etc')
+		copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
+	except:
+		raise errors.ConfigError('Failed to move configuration files')
+
+	try:
+		shutil.rmtree(prefix + '/etc')
 	except:
 		raise errors.ConfigError('Failed to remove "etc" directory')
 
 	try:
-		for entry in os.listdir(config.config):
-			entry = config.config + '/' + entry
-			if os.path.isdir(entry):
-				shutil.copytree(entry, config.prefix + '/' + name + '/config')
-			else:
-				shutil.copy2(entry, config.prefix + '/' + name + '/config')
+		copy_contents(config.config, prefix + '/config')
 	except:
-		raise errors.ConfigError('Failed to copy configuration files')
+		raise errors.ConfigError('Failed to copy custom configuration files')
 
 	try:
-		shutil.copytree(config.prefix + '/' + name + '/share/armagetronad-dedicated', config.prefix + '/' + name + '/data')
+		copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
 	except:
-		raise errors.ConfigError('Failed to set up data files')
+		raise errors.ConfigError('Failed to move data files')
 
 	try:
-		shutil.rmtree(config.prefix + '/' + name + '/share')
+		shutil.rmtree(prefix + '/share')
 	except:
 		raise errors.ConfigError('Failed to remove "share" directory')
 
-	if not os.path.exists(config.prefix + '/' + name + '/var'):
-		try:
-			os.makedirs(config.prefix + '/' + name + '/var')
-			if config.user:
-				os.chown(config.prefix + '/' + name + '/var', env.passwd.pw_uid, env.passwd.pw_gid)
-		except:
-			raise errors.ConfigError('Failed to create "var" directory')
+	try:
+		os.makedirs(prefix + '/var', exist_ok=True)
+	except:
+		raise errors.ConfigError('Failed to create "var" directory')
 
 	try:
-		open(config.prefix + '/' + name + '/var/ladderlog.txt', 'a').close()
-	except:
-		raise errors.ConfigError('Could not ensure the existence of ladderlog.txt')
-
-	if not os.path.exists(config.prefix + '/' + name + '/scripts'):
-		try:
-			os.makedirs(config.prefix + '/' + name + '/scripts')
-		except:
-			raise errors.ConfigError('Could not make "scripts" directory')
-
-	if not os.path.exists(config.prefix + '/' + name + '/user'):
-		try:
-			os.makedirs(config.prefix + '/' + name + '/user')
-			if config.user:
-				os.chown(config.prefix + '/' + name + '/user', env.passwd.pw_uid, env.passwd.pw_gid)
-		except:
-			raise errors.ConfigError('Could not make "user" directory')
-
-	with open(config.prefix + '/' + name + '/source', 'w') as file:
-		file.write(source.name + '|' + source.getRevision())
-
-def create(name, source_name):
-	try:
-		build(name, source_name)
-	except:
-		try:
-			shutil.rmtree(config.prefix + '/' + name)
-		except:
+		with open(prefix + '/config/settings_custom.cfg', 'a') as file:
 			pass
-		raise
 
-def upgrade(name, source_name):
-	build(name, source_name)
-
-def destroy(name):
-	if not name in os.listdir(config.prefix) or not os.path.isdir(config.prefix + '/' + name):
-		raise errors.NoServerError
+		with open(prefix + '/var/ladderlog.txt', 'a') as file:
+			pass
+	except:
+		raise errors.ConfigError('Failed to create necessary files')
 
 	try:
-		shutil.rmtree(config.prefix + '/' + name)
+		os.makedirs(prefix + '/scripts', exist_ok=True)
+	except:
+		raise errors.ConfigError('Failed to create "scripts" directory')
+
+	try:
+		os.makedirs(prefix + '/user', exist_ok=True)
+	except:
+		raise errors.ConfigError('Failed to create "user" directory')
+
+	#Merge
+	message = 'Merging ' + name
+	log.cmdlog.write(message + '\n' + '=' * len(message))
+
+	try:
+		copy_contents(tmp_install, prefix)
+	except:
+		raise errors.MergeError('Failed to copy server')
+
+	if env.passwd:
+		try:
+			chown_contents(prefix + '/config', env.passwd.pw_uid, env.passwd.pw_gid)
+			chown_contents(prefix + '/data', env.passwd.pw_uid, env.passwd.pw_gid)
+			chown_contents(prefix + '/scripts', env.passwd.pw_uid, env.passwd.pw_gid)
+			chown_contents(prefix + '/user', env.passwd.pw_uid, env.passwd.pw_gid)
+			chown_contents(prefix + '/var', env.passwd.pw_uid, env.passwd.pw_gid)
+		except:
+			raise errors.MergeError('Failed to set permissions')
+
+def destroy(server_name):
+	try:
+		prefix = config.prefix + '/' + server_name
+		shutil.rmtree(prefix)
 	except:
 		raise errors.ConfigError('Failed to remove directory')

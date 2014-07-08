@@ -44,14 +44,14 @@ def remove(name):
 
 	del sources[name]
 
-def getConfig():
+def get_config():
 	if not config.creation:
 		raise errors.NoServerCreationError
 
 	with open(config.config + '/server_info.cfg', 'r', encoding='latin_1') as file:
 		return file.read()
 
-def updateConfig(config_text):
+def update_config(config_text):
 	if not config.creation:
 		raise errors.NoServerCreationError
 
