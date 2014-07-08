@@ -12,6 +12,9 @@ def create(server_name, source, revision=None, port=None, users=[]):
 	if server_db.get(server_name):
 		raise errors.ServerExistsError()
 
+	if not servers_allowed.match(name):
+		raise errors.InvalidServerError()
+
 	server.build(server_name, source, revision)
 
 	server_db.add(server, source, revision, port, users)
