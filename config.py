@@ -4,10 +4,10 @@ prefix = '/home/armagetron/servers'
 #Whether or not to allow server creation
 creation = True
 
-#Directory where the sources are kept; None if creation is disabled
+#Directory where the sources are kept; ignored if creation is disabled
 sources = '/home/armagetron/sources'
 
-#Directory where default configuration is kept; None if creation is disabled
+#Directory where default configuration is kept; ignored if creation is disabled
 config = '/home/armagetron/config'
 
 #Directory where the scripting library is kept; None to disable the scripting library
