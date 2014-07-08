@@ -36,9 +36,9 @@ def poll():
 			log.warn(server.name + ' did not gracefully quit and was restarted.')
 
 class Server:
-	def __init__(self, name):
+	def __init__(self, name, dir):
 		self.name = name
-		self.dir = config.prefix + '/' + name
+		self.dir = dir
 		self.bin = self.dir + '/bin/armagetronad-dedicated'
 		self.server = None
 		self.script = None
@@ -52,23 +52,23 @@ class Server:
 
 	def start(self):
 		if not self.exists():
-			raise errors.NoServerError
+			raise errors.NoServerError()
 
-		if self.serverStatus():
-			raise errors.ServerRunningError
+		if self.server_status():
+			return
 
 		self.status_msg = 'starting'
-		self.server = subprocess.Popen([ self.bin, '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/arma.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
+		self.server = subprocess.Popen([ self.bin, '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/server.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
 		self.status_msg = 'started'
 
-		self.startScript()
+		self.start_script()
 
-	def startScript(self):
+	def start_script(self):
 		if os.path.exists(self.dir + '/scripts/script.py') and self.serverStatus() and not self.scriptStatus():
 			self.script = subprocess.Popen([ sys.executable, self.dir + '/scripts/script.py' ], stdin=open(self.dir + '/var/ladderlog.txt', 'r'), stdout=self.server.stdin, stderr=open(self.dir + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir + '/var')
 
 	def stop(self):
-		if self.serverStatus():
+		if self.server_status():
 			self.status_msg = 'stopping'
 			self.server.terminate()
 			try:
@@ -80,10 +80,10 @@ class Server:
 		self.server = None
 		self.status_msg = 'stopped'
 
-		self.stopScript()
+		self.stop_script()
 
-	def stopScript(self):
-		if self.scriptStatus():
+	def stop_script(self):
+		if self.script_status():
 			self.script.terminate()
 			try:
 				self.script.wait(5)
@@ -108,19 +108,19 @@ class Server:
 			raise errors.ServerStoppedError
 
 	def upgrade(self):
-		status = self.serverStatus()
+		status = self.server_status()
 		self.stop()
 		server.create(self.name, self.getSource())
 		if status:
 			self.start()
 
-	def serverStatus(self):
+	def server_status(self):
 		if self.server:
 			return self.server.poll() == None
 		else:
 			return False
 
-	def scriptStatus(self):
+	def script_status(self):
 		if self.script:
 			return self.script.poll() == None
 		else:
@@ -129,43 +129,35 @@ class Server:
 	def status(self):
 		return self.status_msg
 
-	def sendCommand(self, command):
+	def send_command(self, command):
 		if self.server:
 			self.server.stdin.write(command)
 		else:
-			raise errors.ServerStoppedError
+			raise errors.ServerStoppedError()
 
-	def getLog(self):
+	def get_log(self):
 		with open(self.dir + '/arma.log', 'r', encoding='latin_1') as file:
 			return file.read()
 
-	def getSettings(self):
+	def get_settings(self):
 		with open(self.dir + '/config/settings_custom.cfg', 'r', encoding='latin_1') as file:
 			return file.read()
 
-	def updateSettings(self, settings):
+	def update_settings(self, settings):
 		with open(self.dir + '/config/settings_custom.cfg', 'w', encoding='latin_1') as file:
 			file.write(settings)
 
-	def getScript(self):
+	def get_script(self):
 		with open(self.dir + '/scripts/script.py', 'r') as file:
 			return file.read()
 
-	def updateScript(self, script):
+	def update_script(self, script):
 		with open(self.dir + '/scripts/script.py', 'w') as file:
 			file.write(script)
 
-	def getScriptlog(self):
+	def get_scriptlog(self):
 		with open(self.dir + '/script-error.log', 'r') as file:
 			return file.read()
-
-	def getSource(self):
-		with open(self.dir + '/source', 'r') as file:
-			return file.read().split('|')[0]
-
-	def getRevision(self):
-		with open(self.dir + '/source', 'r') as file:
-			return file.read().split('|')[1]
 
 for dir in os.listdir(config.prefix):
 	temp = Server(dir)
