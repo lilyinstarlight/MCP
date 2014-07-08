@@ -9,7 +9,7 @@ from distutils.core import setup
 from distutils.command.install import install
 from distutils import dir_util
 from distutils import file_util
-import getpass
+from getpass import getpass
 import os
 import shutil
 import subprocess
@@ -18,18 +18,18 @@ import config
 
 from mcp import name, version
 
-def setupUser():
+def setup_user():
 	import mcp.users
 
 	print()
 	print('Please set up the administrator account.')
 
 	username = input('Username: ')
-	password = getpass.getpass('Password: ')
+	password = getpass('Password: ')
 
-	mcp.users.add(username, password, [], True)
+	mcp.users.add(username, password, admin=True)
 
-def setupDirs():
+def setup_dirs():
 	print()
 	print('Making directories...')
 
@@ -39,13 +39,13 @@ def setupDirs():
 		dir_util.mkpath(config.sources)
 		dir_util.copy_tree('config', config.config)
 
-def setupScripting():
+def setup_scripting():
 	if config.scripting:
 		print()
 		print('Installing scripting library...')
 		dir_util.copy_tree('scripting', config.scripting)
 
-def setupInit():
+def setup_init():
 	print()
 	response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
 
@@ -65,8 +65,7 @@ def setupInit():
 
 class cmd_install(install):
 	def run(self):
-		open('mcp/users.db', 'w').close()
-		setupUser()
+		setup_user()
 
 		print()
 		print('Installing...')
@@ -75,11 +74,11 @@ class cmd_install(install):
 		install.run(self)
 		os.remove('mcp/config.py')
 
-		os.remove('mcp/users.db')
+		shutil.rmtree('mcp/db')
 
-		setupDirs()
-		setupScripting()
-		setupInit()
+		setup_dirs()
+		setup_scripting()
+		setup_init()
 
 class cmd_upgrade(install):
 	def run(self):
@@ -90,8 +89,8 @@ class cmd_upgrade(install):
 		install.run(self)
 		os.remove('mcp/config.py')
 
-		setupScripting()
-		setupInit()
+		setup_scripting()
+		setup_init()
 
 setup(
 	name=name,
@@ -101,8 +100,8 @@ setup(
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/MCP',
 	license='MIT',
-	packages=[ 'mcp', 'mcp.routes' ],
-	package_data={ 'mcp': [ 'config.py', 'users.db', 'www/*.*', 'www/admin/*.*', 'www/codemirror/*.*' ], 'mcp.routes': [ 'html/*.*' ] },
+	packages=[ 'mcp', 'mcp.interface' ],
+	package_data={ 'mcp': [ 'config.py' ], 'mcp.routes': [ 'html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*' ] },
 	scripts=[ 'bin/mcp' ],
 	cmdclass={ 'install': cmd_install, 'upgrade': cmd_upgrade }
 )
