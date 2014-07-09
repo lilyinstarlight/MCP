@@ -8,54 +8,57 @@ log = None
 cmdlog = None
 httplog = None
 
-def init():
-	global log
-	global cmdlog
-	global httplog
+class Log(object):
+	def __init__(self, log):
+		if log:
+			os.makedirs(os.path.dirname(log), exist_ok=True)
+			self.log = open(log, 'a', 1)
+		else:
+			self.log = None
 
-	if config.log:
-		os.makedirs(os.path.dirname(config.log), exist_ok=True)
-		log = open(config.log, 'a', 1)
+	def timestamp(self):
+		return time.strftime('[%d/%b/%Y:%H:%M:%S %z]')
 
-	if config.cmdlog:
-		os.makedirs(os.path.dirname(config.cmdlog), exist_ok=True)
-		cmdlog = open(config.cmdlog, 'a', 1)
+	def write(self, string):
+		if self.log:
+			self.log.write(string)
 
-	if config.httplog:
-		os.makedirs(os.path.dirname(config.httplog), exist_ok=True)
-		httplog = open(config.httplog, 'a', 1)
+	def message(self, message):
+		self.write(self.timestamp() + ' ' + message + '\n')
 
+	def info(self, message):
+		self.message('INFO: ' + message)
 
-def close():
-	global log
-	global cmdlog
-	global httplog
+	def warn(self, message):
+		self.message('WARN: ' + message)
 
-	if log:
-		log.close()
-		log = None
+	def error(self, message):
+		self.message('ERROR: ' + message)
 
-	if cmdlog:
-		cmdlog.close()
-		cmdlog = None
+	def exception(self):
+		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
 
-	if httplog:
-		httplog.close()
-		httplog = None
+class HTTPLog(Log):
+	def __init__(self, log, access_log)
+		if log:
+			os.makedirs(os.path.dirname(log), exist_ok=True)
+			self.log = open(log, 'a', 1)
+		else:
+			self.log = None
 
-def write(format, *args):
-	if log:
-		log.write('[%s] %s\n' % (time.strftime('%Y/%m/%d %H:%M:%S'), format % args))
+		if access_log:
+			os.makedirs(os.path.dirname(log), exist_ok=True)
+			self.access_log = open(log, 'a', 1)
+		else:
+			self.access_log = None
 
-def info(format, *args):
-	write('INFO: ' + format, *args)
+	def access_write(self, string):
+		if self.access_log:
+			self.access_log.write(string)
 
-def warn(format, *args):
-	write('WARNING: ' + format, *args)
+	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
+		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
 
-def error(format, *args):
-	write('ERROR: ' + format, *args)
-
-def exception(msg):
-	type, value, traceback = sys.exc_info()
-	error('Caught %s while %s: %s', type.__name__, msg, value)
+log = Log(config.log)
+cmdlog = Log(config.cmdlog)
+httplog = HTTPLog(config.httpdlog, config.accesslog)
