@@ -19,13 +19,25 @@ def create(server_name, source, revision=None, port=None, users=[]):
 
 	server_db.add(server, source, revision, port, users)
 
-def upgrade(server_name, revision=None):
+def modify(server_name, port=None, users=None):
+	server_obj = server_db.get(server_name)
+
+	if port:
+		server_obj.port = port
+
+	if users:
+		server_obj.users = users
+
+def upgrade(server_name, source=None, revision=None):
 	server_obj = server_db.get(server_name)
 
 	if not server_obj:
 		raise errors.NoServerError()
 
-	server.build(server_name, server_obj.source, revision)
+	if not source:
+		source = server_obj.source
+
+	server.build(server_name, source, revision)
 
 	server_obj.revision = revision
 

@@ -25,9 +25,6 @@ def build(server_name, source_name, source_revision=None):
 	if not config.creation:
 		raise errors.NoServerCreationError()
 
-	if not server_allowed.match(server_name):
-		raise errors.InvalidServerError()
-
 	prefix = config.prefix + '/' + server_name
 	tmp_build = config.tmp + '/' + server_name + '/build'
 	tmp_install = config.tmp + '/' + server_name + '/install'
@@ -123,8 +120,9 @@ def build(server_name, source_name, source_revision=None):
 			raise errors.MergeError('Failed to set permissions')
 
 def destroy(server_name):
+	prefix = config.prefix + '/' + server_name
+
 	try:
-		prefix = config.prefix + '/' + server_name
 		shutil.rmtree(prefix)
 	except:
 		raise errors.ConfigError('Failed to remove directory')
