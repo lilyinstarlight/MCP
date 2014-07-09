@@ -23,6 +23,7 @@ def modify(server_name, port=None, users=None):
 	server_obj = server_db.get(server_name)
 
 	if port:
+		server.set_port(server_name, port)
 		server_obj.port = port
 
 	if users:

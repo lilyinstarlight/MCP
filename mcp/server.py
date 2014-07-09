@@ -85,6 +85,9 @@ def build(server_name, source_name, source_revision=None):
 		with open(prefix + '/config/settings_custom.cfg', 'a') as file:
 			pass
 
+		with open(prefix + '/config/server_port.cfg', 'a') as file:
+			pass
+
 		with open(prefix + '/var/ladderlog.txt', 'a') as file:
 			pass
 	except:
@@ -126,3 +129,7 @@ def destroy(server_name):
 		shutil.rmtree(prefix)
 	except:
 		raise errors.ConfigError('Failed to remove directory')
+
+def set_port(server_name, port):
+	with open(prefix + '/config/server_port.cfg', 'w') as file:
+		file.write('SERVER_PORT ' + str(port) + '\n')
