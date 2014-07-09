@@ -3,7 +3,7 @@ import shlex
 import shutil
 import subprocess
 
-import config, env, errors, log, source
+import config, env, errors, log, sources
 
 def copy_contents(src, dst):
 	for entry in os.listdir(src):
@@ -21,7 +21,7 @@ def chown_contents(path, uid, gid):
 		else:
 			os.chown(entry, uid, gid)
 
-def build(server_name, source_name, source_revision=None):
+def build(server_name, source_name, revision=None):
 	if not config.creation:
 		raise errors.NoServerCreationError()
 
@@ -29,7 +29,7 @@ def build(server_name, source_name, source_revision=None):
 	tmp_build = config.tmp + '/' + server_name + '/build'
 	tmp_install = config.tmp + '/' + server_name + '/install'
 
-	source.prepare(source_name, tmp_build)
+	sources.prepare(source_name, tmp_build, revision)
 
 	#Build
 	message = 'Building ' + name
@@ -132,4 +132,5 @@ def destroy(server_name):
 
 def set_port(server_name, port):
 	with open(prefix + '/config/server_port.cfg', 'w') as file:
-		file.write('SERVER_PORT ' + str(port) + '\n')
+		if port:
+			file.write('SERVER_PORT ' + str(port) + '\n')
