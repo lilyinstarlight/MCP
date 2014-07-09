@@ -31,10 +31,10 @@ def update(source_name):
 
 	source_obj.revision = source.get_revision(source_name)
 
-def prepare(source_name, source_dst, source_revision=None):
+def prepare(source_name, dst, revision=None):
 	if not source_db.get(source_name):
 		raise errors.NoSourceError()
 
-	source.prepare(source_name, source_dst, source_revision)
+	source.prepare(source_name, dst, revision)
 
 source_db = db.Database(os.path.dirname(__file__) + '/db/sources.db', [ 'source', 'url', 'revision' ])
