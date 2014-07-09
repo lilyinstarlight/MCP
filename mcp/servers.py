@@ -24,12 +24,15 @@ def create(server_name, source_name, revision=None, port=0, users=[]):
 
 	server_db.add(server_name, source_name, revision, port, users)
 
-def modify(server_name, port=None, users=None):
+def modify(server_name, port=None, autostart=None, users=None):
 	server_obj = server_db.get(server_name)
 
 	if port != None:
 		server.set_port(server_name, port)
 		server_obj.port = port
+
+	if autostart != None:
+		server_obj.autostart = autostart
 
 	if users:
 		server_obj.users = users
@@ -58,4 +61,4 @@ def remove(server_name)
 
 	server_db.remove(server_name)
 
-server_db = db.Database(os.path.dirname(__file__) + '/db/servers.db', [ 'server', 'source', 'revision', 'port', 'users' ])
+server_db = db.Database(os.path.dirname(__file__) + '/db/servers.db', [ 'server', 'source', 'revision', 'port', 'autostart', 'users' ])
