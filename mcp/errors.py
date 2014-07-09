@@ -20,18 +20,6 @@ class ServerStoppedError(Error):
 class NoServerCreationError(Error):
 	pass
 
-class NoSourceError(Error):
-	pass
-
-class InvalidSourceError(Error):
-	pass
-
-class InvalidSourceRevisionError(Error):
-	pass
-
-class SourceExistsError(Error):
-	pass
-
 class BuildError(Error):
 	pass
 
@@ -39,6 +27,15 @@ class ConfigError(Error):
 	pass
 
 class MergeError(Error):
+	pass
+
+class NoSourceError(Error):
+	pass
+
+class InvalidSourceError(Error):
+	pass
+
+class SourceExistsError(Error):
 	pass
 
 class BzrError(Error):

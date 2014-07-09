@@ -3,74 +3,38 @@ import re
 import shutil
 import subprocess
 
-import config, errors, log
-
-sources = {}
+import db, errors, source
 
 sources_allowed = re.compile('[0-9a-zA-Z-_+.]+$')
 
-def get(name):
-	if not name in sources:
-		raise errors.NoSourceError
+def get(source_name):
+	return source_db.get(source_name)
 
-	return sources[name]
+def add(source_name, url):
+	if source_db.get(source_name):
+		raise errors.SourceExistsError()
 
-def add(name, bzr):
-	if not config.creation:
-		raise errors.NoServerCreationError
+	if not sources_allowed.match(source_name):
+		raise errors.InvalidSourceError()
 
-	if name in sources:
-		raise errors.SourceExistsError
+	source.branch(source_name, url)
 
-	if not sources_allowed.match(name):
-		raise errors.InvalidSourceError
+	source_db.add(source_name, url, get_revision(source_name))
 
-	if subprocess.call([ 'bzr', 'branch', bzr, config.sources + '/' + name ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
-		raise errors.BzrError('Failed to clone bzr tree')
+def update(source_name):
+	source_obj = source_db.get(source_name)
 
-	sources[name] = Source(name)
+	if not source_obj:
+		raise errors.NoSourceError()
 
-def remove(name):
-	if not config.creation:
-		raise errors.NoServerCreationError
+	source.pull(source_name)
 
-	if not name in sources:
-		raise errors.NoSourceError
+	source_obj.revision = source.get_revision(source_name)
 
-	try:
-		shutil.rmtree(config.sources + '/' + name)
-	except:
-		raise errors.ConfigError('Failed to remove directory')
+def prepare(source_name, source_dst, source_revision=None):
+	if not source_db.get(source_name):
+		raise errors.NoSourceError()
 
-	del sources[name]
+	source.prepare(source_name, source_dst, source_revision)
 
-def get_config():
-	if not config.creation:
-		raise errors.NoServerCreationError
-
-	with open(config.config + '/server_info.cfg', 'r', encoding='latin_1') as file:
-		return file.read()
-
-def update_config(config_text):
-	if not config.creation:
-		raise errors.NoServerCreationError
-
-	with open(config.config + '/server_info.cfg', 'w', encoding='latin_1') as file:
-		file.write(config_text)
-
-class Source:
-	def __init__(self, name):
-		self.name = name
-		self.dir = config.sources + '/' + name
-
-	def update(self):
-		if subprocess.call([ 'bzr', 'pull', '-d', config.sources + '/' + self.name ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
-			raise errors.BzrError('Failed to pull changes')
-
-	def getRevision(self):
-		with open(self.dir + '/.bzr/branch/last-revision', 'r') as file:
-			return file.read().split(' ', 1)[0]
-
-for dir in os.listdir(config.sources):
-	if os.path.isdir(config.sources + '/' + dir):
-		sources[dir] = Source(dir)
+source_db = db.Database(os.path.dirname(__file__) + '/db/sources.db', [ 'source', 'url', 'revision' ])
