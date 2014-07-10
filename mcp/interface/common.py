@@ -32,7 +32,9 @@ class AuthorizedHandler(web.HTTPHandler):
 		web.HTTPHandler.respond(self)
 
 	def auth_error(self):
-		raise web.HTTPError(401, headers=web.HTTPHeaders().set('WWW-Authenticate', ','.join(self.auth_types) + ' realm="' + self.realm + '"'))
+		auth_headers = web.HTTPHeaders()
+		auth_headers.set('WWW-Authenticate', ','.join(self.auth_types) + ' realm="' + self.realm + '"')
+		raise web.HTTPError(401, headers=auth_headers)
 
 	def forbidden_error(self):
 		raise web.HTTPError(403)
