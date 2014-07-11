@@ -13,5 +13,10 @@ routes.update(file.routes)
 routes.update(pages.routes)
 routes.update(api.routes)
 
-httpd = web.HTTPServer(address, routes, log=log.httplog)
-httpd.start()
+
+def start():
+	httpd = web.HTTPServer(address, routes, log=log.httplog)
+	httpd.start()
+
+def stop():
+	httpd.close()

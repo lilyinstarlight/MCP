@@ -1,30 +1,20 @@
 import signal
-import time
 
-import config, interface, log, manager, web
+import interface, log, manager
+
 from . import name, version
 
-running = True
+log.log.info(name + ' ' + version + ' starting...')
 
-def sigterm(signum, frame):
-	global running
-	running = False
+#Start everything
+manager.start()
+interface.start()
 
-signal.signal(signal.SIGTERM, sigterm)
+#Cleanup (exit) function
+def exit():
+	interface.stop()
+	manager.stop()
 
-log.init()
-web.init(config.address, config.port, interface.routes, log.httplog)
-
-log.info(name + ' ' + version + ' started')
-
-for server in manager.servers.values():
-	if server.exists():
-		server.start()
-		time.sleep(3)
-
-while running:
-	manager.poll()
-	time.sleep(3)
-
-web.destroy()
-log.close()
+#Set the function to both SIGINT and SIGTERM
+for sig in signal.SIGINT, signal.SIGTERM:
+	signal.signal(sig, exit)
