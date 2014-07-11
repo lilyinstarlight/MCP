@@ -131,6 +131,13 @@ def build(server_name, source_name, revision=None):
 		except:
 			raise errors.MergeError('Failed to set permissions')
 
+def set_port(server_name, port):
+	prefix = config.prefix + '/' + server_name
+
+	with open(prefix + '/config/server_port.cfg', 'w') as file:
+		if port:
+			file.write('SERVER_PORT ' + str(port) + '\n')
+
 def destroy(server_name):
 	prefix = config.prefix + '/' + server_name
 
@@ -138,8 +145,3 @@ def destroy(server_name):
 		shutil.rmtree(prefix)
 	except:
 		raise errors.ConfigError('Failed to remove directory')
-
-def set_port(server_name, port):
-	with open(prefix + '/config/server_port.cfg', 'w') as file:
-		if port:
-			file.write('SERVER_PORT ' + str(port) + '\n')
