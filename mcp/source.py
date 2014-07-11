@@ -40,3 +40,11 @@ def prepare(source_name, dst, revision=None):
 
 		if subprocess.call([ 'bzr', 'revert', '-r' + revision, dst ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 			raise errors.BzrError('Failed to revert bzr tree to revision')
+
+def remove(source_name):
+	prefix = config.sources + '/' + source_name
+
+	try:
+		shutil.rmtree(prefix)
+	except:
+		raise errors.ConfigError('Failed to remove directory')
