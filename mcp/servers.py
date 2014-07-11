@@ -22,7 +22,7 @@ def create(server_name, source_name, revision=None, port=0, autostart=True, user
 
 	server.set_port(server_name, port)
 
-	server_db.add(server_name, source_name, revision, port, autostart, users)
+	return server_db.add(server_name, source_name, revision, port, autostart, users)
 
 def modify(server_name, port=None, autostart=None, users=None):
 	server_obj = server_db.get(server_name)
@@ -53,7 +53,7 @@ def upgrade(server_name, source_name=None, revision=None):
 
 	server_obj.revision = revision
 
-def remove(server_name)
+def destroy(server_name)
 	if not server_db.get(server_name):
 		raise errors.NoServerError()
 

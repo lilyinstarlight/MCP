@@ -46,7 +46,7 @@ def add(username, password, key='', admin=False, active=True, servers=[]):
 	if not users_allowed.match(username):
 		raise errors.InvalidUserError()
 
-	user_db.add(username, hash(password), key, admin, active, servers)
+	return user_db.add(username, hash(password), key, admin, active, servers)
 
 def modify(username, password=None, key=None, admin=None, active=None, servers=None):
 	user = user_db.get(username)
