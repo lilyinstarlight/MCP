@@ -8,7 +8,7 @@ servers_allowed = re.compile('^[0-9a-zA-Z-_+]+$')
 def get(server_name):
 	return server_db.get(server_name)
 
-def create(server_name, source_name, revision=None, port=0, users=[]):
+def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
 	if server_db.get(server_name):
 		raise errors.ServerExistsError()
 
@@ -22,7 +22,7 @@ def create(server_name, source_name, revision=None, port=0, users=[]):
 
 	server.set_port(server_name, port)
 
-	server_db.add(server_name, source_name, revision, port, users)
+	server_db.add(server_name, source_name, revision, port, autostart, users)
 
 def modify(server_name, port=None, autostart=None, users=None):
 	server_obj = server_db.get(server_name)
