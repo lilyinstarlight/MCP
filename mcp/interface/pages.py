@@ -1,7 +1,7 @@
 import common
 
-class RootHandler(common.PageHandler):
-	page = 'index.html'
+class ServerHandler(common.PageHandler):
+	page = 'server.html'
 
 class AdminHandler(common.PageHandler):
 	page = 'admin.html'
@@ -12,4 +12,4 @@ class UserHandler(common.PageHandler):
 class LoginHandler(common.PageHandler):
 	page = 'login.html'
 
-routes = { '/': RootHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler }
+routes = { '/': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler }
