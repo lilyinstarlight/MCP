@@ -13,6 +13,9 @@ config = '/home/armagetron/config'
 #Directory where the scripting library is kept; None to disable the scripting library
 scripting = '/home/armagetron/scripting'
 
+#Max size of server log files in MB before they are rotated; None to disable server log rotation
+maxlogsize = 2
+
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 

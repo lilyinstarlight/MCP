@@ -105,6 +105,11 @@ def build(server_name, source_name, revision=None):
 	except:
 		raise errors.ConfigError('Failed to create "user" directory')
 
+	try:
+		os.makedirs(prefix + '/log', exist_ok=True)
+	except:
+		raise errors.ConfigError('Failed to create "log" directory')
+
 	#Merge
 	message = 'Merging ' + server_name
 	log.cmdlog.message(message)
@@ -119,6 +124,7 @@ def build(server_name, source_name, revision=None):
 		try:
 			chown_contents(prefix + '/config', env.passwd.pw_uid, env.passwd.pw_gid)
 			chown_contents(prefix + '/data', env.passwd.pw_uid, env.passwd.pw_gid)
+			chown_contents(prefix + '/log', env.passwd.pw_uid, env.passwd.pw_gid)
 			chown_contents(prefix + '/scripts', env.passwd.pw_uid, env.passwd.pw_gid)
 			chown_contents(prefix + '/user', env.passwd.pw_uid, env.passwd.pw_gid)
 			chown_contents(prefix + '/var', env.passwd.pw_uid, env.passwd.pw_gid)
