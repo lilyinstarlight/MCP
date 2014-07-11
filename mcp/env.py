@@ -3,15 +3,24 @@ import pwd
 
 import config
 
-user_env = os.environ.copy()
+base_env = os.environ.copy()
+
+user_env = base_env.copy()
 passwd = None
 
 def demote():
 	if config.user:
 		os.setgid(passwd.pw_gid)
 		os.setuid(passwd.pw_uid)
+
+def get_env():
+	return base_env
+
+def get_user():
+	return user_env
+
 def get_script():
-	script_env = user_env.copy()
+	script_env = get_user().copy()
 
 	if config.scripting:
 		if script_env.get('PYTHONPATH'):
@@ -22,7 +31,7 @@ def get_script():
 	return script_env
 
 def get_build(dst):
-	build_env = os.environ.copy()
+	build_env = get_base().copy()
 
 	build_env['DESTDIR'] = dst
 
