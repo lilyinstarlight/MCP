@@ -4,7 +4,7 @@ import time
 
 import config
 
-log = None
+mcplog = None
 cmdlog = None
 httplog = None
 
@@ -59,6 +59,6 @@ class HTTPLog(Log):
 	def request(self, host, request, code='-', size='-', rfc931='-', authuser='-'):
 		self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
 
-log = Log(config.log)
+mcplog = Log(config.log)
 cmdlog = Log(config.cmdlog)
 httplog = HTTPLog(config.httpdlog, config.accesslog)

@@ -4,7 +4,7 @@ import interface, log, manager
 
 from . import name, version
 
-log.log.info(name + ' ' + version + ' starting...')
+log.mcplog.info(name + ' ' + version + ' starting...')
 
 #Start everything
 manager.start()
