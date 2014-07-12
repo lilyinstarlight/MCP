@@ -3,80 +3,79 @@ import time
 import sys.stdin as ladderlog
 import sys.stdout as server
 
-def addHandler(command, handler):
+def add_handler(command, handler):
 	if not command in commands:
 		commands[command] = []
+
 	commands[command].append(handler)
 
-def removeHandler(command, handler):
-	if command in commands and handler in commands[command]:
-		commands[command].remove(handler)
+def remove_handler(command, handler):
+	commands[command].remove(handler)
 
-def setChatHandler(command, handler):
-	chatcommands[command] = handler
+def set_chat_handler(command, handler):
+	chat_commands[command] = handler
 
-def removeChatHandler(command):
-	if command in chatcommands:
-		del chatcommands[command]
+def remove_chat_handler(command):
+	del chat_commands[command]
 
-def sendCommand(command):
+def send_command(command):
 	server.write(command + '\n')
 
 def say(message):
-	sendCommand('SAY ' + message)
+	send_command('SAY ' + message)
 
-def consoleMessage(message):
-	sendCommand('CONSOLE_MESSAGE "' + message + '"')
+def console_message(message):
+	send_command('CONSOLE_MESSAGE "' + message + '"')
 
-def centerMessage(message):
-	sendCommand('CENTER_MESSAGE "' + message + '"')
+def center_message(message):
+	send_command('CENTER_MESSAGE "' + message + '"')
 
-def sendMessage(player, message):
+def send_message(player, message):
 	if type(player) == Player:
-		sendCommand('PLAYER_MESSAGE ' + player.name + ' "' + message + '"')
+		send_command('PLAYER_MESSAGE ' + player.name + ' "' + message + '"')
 	else:
-		sendCommand('PLAYER_MESSAGE ' + player + ' "' + message + '"')
+		send_command('PLAYER_MESSAGE ' + player + ' "' + message + '"')
 
-def pauseRound():
-	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT 1')
+def pause_round():
+	send_command('WAIT_FOR_EXTERNAL_SCRIPT 1')
 
-def continueRound():
-	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT 0')
+def continue_round():
+	send_command('WAIT_FOR_EXTERNAL_SCRIPT 0')
 
-def setRepository(address):
-	sendCommand('RESOURCE_REPOSITORY_SERVER ' + address)
+def set_repository(address):
+	send_command('RESOURCE_REPOSITORY_SERVER ' + address)
 
-def setMap(resource):
-	sendCommand('MAP_FILE ' + resource)
+def set_map(resource):
+	send_command('MAP_FILE ' + resource)
 
 def include(config):
-	sendCommand('INCLUDE ' + config)
+	send_command('INCLUDE ' + config)
 
 def rinclude(config):
-	sendCommand('RINCLUDE ' + config)
+	send_command('RINCLUDE ' + config)
 
 def reload():
 	include('settings.cfg')
 	include('server_info.cfg')
 	include('settings_custom.cfg')
-	sendCommand('START_NEW_MATCH')
+	send_command('START_NEW_MATCH')
 
-def endRound():
-	sendCommand('WIN_ZONE_MIN_LAST_DEATH 0')
-	sendCommand('WIN_ZONE_MIN_ROUND_TIME 0')
+def end_round():
+	send_command('WIN_ZONE_MIN_LAST_DEATH 0')
+	send_command('WIN_ZONE_MIN_ROUND_TIME 0')
 
-def chatCommand(command):
-	if command[1] in chatcommands:
-		chatcommands[command[1]](command[1:])
+def chat_command(command):
+	if command[1] in chat_commands:
+		chat_commands[command[1]](command[1:])
 	else:
-		sendMessage(command[2], 'Unknown chat command "' + command[1] + '".')
+		send_message(command[2], 'Unknown chat command "' + command[1] + '".')
 
 def init(command):
-	sendCommand('LADDERLOG_WRITE_NUM_HUMANS 1')
-	sendCommand('LADDERLOG_WRITE_POSITIONS 1')
-	sendCommand('LADDERLOG_WRITE_INVALID_COMMAND 1')
-	sendCommand('INTERCEPT_UNKNOWN_COMMANDS 1')
-	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT_TIMEOUT 10')
+	send_command('LADDERLOG_WRITE_NUM_HUMANS 1')
+	send_command('LADDERLOG_WRITE_POSITIONS 1')
+	send_command('LADDERLOG_WRITE_INVALID_COMMAND 1')
+	send_command('INTERCEPT_UNKNOWN_COMMANDS 1')
+	send_command('WAIT_FOR_EXTERNAL_SCRIPT_TIMEOUT 10')
 
 def run():
 	while True:
@@ -108,18 +107,18 @@ class Player:
 		self.score = 0
 		self.alive = False
 
-	def sendMessage(self, message):
-		sendMessage(self, message)
+	def send_message(self, message):
+		send_message(self, message)
 
 	def kill(self):
-		sendCommand('KILL ' + self.name)
+		send_command('KILL ' + self.name)
 
 	def kick(self, reason=None):
 		command = [ 'KICK', self.name ]
 		if reason:
 			command.append(reason)
 
-		sendCommand(' '.join(command))
+		send_command(' '.join(command))
 
 	def ban(self, time=None, reason=None):
 		command = [ 'BAN', self.name ]
@@ -128,26 +127,26 @@ class Player:
 		if reason:
 			command.append(reason)
 
-		sendCommand(' '.join(command))
+		send_command(' '.join(command))
 
-	def banIP(self, time, reason=None):
+	def ban_ip(self, time, reason=None):
 		command = [ 'BAN_IP', self.ip ]
 		if time:
 			command.append(time)
 			if reason:
 				command.append(reason)
 
-		sendCommand(' '.join(command))
+		send_command(' '.join(command))
 
-	def declareWinner(self):
-		sendCommand('DECLARE_ROUND_WINNER ' + self.name)
+	def declare_winner(self):
+		send_command('DECLARE_ROUND_WINNER ' + self.name)
 
 	def teleport(self, x, y, xdir, ydir):
-		sendCommand('TELEPORT_PLAYER ' + self.name + ' ' + x + ' ' + y + ' ' + xdir + ' ' + ydir)
+		send_command('TELEPORT_PLAYER ' + self.name + ' ' + x + ' ' + y + ' ' + xdir + ' ' + ydir)
 
 	def respawn(self, x, y, xdir, ydir):
 		if not self.alive:
-			sendCommand('RESPAWN_PLAYER ' + self.name + ' 1 ' + x + ' ' + y + ' ' + xdir + ' ' + ydir)
+			send_command('RESPAWN_PLAYER ' + self.name + ' 1 ' + x + ' ' + y + ' ' + xdir + ' ' + ydir)
 
 class Zone:
 	def __init__(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, command=None):
@@ -182,61 +181,61 @@ class Zone:
 			self.owner = owner
 
 		if type == 'target' and command != None:
-			self.setCommand(command)
+			self.set_command(command)
 
 	def __del__(self):
-		self.changeSize(0)
+		self.change_size(0)
 
-	def changeColor(self, r, g, b):
+	def change_color(self, r, g, b):
 		self.r = r
 		self.g = g
 		self.b = b
-		sendCommand('SET_ZONE_COLOR ' + self.name + ' ' + r + ' ' + g + ' ' + b)
+		send_command('SET_ZONE_COLOR ' + self.name + ' ' + r + ' ' + g + ' ' + b)
 
-	def changeExpansion(self, growth):
+	def change_expansion(self, growth):
 		self.growth = growth
-		sendCommand('SET_ZONE_EXPANSION ' + self.name + ' ' + growth)
+		send_command('SET_ZONE_EXPANSION ' + self.name + ' ' + growth)
 
-	def changePosition(self, x, y):
+	def change_position(self, x, y):
 		self.x = x
 		self.y = y
-		sendCommand('SET_ZONE_POSITION ' + self.name + ' ' + x + ' ' + y)
+		send_command('SET_ZONE_POSITION ' + self.name + ' ' + x + ' ' + y)
 
-	def changeSize(self, size, growth=None):
+	def change_size(self, size, growth=None):
 		self.size = size
-		command = [ 'SET_ZONE_RADIUS', self.name, size ]
 
+		command = [ 'SET_ZONE_RADIUS', self.name, size ]
 		if growth:
 			command.append(growth)
 
-		sendCommand(' '.join(command))
+		send_command(' '.join(command))
 
-	def changeSpeed(self, xdir, ydir):
+	def change_speed(self, xdir, ydir):
 		self.xdir = xdir
 		self.ydir = ydir
-		sendCommand('SET_ZONE_SPEED ' + self.name + ' ' + xdir + ' ' + ydir)
+		send_command('SET_ZONE_SPEED ' + self.name + ' ' + xdir + ' ' + ydir)
 
-	def setCommand(self, command):
+	def set_command(self, command):
 		if zone.type == 'target':
-			sendCommand('SET_TARGET_COMMAND ' + self.name + ' ' + command)
+			send_command('SET_TARGET_COMMAND ' + self.name + ' ' + command)
 
 class Grid:
 	def __init__(self):
 		self.reset(None)
 
-	def getTeam(self, name):
+	def get_team(self, name):
 		if name in self.teams:
 			return self.teams[name]
 
-	def getPlayer(self, name):
+	def get_player(self, name):
 		if name in self.players:
 			return self.players[name]
 
-	def getZone(self, name):
+	def get_zone(self, name):
 		if name in self.zones:
 			return self.zones[name]
 
-	def createZone(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, targetcommand=None):
+	def create_zone(self, name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, target_command=None):
 		command = [ 'SPAWN_ZONE', 'n', name, type ]
 
 		if type == 'zombie':
@@ -266,70 +265,71 @@ class Grid:
 				if target_size:
 					command.append(target_size)
 
-		sendCommand(' '.join(command))
+		send_command(' '.join(command))
 
-		self.zones[name] = Zone(name, type, x, y, size, growth, xdir, ydir, interactive, r, g, b, target_size, rubber, player, owner, targetcommand)
+		zone = Zone(name, type, x, y, size, growth, xdir, ydir, interactive, r, g, b, target_size, rubber, player, owner, target_command)
+		self.zones[name] = zone
 
-		return self.zones[name]
+		return zone
 
 	#Ladderlog commands
 
-	def newRound(self, command):
+	def new_round(self, command):
 		self.round += 1
 		self.zones = {}
 		for player in self.players.values():
 			player.alive = True
 
-	def newMatch(self, command):
+	def new_match(self, command):
 		self.round = 1
 		for team in self.teams.values():
 			team.score = 0
 		for player in self.players.values():
 			player.score = 0
 
-	def roundScore(self, command):
+	def round_score(self, command):
 		if command[2] in self.players:
 			self.players[command[2]].score += int(command[1])
 
-	def roundScoreTeam(self, command):
+	def round_score_team(self, command):
 		if command[2] in self.teams:
 			self.teams[command[2]].score += int(command[1])
 
-	def teamCreated(self, command):
+	def team_created(self, command):
 		self.teams[command[1]] = Team(command[1])
 
-	def teamDestroyed(self, command):
+	def team_destroyed(self, command):
 		if command[1] in self.teams:
 			del self.teams[command[1]]
 
-	def teamRenamed(self, command):
+	def team_renamed(self, command):
 		if command[1] in self.teams:
 			self.teams[command[2]] = self.teams.pop(command[1])
 			self.teams[command[2]].name = command[2]
 
-	def teamPlayerAdded(self, command):
+	def team_player_added(self, command):
 		if command[1] in self.teams and command[2] in self.players:
 			self.teams[command[1]].players[command[2]] = self.players[command[2]]
 
-	def teamPlayerRemoved(self, command):
+	def team_player_removed(self, command):
 		if command[1] in self.teams and command[2] in self.teams[command[1]].players:
 			del self.teams[command[1]].players[command[2]]
 
-	def playerEntered(self, command):
+	def player_entered(self, command):
 		self.players[command[1]] = Player(command[1], command[3], command[2])
 
-	def playerLeft(self, command):
+	def player_left(self, command):
 		if command[1] in self.players:
 			del self.players[command[1]]
 
-	def playerRenamed(self, command):
+	def player_renamed(self, command):
 		if command[1] in self.players:
 			if not command[2] in self.players:
 				self.players[command[2]] = self.players.pop(command[1])
 				self.players[command[2]].name = command[2]
 			self.players[command[2]].screenname = command[5]
 
-	def numHumans(self, command):
+	def num_humans(self, command):
 		self.num_players = command[1]
 
 	def positions(self, command):
@@ -338,51 +338,51 @@ class Grid:
 			for i in range(2, len(command)):
 				self.teams[command[1]].positions.append(self.getPlayer(command[i]))
 
-	def zoneSpawned(self, command):
+	def zone_spawned(self, command):
 		if command[2]:
 			self.zones[command[2]] = Zone(command[2], None, command[3], command[4], None)
 		else:
 			self.zones[command[1]] = Zone(command[1], None, command[3], command[4], None)
 
-	def zoneCollapsed(self, command):
+	def zone_collapsed(self, command):
 		if command[1] in self.zones:
 			del self.zones[command[1]]
 		elif command[2] in self.zones:
 			del self.zones[command[2]]
 
-	def deathFrag(self, command):
+	def death_frag(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathSuicide(self, command):
+	def death_suicide(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathTeamkill(self, command):
+	def death_teamkill(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathBasezoneConquered(self, command):
+	def death_basezone_conquered(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathDeathzone(self, command):
+	def death_deathzone(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathRubberzone(self, command):
+	def death_rubberzone(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathShotFrag(self, command):
+	def death_shot_frag(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathShotSuicide(self, command):
+	def death_shot_suicide(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
-	def deathShotTeamkill(self, command):
+	def death_shot_teamkill(self, command):
 		if command[1] in self.players:
 			self.players[command[1]].alive = False
 
@@ -395,33 +395,35 @@ class Grid:
 
 grid = Grid()
 
-commands = {	'NEW_ROUND': [ grid.newRound ],
-		'NEW_MATCH': [ grid.newMatch ],
-		'ROUND_SCORE': [ grid.roundScore ],
-		'ROUND_SCORE_TEAM': [ grid.roundScoreTeam ],
-		'TEAM_CREATED': [ grid.teamCreated ],
-		'TEAM_DESTROYED': [ grid.teamDestroyed ],
-		'TEAM_RENAMED': [ grid.teamRenamed ],
-		'TEAM_PLAYER_ADDED': [ grid.teamPlayerAdded ],
-		'TEAM_PLAYER_REMOVED': [ grid.teamPlayerRemoved ],
-		'PLAYER_ENTERED': [ grid.playerEntered ],
-		'PLAYER_LEFT': [ grid.playerLeft ],
-		'PLAYER_RENAMED': [ grid.playerRenamed ],
-		'NUM_HUMANS': [ grid.numHumans ],
-		'POSITIONS': [ grid.positions ],
-		'ZONE_SPAWNED': [ grid.zoneSpawned ],
-		'ZONE_COLLAPSED': [ grid.zoneCollapsed ],
-		'DEATH_FRAG': [ grid.deathFrag ],
-		'DEATH_SUICIDE': [ grid.deathSuicide ],
-		'DEATH_TEAMKILL': [ grid.deathTeamkill ],
-		'DEATH_BASEZONE_CONQUERED': [ grid.deathBasezoneConquered ],
-		'DEATH_DEATHZONE': [ grid.deathDeathzone ],
-		'DEATH_RUBBERZONE': [ grid.deathRubberzone ],
-		'DEATH_SHOT_FRAG': [ grid.deathShotFrag ],
-		'DEATH_SHOT_SUICIDE': [ grid.deathShotSuicide ],
-		'DEATH_SHOT_TEAMKILL': [ grid.deathShotTeamkill ],
-		'GAME_END': [ grid.reset ],
-		'ENCODING': [ init ],
-		'INVALID_COMMAND': [ chatCommand ] }
+commands = {
+	'NEW_ROUND': [ grid.new_round ],
+	'NEW_MATCH': [ grid.new_match ],
+	'ROUND_SCORE': [ grid.round_score ],
+	'ROUND_SCORE_TEAM': [ grid.round_score_team ],
+	'TEAM_CREATED': [ grid.team_created ],
+	'TEAM_DESTROYED': [ grid.team_destroyed ],
+	'TEAM_RENAMED': [ grid.team_renamed ],
+	'TEAM_PLAYER_ADDED': [ grid.team_player_added ],
+	'TEAM_PLAYER_REMOVED': [ grid.team_player_removed ],
+	'PLAYER_ENTERED': [ grid.player_entered ],
+	'PLAYER_LEFT': [ grid.player_left ],
+	'PLAYER_RENAMED': [ grid.player_renamed ],
+	'NUM_HUMANS': [ grid.num_humans ],
+	'POSITIONS': [ grid.positions ],
+	'ZONE_SPAWNED': [ grid.zone_spawned ],
+	'ZONE_COLLAPSED': [ grid.zone_collapsed ],
+	'DEATH_FRAG': [ grid.death_frag ],
+	'DEATH_SUICIDE': [ grid.death_suicide ],
+	'DEATH_TEAMKILL': [ grid.death_teamkill ],
+	'DEATH_BASEZONE_CONQUERED': [ grid.death_basezone_conquered ],
+	'DEATH_DEATHZONE': [ grid.death_deathzone ],
+	'DEATH_RUBBERZONE': [ grid.death_rubberzone ],
+	'DEATH_SHOT_FRAG': [ grid.death_shot_frag ],
+	'DEATH_SHOT_SUICIDE': [ grid.death_shot_suicide ],
+	'DEATH_SHOT_TEAMKILL': [ grid.death_shot_teamkill ],
+	'GAME_END': [ grid.reset ],
+	'ENCODING': [ init ],
+	'INVALID_COMMAND': [ chat_command ]
+}
 
-chatcommands = {}
+chat_commands = {}

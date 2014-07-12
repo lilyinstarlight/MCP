@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Scripting API</title>
+		<title>Scripting Library</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link href="/res/common.css" rel="stylesheet" type="text/css" />
 		<style>
@@ -23,10 +23,10 @@
 	<body>
 		<div class="header">
 			<img src="/res/aalogo.png" alt="" class="logo" />
-			<span class="title">Scripting API</span>
+			<span class="title">Scripting Library</span>
 		</div>
 		<div class="content">
-			To use the API, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.  Examples are available at the bottom.
+			To use the library, you must first use <code>import armagetron</code> at the beginning of your python script.  You must also call <code>armagetron.run()</code> after all of your handler initialization.  This function will then go into a loop and parse all of the ladderlog commands for you.  Examples are available at the bottom.
 			<br />
 			<br />
 			<h1>Namespace <code>armagetron</code>:</h1>
@@ -34,12 +34,12 @@
 				<tr>
 					<td rowspan="2"><code>run()</code></td>
 					<td>Description:</td>
-					<td>Let the API listen to the ladderlog.</td>
+					<td>Let the library listen to the ladderlog.</td>
 				</tr>
 				<tr>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>sendCommand(command)</code></td>
+					<td rowspan="2"><code>send_command(command)</code></td>
 					<td>Description:</td>
 					<td>Sends a command to the server.</td>
 				</tr>
@@ -48,7 +48,7 @@
 					<td><code>command</code> (string) - Command to send to the server.  A newline is added automatically.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>addHandler(command, handler)</code></td>
+					<td rowspan="2"><code>add_handler(command, handler)</code></td>
 					<td>Description:</td>
 					<td>Adds a handler that will be called when the specified ladderlog command is received.</td>
 				</tr>
@@ -58,7 +58,7 @@
 					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the parameters of the command where the first parameter is the command itself.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>removeHandler(command, handler)</code></td>
+					<td rowspan="2"><code>remove_handler(command, handler)</code></td>
 					<td>Description:</td>
 					<td>Removes a handler from a ladderlog command.</td>
 				</tr>
@@ -68,7 +68,7 @@
 					<code>handler</code> (function) - The handler to remove.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>setChatHandler(command, handler)</code></td>
+					<td rowspan="2"><code>set_chat_handler(command, handler)</code></td>
 					<td>Description:</td>
 					<td>Sets the handler for a chat command.</td>
 				</tr>
@@ -78,7 +78,7 @@
 					<code>handler</code> (function) - A callback function in the form of <code>handler(command)</code> where command is a list representing the command where the first element is the command itself (including the beginning slash), the second element is the player's name who issued the command, the third element is the player's IP address, the fourth element is the player's access level, and the rest are the command arguments.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>removeChatHandler(command)</code></td>
+					<td rowspan="2"><code>remove_chat_handler(command)</code></td>
 					<td>Description:</td>
 					<td>Removes a handler from a chat command (making the command unknown).</td>
 				</tr>
@@ -96,7 +96,7 @@
 					<td><code>message</code> (string) - Message to say.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>consoleMessage(message)</code></td>
+					<td rowspan="2"><code>console_message(message)</code></td>
 					<td>Description:</td>
 					<td>Prints <code>message</code> to every player's console.</td>
 				</tr>
@@ -105,7 +105,7 @@
 					<td><code>message</code> (string) - Message to send.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>centerMessage(message)</code></td>
+					<td rowspan="2"><code>center_message(message)</code></td>
 					<td>Description:</td>
 					<td>Prints <code>message</code> on everybody's screens.</td>
 				</tr>
@@ -114,7 +114,7 @@
 					<td><code>message</code> (string) - Message to send.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>sendMessage(player, message)</code></td>
+					<td rowspan="2"><code>send_message(player, message)</code></td>
 					<td>Description:</td>
 					<td>Prints <code>message</code> to the specified player's console.</td>
 				</tr>
@@ -124,21 +124,21 @@
 					<code>message</code> (string) - Message to send.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>pauseRound()</code></td>
+					<td rowspan="2"><code>pause_round()</code></td>
 					<td>Description:</td>
 					<td>Tell the server to wait before starting a new round.</td>
 				</tr>
 				<tr>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>continueRound()</code></td>
+					<td rowspan="2"><code>continue_round()</code></td>
 					<td>Description:</td>
 					<td>Tell the server to start the round (if it was paused).</td>
 				</tr>
 				<tr>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>setRepository(address)</code></td>
+					<td rowspan="2"><code>set_repository(address)</code></td>
 					<td>Description:</td>
 					<td>Sets the resource server.</td>
 				</tr>
@@ -147,7 +147,7 @@
 					<td><code>address</code> (string) - URI of the resource server.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>setMap(resource)</code></td>
+					<td rowspan="2"><code>set_map(resource)</code></td>
 					<td>Description:</td>
 					<td>Sets the current map.</td>
 				</tr>
@@ -181,7 +181,7 @@
 				<tr>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>endRound()</code></td>
+					<td rowspan="2"><code>end_round()</code></td>
 					<td>Description:</td>
 					<td>Ends the round by spawning the win/death zone immediately.</td>
 				</tr>
@@ -190,10 +190,10 @@
 			</table>
 			<br />
 			<br />
-			<h1>Class <code>Grid</code> (accessible in <code>armagetron.grid</code>):</h1>
+			<h1>Class <code>Grid</code> (instantiated at <code>armagetron.grid</code>):</h1>
 			<table border="1">
 				<tr>
-					<td rowspan="3"><code>getTeam(name)</code></td>
+					<td rowspan="3"><code>get_team(name)</code></td>
 					<td>Description:</td>
 					<td>Get a Team object by name.</td>
 				</tr>
@@ -206,7 +206,7 @@
 					<td><code>team</code> (Team) - Team object with the given name.</td>
 				</tr>
 				<tr>
-					<td rowspan="3"><code>getPlayer(name)</code></td>
+					<td rowspan="3"><code>get_player(name)</code></td>
 					<td>Description:</td>
 					<td>Get a Player object by name.</td>
 				</tr>
@@ -219,7 +219,7 @@
 					<td><code>player</code> (Player) - Player object with the given name.</td>
 				</tr>
 				<tr>
-					<td rowspan="3"><code>getZone(name)</code></td>
+					<td rowspan="3"><code>get_zone(name)</code></td>
 					<td>Description:</td>
 					<td>Get a Zone object by name.</td>
 				</tr>
@@ -232,7 +232,7 @@
 					<td><code>zone</code> (Zone) - Zone object with the given name.</td>
 				</tr>
 				<tr>
-					<td rowspan="3"><code>createZone(name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, targetcommand=None)</code></td>
+					<td rowspan="3"><code>create_zone(name, type, x, y, size, growth=0, xdir=0, ydir=0, interactive=None, r=None, g=None, b=None, target_size=None, rubber=None, player=None, owner=None, target_command=None)</code></td>
 					<td>Description:</td>
 					<td>Create a new zone.</td>
 				</tr>
@@ -292,7 +292,7 @@
 			<h1>Class <code>Player</code>:</h1>
 			<table border="1">
 				<tr>
-					<td rowspan="2"><code>sendMessage(message)</code></td>
+					<td rowspan="2"><code>send_message(message)</code></td>
 					<td>Description:</td>
 					<td>Sends a message to the player's console.</td>
 				</tr>
@@ -327,7 +327,7 @@
 					<code>reason</code> (string) - The message displayed when the player is banned.  Defaults to None.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>banIP(time=None, reason=None)</code></td>
+					<td rowspan="2"><code>ban_ip(time=None, reason=None)</code></td>
 					<td>Description:</td>
 					<td>Bans a player's IP address for a specified time and reason.</td>
 				</tr>
@@ -337,7 +337,7 @@
 					<code>reason</code> (string) - The message displayed when the player is banned.  Defaults to None.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>declareWinner()</code></td>
+					<td rowspan="2"><code>declare_winner()</code></td>
 					<td>Description:</td>
 					<td>Sets the player as the winner and ends the round.</td>
 				</tr>
@@ -398,7 +398,7 @@
 			<h1>Class <code>Zone</code>:</h1>
 			<table border="1">
 				<tr>
-					<td rowspan="2"><code>changeColor(r, g, b)</code></td>
+					<td rowspan="2"><code>change_color(r, g, b)</code></td>
 					<td>Description:</td>
 					<td>Sets the zone's color from an RGB triplet.</td>
 				</tr>
@@ -409,7 +409,7 @@
 					<code>b</code> (int) - Blue part of color.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>changeExpansion(growth)</code></td>
+					<td rowspan="2"><code>change_expansion(growth)</code></td>
 					<td>Description:</td>
 					<td>Sets the zone's growth factor.</td>
 				</tr>
@@ -418,7 +418,7 @@
 					<td><code>growth</code> (float) - The zone's growth factor.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>changePosition(x, y)</code></td>
+					<td rowspan="2"><code>change_position(x, y)</code></td>
 					<td>Description:</td>
 					<td>Sets the zone's position.</td>
 				</tr>
@@ -428,7 +428,7 @@
 					<code>y</code> (float) - The y coordinate of zone.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>changeSize(size, growth=None)</code></td>
+					<td rowspan="2"><code>change_size(size, growth=None)</code></td>
 					<td>Description:</td>
 					<td>Sets the zone's size and a growth rate to it.</td>
 				</tr>
@@ -438,7 +438,7 @@
 					<code>growth</code> (float) - The zone's growth rate to get to that size.  Defaults to instantly.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>changeSpeed(xdir, ydir)</code></td>
+					<td rowspan="2"><code>change_speed(xdir, ydir)</code></td>
 					<td>Description:</td>
 					<td>Set the zone's speed by components.</td>
 				</tr>
@@ -448,7 +448,7 @@
 					<code>ydir</code> (float) - The zone's y component of the velocity.</td>
 				</tr>
 				<tr>
-					<td rowspan="2"><code>setCommand(command)</code></td>
+					<td rowspan="2"><code>set_command(command)</code></td>
 					<td>Description:</td>
 					<td>Set the command of the target zone.</td>
 				</tr>
@@ -514,7 +514,7 @@ import armagetron
 def reload(command):
   armagetron.reload()
 
-armagetron.addHandler("GAME_END", reload)
+armagetron.add_handler("GAME_END", reload)
 
 armagetron.run()
 			</code></pre>
@@ -524,14 +524,14 @@ armagetron.run()
 import armagetron
 
 def echo(command):
-  armagetron.sendMessage(command[1], " ".join(command[4:]))
+  armagetron.send_message(command[1], " ".join(command[4:]))
 
-armagetron.setChatHandler("/echo", echo)
+armagetron.set_chat_handler("/echo", echo)
 
 armagetron.run()
 			</code></pre>
 			<br />
-			<h2>Simple map rotation:</h2>
+			<h2>Map rotation:</h2>
 			<pre><code>
 import armagetron
 
@@ -539,17 +539,17 @@ maps = [ "Anonymous/polygon/regular/square-1.0.1.aamap.xml", "Anonymous/polygon/
 
 index = 0
 
-def changeMap(command):
+def change_map(command):
   global index
 
-  armagetron.pauseRound()
+  armagetron.pause_round()
   index++
   if index &gt; len(maps):
     index = 0
-  armagetron.setMap(maps[index])
-  armagetron.continueRound()
+  armagetron.set_map(maps[index])
+  armagetron.continue_round()
 
-armagetron.addHandler("NEW_ROUND", changeMap)
+armagetron.add_handler("NEW_ROUND", change_map)
 
 armagetron.run()
 			</code></pre>
