@@ -37,6 +37,35 @@ def create_field(value):
 	else:
 		raise TypeError()
 
+class Log(object):
+	def __init__(self, log, access_log):
+		if log:
+			os.makedirs(os.path.dirname(log), exist_ok=True)
+			self.log = open(log, 'a', 1)
+		else:
+			self.log = sys.stderr
+
+	def timestamp(self):
+		return time.strftime('[%d/%b/%Y:%H:%M:%S %z]')
+
+	def write(self, string):
+		self.log.write(string)
+
+	def message(self, message):
+		self.write(self.timestamp() + ' ' + message + '\n')
+
+	def info(self, message):
+		self.message('INFO: ' + message)
+
+	def warn(self, message):
+		self.message('WARN: ' + message)
+
+	def error(self, message):
+		self.message('ERROR: ' + message)
+
+	def exception(self):
+		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
+
 class Job(object):
 	def __init__(self, function, args=[], kwargs={}, minute=All(), hour=All(), day=All(), month=All(), weekday=All()):
 		self.function = function
@@ -55,9 +84,13 @@ class Job(object):
 		self.function(*self.args, **self.kwargs)
 
 class Scheduler(object):
-	def __init__(self):
+	def __init__(self, log=Log(None)):
+		self.log = log
+
 		self.jobs = []
-		self.thread = threading.Thread(target=self.run)
+
+		self.running = False
+		self.thread = None
 
 	def add(self, job):
 		self.jobs.append(job)
@@ -66,11 +99,27 @@ class Scheduler(object):
 		self.jobs.remove(job)
 
 	def start(self):
+		if self.is_running():
+			return
+
 		self.running = True
+		self.thread = threading.Thread(target=self.run)
 		self.thread.start()
 
+		self.log.info('Scheduler running')
+
 	def stop(self):
+		if not self.is_running():
+			return
+
 		self.running = False
+		self.thread.join()
+		self.thread = None
+
+		self.log.info('Scheduler stopped')
+
+	def is_running(self):
+		return self.thread and self.thread.is_alive()
 
 	def run(self):
 		while self.running:
@@ -83,8 +132,11 @@ class Scheduler(object):
 
 			#Go through each job and run it if necessary
 			for job in self.jobs:
-				if job.should_run(ltime):
-					job.run()
+				try:
+					if job.should_run(ltime):
+						job.run()
+				except:
+					self.log.exception()
 
 			#Get new time after running jobs
 			ctime = time.time()
