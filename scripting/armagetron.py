@@ -1,7 +1,9 @@
 #!/usr/bin/python
+import sys
 import time
-import sys.stdin as ladderlog
-import sys.stdout as server
+
+ladderlog = sys.stdin
+server = sys.stdout
 
 def add_handler(command, handler):
 	if not command in commands:
