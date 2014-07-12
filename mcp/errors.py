@@ -8,13 +8,19 @@ class NoServerError(Error):
 class InvalidServerError(Error):
 	pass
 
-class ServerExistsError(Error):
-	pass
-
 class ServerRunningError(Error):
 	pass
 
 class ServerStoppedError(Error):
+	pass
+
+class ServerExistsError(Error):
+	pass
+
+class ServerNonexistentError(Error):
+	pass
+
+class ScriptNonexistentError(Error):
 	pass
 
 class NoServerCreationError(Error):

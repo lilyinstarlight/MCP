@@ -1,165 +1,157 @@
 import os
 import subprocess
 import sys
+import threading
+import time
 
-import config, env, errors, log, server
+import config, env, errors, log, servers
 
-servers = {}
+server_list = {}
 
-def get(name):
-	if not name in servers:
-		raise errors.NoServerError
+__shutdown_request = False
+__is_shut_down = threading.Event()
+__is_shut_down.set()
 
-	return servers[name]
+def get(server_name):
+	return server_list.get(server_name)
 
-def create(name, source):
-	if name in servers:
-		raise errors.ServerExistsError
+def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
+	entry = servers.create(server_name, source_name, revision, port, autostart, users)
+	server_list[entry.server] = Server(entry)
 
-	server.create(name, source)
-	servers[name] = Server(name)
+def destroy(server_name):
+	if server_list.get(server_name).is_running():
+		raise errors.ServerRunningError()
 
-def destroy(name):
-	if not name in servers:
-		raise errors.NoServerError
+	servers.destroy(server_name)
+	del server_list[server_name]
 
-	servers[name].stop()
-	server.destroy(name)
-	del servers[name]
+def poll(poll_interval=0.5):
+	__is_shut_down.clear()
 
-def poll():
-	for server in servers.values():
-		if server.server and not server.serverStatus():
-			server.server.stdout.write('WARNING: The server did not gracefully quit; now restarting.\n')
+	load_servers()
+
+	try:
+		while not __shutdown_request:
+			for server in server_list.values():
+				if server.proc and not server.is_running():
+					server.proc.stdout.write('WARNING: The server did not gracefully quit; now restarting.\n')
+					log.mcplog.warn(server.name + ' did not gracefully quit.')
+					server.stop()
+					server.start()
+					log.mcplog.warn(server.name + ' restarted.')
+
+			time.sleep(poll_interval)
+	finally:
+		for server in server_list:
 			server.stop()
-			server.start()
-			log.warn(server.name + ' did not gracefully quit and was restarted.')
 
-class Server:
-	def __init__(self, name, dir):
-		self.name = name
-		self.dir = dir
-		self.bin = self.dir + '/bin/armagetronad-dedicated'
-		self.server = None
-		self.script = None
-		if self.exists():
-			self.status_msg = 'stopped'
-		else:
-			self.status_msg = 'nonexistent'
+		__shutdown_request = False
+		__is_shut_down.set()
+
+def start():
+	threading.Thread(target=poll).start()
+
+def stop():
+	__shutdown_request = True
+	__is_shut_down.wait()
+
+def is_running():
+	return not __is_shut_down.is_set()
+
+def load_servers():
+	server_list.clear()
+	for entry in servers.server_db:
+		server_list[entry.server] = Server(entry)
+
+class Script(object):
+	def __init__(self, server):
+		self.server = server
+		self.prefix = config.prefix + '/' + name
+		self.exe = self.prefix + '/scripts/script.py'
+
+		self.proc = None
 
 	def exists(self):
-		return os.path.isfile(self.bin) and os.access(self.bin, os.X_OK)
+		return os.path.isfile(self.exe)
 
 	def start(self):
 		if not self.exists():
-			raise errors.NoServerError()
+			raise errors.ScriptNonExistentError()
 
-		if self.server_status():
-			return
-
-		self.status_msg = 'starting'
-		self.server = subprocess.Popen([ self.bin, '--vardir', self.dir + '/var', '--userdatadir', self.dir + '/user', '--configdir', self.dir + '/config', '--datadir', self.dir + '/data' ], stdin=subprocess.PIPE, stdout=open(self.dir + '/server.log', 'a'), stderr=open(self.dir + '/error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir)
-		self.status_msg = 'started'
-
-		self.start_script()
-
-	def start_script(self):
-		if os.path.exists(self.dir + '/scripts/script.py') and self.serverStatus() and not self.scriptStatus():
-			self.script = subprocess.Popen([ sys.executable, self.dir + '/scripts/script.py' ], stdin=open(self.dir + '/var/ladderlog.txt', 'r'), stdout=self.server.stdin, stderr=open(self.dir + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.dir + '/var')
+		self.proc = subprocess.Popen([ sys.executable, self.prefix + '/scripts/script.py' ], stdin=open(self.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.prefix + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.prefix + '/var')
 
 	def stop(self):
-		if self.server_status():
-			self.status_msg = 'stopping'
-			self.server.terminate()
+		if self.is_running():
+			self.proc.terminate()
 			try:
-				self.server.wait(5)
+				self.proc.wait(5)
 			except subprocess.TimeoutExpired:
-				self.server.kill()
-				self.server.wait()
+				self.proc.kill()
+				self.proc.wait()
 
-		self.server = None
-		self.status_msg = 'stopped'
+		self.proc = None
 
-		self.stop_script()
+	def is_running(self):
+		return self.proc and self.proc.poll() == None
 
-	def stop_script(self):
-		if self.script_status():
-			self.script.terminate()
-			try:
-				self.script.wait(5)
-			except subprocess.TimeoutExpired:
-				self.script.kill()
-				self.script.wait()
+class Server(object):
+	def __init__(self, metadata):
+		self.name = metadata.server
+		self.prefix = config.prefix + '/' + name
+		self.exe = self.prefix + '/bin/armagetronad-dedicated'
 
-		self.script = None
+		self.proc = None
 
-	def restart(self):
-		self.stop()
-		self.start()
+		self.script = Script(self)
 
-	def reload(self):
-		if self.server:
-			self.server.stdin.write('INCLUDE settings.cfg')
-			self.server.stdin.write('INCLUDE server_info.cfg')
-			self.server.stdin.write('INCLUDE settings_custom.cfg')
-			if self.script:
-				self.server.stdin.write('INCLUDE script.cfg')
-		else:
-			raise errors.ServerStoppedError
-
-	def upgrade(self):
-		status = self.server_status()
-		self.stop()
-		server.create(self.name, self.getSource())
-		if status:
+		if metadata.autostart:
 			self.start()
 
-	def server_status(self):
-		if self.server:
-			return self.server.poll() == None
-		else:
-			return False
+	def exists(self):
+		return os.path.isfile(self.exe)
 
-	def script_status(self):
-		if self.script:
-			return self.script.poll() == None
-		else:
-			return False
+	def upgrade(self, source_name=None, revision=None):
+		if self.is_running():
+			raise errors.ServerRunningError()
 
-	def status(self):
-		return self.status_msg
+		servers.upgrade(self.name, source_name, revision)
+
+	def modify_metadata(self, port=None, autostart=None, users=None):
+		servers.modify(self.name, port, autostart, users)
+
+	def start(self):
+		if not self.exists():
+			raise errors.ServerNonexistentError()
+
+		self.proc = subprocess.Popen([ self.bin, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data' ], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), preexec_fn=env.demote, env=env.get_user(), cwd=self.prefix)
+
+		if self.script.exists():
+			self.script.start()
+
+	def stop(self):
+		self.script.stop()
+
+		if self.is_running():
+			self.proc.terminate()
+			try:
+				self.proc.wait(5)
+			except subprocess.TimeoutExpired:
+				self.proc.kill()
+				self.proc.wait()
+
+		self.proc = None
+
+	def reload(self):
+		self.send_command('INCLUDE settings.cfg')
+		self.send_command('INCLUDE server_info.cfg')
+		self.send_command('INCLUDE settings_custom.cfg')
+
+	def is_running(self):
+		return self.proc and self.proc.poll() == None
 
 	def send_command(self, command):
-		if self.server:
-			self.server.stdin.write(command)
-		else:
+		if not self.is_running():
 			raise errors.ServerStoppedError()
 
-	def get_log(self):
-		with open(self.dir + '/arma.log', 'r', encoding='latin_1') as file:
-			return file.read()
-
-	def get_settings(self):
-		with open(self.dir + '/config/settings_custom.cfg', 'r', encoding='latin_1') as file:
-			return file.read()
-
-	def update_settings(self, settings):
-		with open(self.dir + '/config/settings_custom.cfg', 'w', encoding='latin_1') as file:
-			file.write(settings)
-
-	def get_script(self):
-		with open(self.dir + '/scripts/script.py', 'r') as file:
-			return file.read()
-
-	def update_script(self, script):
-		with open(self.dir + '/scripts/script.py', 'w') as file:
-			file.write(script)
-
-	def get_scriptlog(self):
-		with open(self.dir + '/script-error.log', 'r') as file:
-			return file.read()
-
-for dir in os.listdir(config.prefix):
-	temp = Server(dir)
-	if temp.exists():
-		servers[dir] = temp
+		self.proc.stdin.write(command + '\n')
