@@ -49,12 +49,21 @@ def poll(poll_interval=0.5):
 		__shutdown_request = False
 		__is_shut_down.set()
 
+def shutdown():
+	__shutdown_request = True
+	__is_shut_down.wait()
+
 def start():
+	if self.is_running():
+		return
+
 	threading.Thread(target=poll).start()
 
 def stop():
-	__shutdown_request = True
-	__is_shut_down.wait()
+	if not self.is_running():
+		return
+
+	self.shutdown()
 
 def is_running():
 	return not __is_shut_down.is_set()
