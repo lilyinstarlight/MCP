@@ -59,7 +59,6 @@ def reload():
 	include('settings.cfg')
 	include('server_info.cfg')
 	include('settings_custom.cfg')
-	include('script.cfg')
 	sendCommand('START_NEW_MATCH')
 
 def endRound():
@@ -73,7 +72,11 @@ def chatCommand(command):
 		sendMessage(command[2], 'Unknown chat command "' + command[1] + '".')
 
 def init(command):
-	include('script.cfg')
+	sendCommand('LADDERLOG_WRITE_NUM_HUMANS 1')
+	sendCommand('LADDERLOG_WRITE_POSITIONS 1')
+	sendCommand('LADDERLOG_WRITE_INVALID_COMMAND 1')
+	sendCommand('INTERCEPT_UNKNOWN_COMMANDS 1')
+	sendCommand('WAIT_FOR_EXTERNAL_SCRIPT_TIMEOUT 10')
 
 def run():
 	while True:
