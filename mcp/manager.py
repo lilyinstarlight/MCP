@@ -8,9 +8,8 @@ import config, env, errors, log, servers
 
 server_list = {}
 
-__shutdown_request = False
-__is_shut_down = threading.Event()
-__is_shut_down.set()
+running = False
+thread = None
 
 def get(server_name):
 	return server_list.get(server_name)
@@ -27,12 +26,10 @@ def destroy(server_name):
 	del server_list[server_name]
 
 def poll(poll_interval=0.5):
-	__is_shut_down.clear()
-
 	load_servers()
 
 	try:
-		while not __shutdown_request:
+		while running:
 			for server in server_list.values():
 				if server.proc and not server.is_running():
 					server.proc.stdout.write('WARNING: The server did not gracefully quit; now restarting.\n')
@@ -46,27 +43,24 @@ def poll(poll_interval=0.5):
 		for server in server_list:
 			server.stop()
 
-		__shutdown_request = False
-		__is_shut_down.set()
-
-def shutdown():
-	__shutdown_request = True
-	__is_shut_down.wait()
-
 def start():
 	if self.is_running():
 		return
 
-	threading.Thread(target=poll).start()
+	running = True
+	thread = threading.Thread(target=poll)
+	thread.start()
 
 def stop():
 	if not self.is_running():
 		return
 
-	self.shutdown()
+	running = False
+	thread.join()
+	thread = None
 
 def is_running():
-	return not __is_shut_down.is_set()
+	return thread and thread.is_alive()
 
 def load_servers():
 	server_list.clear()
