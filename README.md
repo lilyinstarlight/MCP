@@ -44,12 +44,24 @@ Installing
 ###Setup###
 Edit `config.py` to match your directory structure and preferences. Below is a list of the preferences and what they mean.
 - `prefix` folder is mandatory and should be the folder set aside for Armagetron servers.
-- `sources` folder is optional and contains the source code to the server software to allow server creation.
-- `api` folder is also optional and contains the scripting library (in the `scripting` folder of the project).
+- `creation` indicated whether or not servers can be created.
+- `sources` folder is optional and contains the source code to the server software from which the servers are created.
+- `tmp` folder is optional and contains the located where servers will be built before being merged.
+- `config` folder is optional and contains the default set of configuration copied to every server when created.
+- `scripting` folder is also optional and contains the scripting library (in the `scripting` folder of the project).
+- `maxlogsize` is maximum size a server log will get before it is rotated into the `logs` folder.
 - `user` is the user under which the servers (and scripts) will run.
-- `address` is the address for which the server will accept requests but generally, you do not need to set this.
+- `log` is the path of the manager log.
+- `cmdlog` is the path of the external command log.
+- `httpdlog` is the path of the HTTP daemon log.
+- `accesslog` is the path of the HTTP access log.
+- `host` is the address for which the server will accept requests but generally, you do not need to set this.
 - `port` is the port on which the HTTP server will listen. If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
-- `log` is the path of the HTTP access log.
+
+To create the user the servers will run under (if any), run the `useradd` command:
+```
+# useradd -m <user>
+```
 
 After the configuration is complete, run the setup script:
 ```
