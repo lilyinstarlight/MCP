@@ -101,6 +101,7 @@ class Script(object):
 class Server(object):
 	def __init__(self, metadata):
 		self.name = metadata.server
+		self.metadata = metadata
 		self.prefix = config.prefix + '/' + name
 		self.exe = self.prefix + '/bin/armagetronad-dedicated'
 
