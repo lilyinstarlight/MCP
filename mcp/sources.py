@@ -5,7 +5,7 @@ import subprocess
 
 import db, errors, source
 
-sources_allowed = re.compile('[0-9a-zA-Z-_+.]+$')
+sources_allowed = '[0-9a-zA-Z-_+.]+$'
 
 def get(source_name):
 	return source_db.get(source_name)
@@ -14,7 +14,7 @@ def add(source_name, url):
 	if source_db.get(source_name):
 		raise errors.SourceExistsError()
 
-	if not sources_allowed.match(source_name):
+	if not re.match(sources_allowed, source_name):
 		raise errors.InvalidSourceError()
 
 	source.branch(source_name, url)

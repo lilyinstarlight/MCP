@@ -3,7 +3,7 @@ import re
 
 import db, errors, server, sources
 
-servers_allowed = re.compile('^[0-9a-zA-Z-_+]+$')
+servers_allowed = '^[0-9a-zA-Z-_+]+$'
 
 def get(server_name):
 	return server_db.get(server_name)
@@ -12,7 +12,7 @@ def create(server_name, source_name, revision=None, port=0, autostart=True, user
 	if server_db.get(server_name):
 		raise errors.ServerExistsError()
 
-	if not servers_allowed.match(server_name):
+	if not re.match(servers_allowed, server_name):
 		raise errors.InvalidServerError()
 
 	if not revision:

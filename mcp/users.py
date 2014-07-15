@@ -6,7 +6,7 @@ import string
 
 import db, errors
 
-users_allowed = re.compile('^[0-9a-zA-Z-_+]+$')
+users_allowed = '^[0-9a-zA-Z-_+]+$'
 
 key_length = 24
 key_chars = string.ascii_letters + string.digits
@@ -43,7 +43,7 @@ def add(username, password, key='', admin=False, active=True, servers=[]):
 	if user_db.get(username):
 		raise errors.UserExistsError()
 
-	if not users_allowed.match(username):
+	if not re.match(users_allowed, username):
 		raise errors.InvalidUserError()
 
 	return user_db.add(username, hash(password), key, admin, active, servers)
