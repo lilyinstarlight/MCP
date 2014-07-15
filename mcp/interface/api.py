@@ -1,7 +1,7 @@
 import json
 
 import common
-from .. import manager, sources, users
+from .. import manager, servers, sources, users
 
 class ServersHandler(common.AuthorizedHandler):
 	def forbidden(self):
@@ -18,4 +18,4 @@ class ServerHandler(common.AuthorizedHandler):
 	def forbidden(self):
 		return self.user.name in self.server.metadata.users
 
-routes = { '/servers/': ServersHandler, '/servers/(.+)(?:/(.+))?': ServerHandler }
+routes = { '/servers/': ServersHandler, '/servers/(' + servers.servers_allowed + ')(?:/(start|stop|reload|command|log|script))?': ServerHandler }
