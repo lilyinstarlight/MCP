@@ -1,3 +1,4 @@
+import sys
 import threading
 import time
 
@@ -19,11 +20,11 @@ class Every(Field):
 	def __eq__(self, value):
 		return value % self.param == 0
 
-def Int(Field):
+class Int(Field):
 	def __eq__(self, value):
 		return value == self.param
 
-def List(Field):
+class List(Field):
 	def __eq__(self, value):
 		return value in self.param
 
@@ -38,7 +39,7 @@ def create_field(value):
 		raise TypeError()
 
 class Log(object):
-	def __init__(self, log, access_log):
+	def __init__(self, log):
 		if log:
 			os.makedirs(os.path.dirname(log), exist_ok=True)
 			self.log = open(log, 'a', 1)
