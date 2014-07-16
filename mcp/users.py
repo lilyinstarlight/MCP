@@ -4,7 +4,7 @@ import random
 import re
 import string
 
-import db, errors
+from . import db, errors
 
 users_allowed = '^[0-9a-zA-Z-_+]+$'
 
@@ -65,7 +65,7 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
 	if servers:
 		user.servers = servers
 
-def remove(username)
+def remove(username):
 	if not user_db.get(username):
 		raise errors.NoUserError()
 

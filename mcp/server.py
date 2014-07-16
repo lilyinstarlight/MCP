@@ -3,7 +3,7 @@ import shlex
 import shutil
 import subprocess
 
-import config, env, errors, log, sources
+from . import config, env, errors, log, sources
 
 def copy_contents(src, dst):
 	for entry in os.listdir(src):

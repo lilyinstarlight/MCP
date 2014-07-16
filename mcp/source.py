@@ -1,12 +1,12 @@
 import shutil
 
-import config, errors, log
+from . import config, errors, log
 
 def get_revision(source_name):
 	prefix = config.sources + '/' + source_name
 
 	with open(prefix + '/.bzr/branch/last-revision', 'r') as file:
-		return file.read.split(' '. 1)[0]
+		return file.read.split(' ', 1)[0]
 
 def branch(source_name, url):
 	prefix = config.sources + '/' + source_name

@@ -1,7 +1,7 @@
 import os
 import pwd
 
-import config
+from . import config
 
 base_env = os.environ.copy()
 

@@ -2,7 +2,7 @@ import os
 import sys
 import time
 
-import config
+from . import config
 
 mcplog = None
 cmdlog = None
@@ -39,7 +39,7 @@ class Log(object):
 		self.error('Caught exception:\n\t' + traceback.format_exc().replace('\n', '\n\t'))
 
 class HTTPLog(Log):
-	def __init__(self, log, access_log)
+	def __init__(self, log, access_log):
 		if log:
 			os.makedirs(os.path.dirname(log), exist_ok=True)
 			self.log = open(log, 'a', 1)

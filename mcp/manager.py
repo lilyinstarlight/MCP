@@ -4,7 +4,7 @@ import sys
 import threading
 import time
 
-import config, env, errors, log, servers
+from . import config, env, errors, log, servers
 
 server_list = {}
 

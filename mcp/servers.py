@@ -1,7 +1,7 @@
 import os
 import re
 
-import db, errors, server, sources
+from . import db, errors, server, sources
 
 servers_allowed = '^[0-9a-zA-Z-_+]+$'
 
@@ -53,7 +53,7 @@ def upgrade(server_name, source_name=None, revision=None):
 
 	server_obj.revision = revision
 
-def destroy(server_name)
+def destroy(server_name):
 	if not server_db.get(server_name):
 		raise errors.NoServerError()
 

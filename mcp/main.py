@@ -1,6 +1,6 @@
 import signal
 
-import interface, log, manager
+from . import interface, log, manager
 
 from . import name, version
 
