@@ -18,79 +18,61 @@ import config
 
 from mcp import name, version
 
-def setup_user():
-	import mcp.users
-
-	print()
-	print('Please set up the administrator account.')
-
-	username = input('Username: ')
-	password = getpass('Password: ')
-
-	mcp.users.add(username, password, admin=True)
-
-def setup_dirs():
-	print()
-	print('Making directories...')
-
+def configure_dirs():
 	dir_util.mkpath(config.prefix)
 
 	if config.creation:
 		dir_util.mkpath(config.sources)
 		dir_util.copy_tree('config', config.config)
 
-def setup_scripting():
+def configure_scripting():
 	if config.scripting:
-		print()
-		print('Installing scripting library...')
 		dir_util.copy_tree('scripting', config.scripting)
 
-def setup_init():
+def configure_init():
 	print()
 	response = input('Which init system are you using: [1] SysV (Debian, Ubuntu, CentOS), [2] OpenRC (Gentoo), [3] Systemd (Arch, Fedora), [*] Other/None? ')
+	print()
 
 	if response == "1":
-		print()
-		print('Installing SysV init script...')
 		file_util.copy_file('init/sysv/mcp', '/etc/init.d/')
 	elif response == "2":
-		print()
-		print('Installing OpenRC init script...')
 		file_util.copy_file('init/openrc/mcp', '/etc/init.d/')
 	elif response == "3":
-		print()
-		print('Installing Systemd init script...')
 		file_util.copy_file('init/systemd/mcp.service', '/usr/lib/systemd/system/')
 		subprocess.call(['systemctl', 'daemon-reload'])
 
+def configure_user():
+	import mcp.users
+
+	#Look for at least one user with admin status
+	for user in mcp.users.user_db:
+		if user.admin:
+			break
+	#If user not found
+	else:
+		print()
+		print('Please set up an administrator account.')
+
+		username = input('Username: ')
+		password = getpass('Password: ')
+
+		mcp.users.add(username, password, admin=True)
+
+def configure():
+		print()
+		print('Configuring...')
+
+		configure_dirs()
+		configure_scripting()
+		configure_init()
+
+		configure_user()
+
 class cmd_install(install):
 	def run(self):
-		setup_user()
-
-		print()
-		print('Installing...')
-
-		shutil.copy('config.py', 'mcp/')
 		install.run(self)
-		os.remove('mcp/config.py')
-
-		shutil.rmtree('mcp/db')
-
-		setup_dirs()
-		setup_scripting()
-		setup_init()
-
-class cmd_upgrade(install):
-	def run(self):
-		print()
-		print('Upgrading...')
-
-		shutil.copy('config.py', 'mcp/')
-		install.run(self)
-		os.remove('mcp/config.py')
-
-		setup_scripting()
-		setup_init()
+		configure()
 
 setup(
 	name=name,
@@ -101,7 +83,7 @@ setup(
 	url='http://github.com/fkmclane/MCP',
 	license='MIT',
 	packages=[ 'mcp', 'mcp.interface' ],
-	package_data={ 'mcp': [ 'config.py' ], 'mcp.routes': [ 'html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*' ] },
+	package_data={ 'mcp': [ '../config.py' ], 'mcp.routes': [ 'html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*' ] },
 	scripts=[ 'bin/mcp' ],
-	cmdclass={ 'install': cmd_install, 'upgrade': cmd_upgrade }
+	cmdclass={ 'install': cmd_install }
 )
