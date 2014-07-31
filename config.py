@@ -4,29 +4,38 @@ prefix = '/home/armagetron/servers'
 #Whether or not to allow server creation
 creation = True
 
-#Directory where the sources are kept; None if creation is disabled
+#Directory where the sources are kept; ignored if creation is disabled
 sources = '/home/armagetron/sources'
 
-#Directory where default configuration is kept; None if creation is disabled
+#Temprorary directory to build under; ignored if creation is disabled
+tmp = '/tmp/mcp'
+
+#Directory where default configuration is kept; ignored if creation is disabled
 config = '/home/armagetron/config'
 
-#Directory where the scripting API is kept; None to disable the scripting API
-api = '/home/armagetron/api'
+#Directory where the scripting library is kept; None to disable the scripting library
+scripting = '/home/armagetron/scripting'
+
+#Max size of server log files in KB before they are rotated; None to disable server log rotation
+maxlogsize = 102400
 
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 
 #Path to manager log; None to disable logging
-log = '/var/log/armaadmin/manager.log'
+log = '/var/log/mcp/manager.log'
 
 #Path to command output log; None to disable logging
-cmdlog = '/var/log/armaadmin/command.log'
+cmdlog = '/var/log/mcp/command.log'
 
-#Address of the web interface (leave blank unless you know what you are doing)
-address = ''
+#Path to HTTP log; None to disable logging
+httpdlog = '/var/log/mcp/httpd.log'
+
+#Path to HTTP access log; None to disable logging
+accesslog = '/var/log/mcp/access.log'
+
+#Host of the web interface (leave blank unless you know what you are doing)
+host = ''
 
 #Port to listen on for the web interface
 port = 80
-
-#Path to HTTP log; None to disable logging
-httplog = '/var/log/armaadmin/http.log'

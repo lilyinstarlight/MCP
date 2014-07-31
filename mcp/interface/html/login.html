@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Server Administration</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
+		<link href="/res/common.css" rel="stylesheet" type="text/css" />
+		<link href="/res/common.js" rel="stylesheet" type="text/css" />
+		<link href="/res/login/functions.js" rel="stylesheet" type="text/css" />
+		<link href="/res/login/script.js" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="/res/aalogo.png" alt="" class="logo" />
+			<span class="title">Server Administration</span>
+		</div>
+		<div class="content">
+			<form id="login" onsubmit="login()" onkeypress="if(event.keyCode == 13) this.submit()">
+				<table>
+					<tr>
+						<td><label for="user">Username: </label></td>
+						<td><input id="user" name="user" type="text" /></td>
+					</tr>
+					<tr>
+						<td><label for="password">Password: </label></td>
+						<td><input id="password" name="password" type="password" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><br /><a href="javascript:document.getElementById('login').submit()" class="button">Submit</a></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>MCP Administration</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=latin1" />
+		<link href="/res/common.css" rel="stylesheet" type="text/css" />
+		<link href="/res/menu.css" rel="stylesheet" type="text/css" />
+		<link href="/res/admin/stylesheet.css" rel="stylesheet" type="text/css" />
+		<script src="/res/common.js" type="text/javascript"></script>
+		<script src="/res/admin/functions.js" type="text/javascript"></script>
+		<script src="/res/admin/script.js" type="text/javascript"></script>
+
+		<link href="/res/codemirror/codemirror.css" rel="stylesheet" />
+		<script src="/res/codemirror/codemirror.js" type="text/javascript"></script>
+		<script src="/res/codemirror/settings.js" type="text/javascript"></script>
+		<script src="/res/codemirror/placeholder.js" type="text/javascript"></script>
+		<script src="/res/codemirror/dialog.js" type="text/javascript"></script>
+		<link href="/res/codemirror/dialog.css" rel="stylesheet" />
+		<script src="/res/codemirror/searchcursor.js" type="text/javascript"></script>
+		<script src="/res/codemirror/search.js" type="text/javascript"></script>
+		<script src="/res/codemirror/trailingspace.js" type="text/javascript"></script>
+		<link href="/res/codemirror/style.css" rel="stylesheet" />
+		<link href="/res/codemirror/arma.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="header">
+			<img src="/res/aalogo.png" alt="" class="logo" />
+			<span class="title">MCP Administration</span>
+		</div>
+		<div class="menu">
+			<span class="left">
+				<a id="users_button" href="javascript:change('content', 'users')" class="button">Users</a><a id="servers_button" href="javascript:change('content', 'servers')" class="button">Servers</a><a id="sources_button" href="javascript:change('content', 'sources')" class="button">Sources</a><a id="config_button" href="javascript:change('content', 'config')" class="button disabled">Config</a>
+			</span>
+			<span class="right">
+				<span id="working" class="working" style="display: none"></span>
+				<a href="/" class="button">Servers</a><a href="/?logout" class="button">Logout</a>
+			</span>
+		</div>
+		<div id="content" class="content">
+			<div id="users">
+				<div id="user_list">
+					<div class="controller">
+						<span class="left">
+							<a id="user_create_button" href="javascript:change('users', 'user_create')" class="button">Create</a>
+							<a id="user_modify_button" href="javascript:change('users', 'user_modify')" class="button disabled">Modify</a>
+							<a id="user_destroy_button" href="javascript:userDestroy()" class="button disabled">Destroy</a>
+						</span>
+					</div>
+					<select id="user_listing" multiple="multiple" class="multi" onchange="userSelect()"></select>
+				</div>
+				<div id="user_create" style="display: none">
+					<table>
+						<tr>
+							<td><label for="user_create_name">Username: </label></td>
+							<td><input id="user_create_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_create_password">Password: </label></td>
+							<td><input id="user_create_password" type="password" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_create_admin">Admin: </label></td>
+							<td><input id="user_create_admin" type="checkbox" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_create_servers">Servers: </label></td>
+							<td><select id="user_create_servers" multiple="multiple" class="multi mini"></select></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:change('users', 'user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitUser();change('users', 'user_list')" class="button">Create</a></td>
+						</tr>
+					</table>
+				</div>
+				<div id="user_modify" style="display: none">
+					<table>
+						<tr>
+							<td><label for="user_modify_name">Username: </label></td>
+							<td><input id="user_modify_name" type="text" disabled="disabled" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_modify_password">Password: </label></td>
+							<td><input id="user_modify_password" type="password" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_modify_admin">Admin: </label></td>
+							<td><input id="user_modify_admin" type="checkbox" /></td>
+						</tr>
+						<tr>
+							<td><label for="user_modify_servers">Servers: </label></td>
+							<td><select id="user_modify_servers" multiple="multiple" class="multi mini"></select></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:change('users', 'user_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitModifyUser();change('users', 'user_list')" class="button">Modify</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="servers" style="display: none">
+				<div id="server_list">
+					<div class="controller">
+						<span class="left">
+							<a id="server_create_button" href="javascript:change('servers', 'server_create')" class="button disabled">Create</a>
+							<a id="server_upgrade_button" href="javascript:serverUpgrade()" class="button disabled">Upgrade</a>
+							<a id="server_destroy_button" href="javascript:serverDestroy()" class="button disabled">Destroy</a>
+						</span>
+						<span class="right">
+							<a href="javascript:upgradeServers()" class="button">Upgrade All</a>
+						</span>
+					</div>
+					<select id="server_listing" multiple="multiple" class="multi" onchange="serverSelect()"></select>
+				</div>
+				<div id="server_create" style="display: none">
+					<table>
+						<tr>
+							<td><label for="server_name">Name: </label></td>
+							<td><input id="server_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="server_source">Source: </label></td>
+							<td><select id="server_source"></select></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:change('servers', 'server_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitServer();change('servers', 'server_list')" class="button">Create</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="sources" style="display: none">
+				<div id="source_list">
+					<div class="controller">
+						<span class="left">
+							<a id="source_create_button" href="javascript:change('sources', 'source_add')" class="button">Add</a>
+							<a id="source_update_button" href="javascript:sourceUpdate()" class="button disabled">Update</a>
+							<a id="source_remove_button" href="javascript:sourceRemove()" class="button disabled">Remove</a>
+						</span>
+						<span class="right">
+							<a href="javascript:updateSources()" class="button">Update All</a>
+						</span>
+					</div>
+					<select id="source_listing" multiple="multiple" class="multi" onchange="sourceSelect()"></select>
+				</div>
+				<div id="source_add" style="display: none">
+					<table>
+						<tr>
+							<td><label for="source_name">Name: </label></td>
+							<td><input id="source_name" type="text" /></td>
+						</tr>
+						<tr>
+							<td><label for="source_bzr">Bzr Address: </label></td>
+							<td><input id="source_bzr" type="text" /></td>
+						</tr>
+						<tr>
+							<td><br /><a href="javascript:change('sources', 'source_list')" class="button">Cancel</a></td>
+							<td><br /><a href="javascript:submitSource();change('sources', 'source_list')" class="button">Add</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="config" style="display: none">
+				<div class="controller">
+					<span class="right">
+						<a id="config_submit" href="javascript:saveConfig()" class="button">Save</a>
+					</span>
+				</div>
+				<div id="config_editor"></div>
+			</div>
+		</div>
+	</body>
+</html>
