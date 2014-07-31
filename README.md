@@ -90,7 +90,7 @@ Once you have added a source, you can create your first server. To do this, firs
 To create a user, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user. Click `Admin` in the upper right and then make sure you are on the `Users` tab in the administration interface. Click the `Create User` button and fill out the form with the user's information. The admin checkbox enables administrative rights to the user allowing them access to the administration interface. From the multi-select field, choose the user's servers, holding down control to select more than one. After the information is filled out, click `Create` and the user will be able to login and manage its servers.
 
 ###Server creation dependencies###
-To create servers, you must be on a unix-like system with a modern compiler. Each server is compiled when it is created with a set of flags to keep them in their own prefixes and in a sane directory structure. This allows multiple servers to be kept on one system at the same time and allows easy access and configuration of the servers over FTP or SSH. Below are the necessary packages that must be installed to be able to download sources and create servers.
+To create servers, you must be on a unix-like system with a modern compiler. Each server is compiled when it is created with a set of flags to keep them in their own prefixes and in a sane directory structure. This allows multiple servers to be kept on one system at the same time and allows easy access and configuration of the servers over FTP or SSH. Below are the necessary packages that must be installed to download sources and create servers.
 
 ####Debian/Ubuntu####
 - build-essential
