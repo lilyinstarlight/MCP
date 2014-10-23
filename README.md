@@ -129,7 +129,7 @@ The upgrade differs in that it does not write new databases or configuration fil
 Questions
 ---------
 ###Is there a demo?###
-There is a live demo at http://mcp.fkmclane.tk/. It shows off the web interface and the simplicity of the scripting library. The sample script shows how to reset the server settings when everyone leaves the server. It does not show off the administration page (yet) for security reasons. Simply login with user: `demo` and password: `demo`.
+There is a live demo at http://mcp.fkmclane.net/. It shows off the web interface and the simplicity of the scripting library. The sample script shows how to reset the server settings when everyone leaves the server. It does not show off the administration page (yet) for security reasons. Simply login with user: `demo` and password: `demo`.
 
 ###What if I want to use my own scripting library?###
 Well, you simply need to place it in the `library` folder of the project and reinstall. You can also (optionally) create your own `api.html` so that the documentation is available in the web interface.
@@ -138,7 +138,7 @@ Well, you simply need to place it in the `library` folder of the project and rei
 Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation and user management may not work.
 
 ###I want to use this on Windows but it isn't working!###
-Well that isn't a question and I'm afraid I can't help you there. I don't mess with Windows often and don't have time to fiddle with an unsupported operating system for a single person. This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install Ubuntu then install this software.
+Well that isn't a question and I'm afraid I can't help you there. I don't mess with Windows often and don't have time to fiddle with an unsupported operating system for a single person. This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install [Ubuntu](http://www.ubuntu.com/) then install this software.
 
 ###I found a bug! I found a bug!###
 Again, that isn't a question, but could you please report it on [GitHub](https://github.com/fkmclane/MCP/issues)?
