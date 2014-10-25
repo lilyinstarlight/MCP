@@ -40,11 +40,11 @@ def get(username):
 	return user_db.get(username)
 
 def add(username, password, key='', admin=False, active=True, servers=[]):
-	if user_db.get(username):
-		raise errors.UserExistsError()
-
 	if not re.match(users_allowed, username):
 		raise errors.InvalidUserError()
+
+	if user_db.get(username):
+		raise errors.UserExistsError()
 
 	return user_db.add(username, hash(password), key, admin, active, servers)
 

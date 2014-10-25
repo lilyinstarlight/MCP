@@ -8,12 +8,12 @@ servers_allowed = '^[0-9a-zA-Z-_+]+$'
 def get(server_name):
 	return server_db.get(server_name)
 
-def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
-	if server_db.get(server_name):
-		raise errors.ServerExistsError()
-
+def create(server_name, source_name, revision=None, port=None, autostart=True, users=[]):
 	if not re.match(servers_allowed, server_name):
 		raise errors.InvalidServerError()
+
+	if server_db.get(server_name):
+		raise errors.ServerExistsError()
 
 	if not revision:
 		revision = sources.get(source_name).revision
