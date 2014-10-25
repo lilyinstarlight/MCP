@@ -75,7 +75,7 @@ def stop():
 	thread = None
 
 def is_running():
-	return thread and thread.is_alive()
+	return bool(thread and thread.is_alive())
 
 class Script(object):
 	def __init__(self, server):
@@ -106,7 +106,7 @@ class Script(object):
 		self.proc = None
 
 	def is_running(self):
-		return self.proc and self.proc.poll() == None
+		return bool(self.proc and self.proc.poll() == None)
 
 	def is_dead(self):
 		return self.proc and self.proc.poll()
@@ -168,7 +168,7 @@ class Server(object):
 		self.send_command('INCLUDE settings_custom.cfg')
 
 	def is_running(self):
-		return self.proc and self.proc.poll() == None
+		return bool(self.proc and self.proc.poll() == None)
 
 	def is_dead(self):
 		return self.proc and self.proc.poll()
