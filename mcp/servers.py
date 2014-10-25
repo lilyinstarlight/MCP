@@ -1,7 +1,7 @@
 import os
 import re
 
-from . import db, errors, server, sources
+from . import config, db, errors, server, sources
 
 servers_allowed = '^[0-9a-zA-Z-_+]+$'
 
@@ -17,6 +17,15 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
 
 	if not revision:
 		revision = sources.get(source_name).revision
+
+	if not port:
+		port = port_get_next()
+
+	if not port_check(port):
+		raise errors.InvalidPortError()
+
+	if not port_is_available(port):
+		raise errors.PortExistsError()
 
 	server.build(server_name, source, revision)
 
@@ -60,5 +69,22 @@ def destroy(server_name):
 	server.destroy(server_name)
 
 	server_db.remove(server_name)
+
+def port_get_next():
+	for port in range(*config.portrange):
+		if port_is_available(port):
+			return port
+
+	return None
+
+def port_check(port):
+	return port and port > 0 and port < 65536
+
+def port_is_available(port):
+	for server in server_db:
+		if server.port == port:
+			return False
+
+	return True
 
 server_db = db.Database(os.path.dirname(__file__) + '/db/servers.db', [ 'server', 'source', 'revision', 'port', 'autostart', 'users' ])

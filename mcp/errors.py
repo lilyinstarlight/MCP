@@ -47,6 +47,12 @@ class SourceExistsError(Error):
 class BzrError(Error):
 	pass
 
+class InvalidPortError(Error):
+	pass
+
+class PortExistsError(Error):
+	pass
+
 class NoUserError(Error):
 	pass
 

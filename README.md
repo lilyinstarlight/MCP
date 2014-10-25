@@ -51,6 +51,7 @@ Edit `config.py` to match your directory structure and preferences. Below is a l
 - `scripting` folder is also optional and contains the scripting library (in the `scripting` folder of the project).
 - `maxlogsize` is maximum size a server log will get (in KB) before it is rotated into the `logs` folder.
 - `user` is the user under which the servers (and scripts) will run.
+- `portrange` is the range of ports from which servers will automatically be configured if their port is not set.
 - `log` is the path of the manager log.
 - `cmdlog` is the path of the external command log.
 - `httpdlog` is the path of the HTTP daemon log.

@@ -22,6 +22,9 @@ maxlogsize = 102400
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 
+#Range to automatically choose server ports
+portrange = (4534, 4634)
+
 #Path to manager log; None to disable logging
 log = '/var/log/mcp/manager.log'
 
