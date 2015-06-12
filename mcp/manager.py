@@ -4,78 +4,7 @@ import sys
 import threading
 import time
 
-from . import config, env, errors, log, servers
-
-server_list = {}
-
-running = False
-thread = None
-
-def get(server_name):
-	return server_list.get(server_name)
-
-def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
-	entry = servers.create(server_name, source_name, revision, port, autostart, users)
-	server_list[entry.server] = Server(entry)
-
-def destroy(server_name):
-	if server_list.get(server_name).is_running():
-		raise errors.ServerRunningError()
-
-	servers.destroy(server_name)
-	del server_list[server_name]
-
-def run(poll_interval=0.5):
-	server_list.clear()
-	for entry in servers.server_db:
-		server_list[entry.server] = Server(entry)
-
-	try:
-		while running:
-			for server in server_list.values():
-				#Check if each server is supposed to be running and poll for problems
-				if server.proc:
-					if server.is_quit():
-						server.stop()
-						log.mcplog.warn(server.name + ' stopped by itself.')
-					elif server.is_dead():
-						server.proc.stdout.write('WARNING: The server did not gracefully quit; now restarting.\n')
-						log.mcplog.warn(server.name + ' did not gracefully quit.')
-						server.stop()
-						server.start()
-						log.mcplog.warn(server.name + ' restarted.')
-
-					if server.script.proc:
-						if server.is_quit():
-							server.script.stop()
-							log.mcplog.warn(server.name + ' script stopped by itself.')
-						elif server.is_dead():
-							server.script.stop()
-							log.mcplog.warn(server.name + ' script did not gracefully quit.')
-
-			time.sleep(poll_interval)
-	finally:
-		for server in server_list:
-			server.stop()
-
-def start():
-	if self.is_running():
-		return
-
-	running = True
-	thread = threading.Thread(target=run)
-	thread.start()
-
-def stop():
-	if not self.is_running():
-		return
-
-	running = False
-	thread.join()
-	thread = None
-
-def is_running():
-	return bool(thread and thread.is_alive())
+from mcp import config, env, errors, log, servers
 
 class Script(object):
 	def __init__(self, server):
@@ -181,3 +110,74 @@ class Server(object):
 			raise errors.ServerStoppedError()
 
 		self.proc.stdin.write(command + '\n')
+
+server_list = {}
+
+running = False
+thread = None
+
+def get(server_name):
+	return server_list.get(server_name)
+
+def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
+	entry = servers.create(server_name, source_name, revision, port, autostart, users)
+	server_list[entry.server] = Server(entry)
+
+def destroy(server_name):
+	if server_list.get(server_name).is_running():
+		raise errors.ServerRunningError()
+
+	servers.destroy(server_name)
+	del server_list[server_name]
+
+def run(poll_interval=0.5):
+	server_list.clear()
+	for entry in servers.server_db:
+		server_list[entry.server] = Server(entry)
+
+	try:
+		while running:
+			for server in server_list.values():
+				#Check if each server is supposed to be running and poll for problems
+				if server.proc:
+					if server.is_quit():
+						server.stop()
+						log.mcplog.warn(server.name + ' stopped by itself.')
+					elif server.is_dead():
+						server.proc.stdout.write('WARNING: The server did not gracefully quit: now restarting.\n')
+						log.mcplog.warn(server.name + ' did not gracefully quit.')
+						server.stop()
+						server.start()
+						log.mcplog.warn(server.name + ' restarted.')
+
+					if server.script.proc:
+						if server.script.is_quit():
+							server.script.stop()
+							log.mcplog.warn(server.name + ' script stopped by itself.')
+						elif server.script.is_dead():
+							server.script.stop()
+							log.mcplog.warn(server.name + ' script did not gracefully quit.')
+
+			time.sleep(poll_interval)
+	finally:
+		for server in server_list:
+			server.stop()
+
+def start():
+	if self.is_running():
+		return
+
+	running = True
+	thread = threading.Thread(target=run)
+	thread.start()
+
+def stop():
+	if not self.is_running():
+		return
+
+	running = False
+	thread.join()
+	thread = None
+
+def is_running():
+	return bool(thread and thread.is_alive())

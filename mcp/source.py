@@ -1,6 +1,6 @@
 import shutil
 
-from . import config, errors, log
+from mcp import config, errors, log
 
 def get_revision(source_name):
 	prefix = config.sources + '/' + source_name

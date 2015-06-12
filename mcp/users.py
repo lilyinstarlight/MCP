@@ -4,7 +4,7 @@ import random
 import re
 import string
 
-from . import db, errors
+from mcp import db, errors
 
 users_allowed = '^[0-9a-zA-Z-_+]+$'
 

@@ -1,7 +1,7 @@
 import os
 import pwd
 
-from . import config
+from mcp import config
 
 base_env = os.environ.copy()
 
@@ -31,7 +31,7 @@ def get_script():
 	return script_env
 
 def get_build(dst):
-	build_env = get_base().copy()
+	build_env = get_env().copy()
 
 	build_env['DESTDIR'] = dst
 

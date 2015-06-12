@@ -3,7 +3,7 @@ import re
 import shutil
 import subprocess
 
-from . import db, errors, source
+from mcp import db, errors, source
 
 sources_allowed = '[0-9a-zA-Z-_+.]+$'
 

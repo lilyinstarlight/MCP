@@ -1,4 +1,7 @@
-import common
+from mcp.interface import common
+
+class IndexHandler(common.PageHandler):
+	page = 'index.html'
 
 class ServerHandler(common.PageHandler):
 	page = 'server.html'
@@ -12,4 +15,4 @@ class UserHandler(common.PageHandler):
 class LoginHandler(common.PageHandler):
 	page = 'login.html'
 
-routes = { '/': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler }
+routes = { '/': IndexHandler, '/server': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler }

@@ -1,33 +1,37 @@
 import base64
 import os
 
-import web
-from .. import users
+from mcp import users
+from mcp.interface import web
 
 class AuthorizedHandler(web.HTTPHandler):
 	auth_types = [ 'Basic', 'Key' ]
 	realm = 'unknown'
 
+	def __init__(self, request, response, groups):
+		web.HTTPHandler.__init__(self, request, response, groups)
+		self.user = None
+
 	def respond(self):
 		auth = self.request.headers.get('Authorization')
 
 		if not auth:
-			auth_error()
+			self.auth_error()
 
 		try:
 			self.auth_type, self.auth_string = auth.split(' ', 1)
 		#Ignore bad Authorization headers
 		except:
-			auth_error()
+			self.auth_error()
 
 		if not self.auth_type in self.auth_types:
-			auth_error()
+			self.auth_error()
 
-		if not authorized():
-			auth_error()
+		if not self.authorized():
+			self.auth_error()
 
-		if not self.user.admin and forbidden():
-			forbidden_error()
+		if not self.user.admin and self.forbidden():
+			self.forbidden_error()
 
 		web.HTTPHandler.respond(self)
 
@@ -40,8 +44,6 @@ class AuthorizedHandler(web.HTTPHandler):
 		raise web.HTTPError(403)
 
 	def authorized(self):
-		self.user = None
-
 		try:
 			if self.auth_type == 'Basic':
 				username, password = base64.b64decode(self.auth_string).decode('utf-8').split(':', 1)
@@ -60,6 +62,5 @@ class PageHandler(web.HTTPHandler):
 	page = 'index.html'
 
 	def do_get(self):
-		with open(os.path.dirname(__file__) + '/html/' + self.page, 'r') as file:
-			self.response.headers.set('Content-Type', 'text/html')
-			return 200, file
+		self.response.headers.set('Content-Type', 'text/html')
+		return 200, open(os.path.dirname(__file__) + '/html/' + self.page, 'r')

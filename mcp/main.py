@@ -1,8 +1,7 @@
 import signal
 
-from . import interface, log, manager
-
-from . import name, version
+from mcp import name, version
+from mcp import interface, log, manager
 
 log.mcplog.info(name + ' ' + version + ' starting...')
 

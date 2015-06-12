@@ -2,7 +2,7 @@ import os
 import sys
 import time
 
-from . import config
+from mcp import config, cron
 
 mcplog = None
 cmdlog = None
@@ -40,11 +40,7 @@ class Log(object):
 
 class HTTPLog(Log):
 	def __init__(self, log, access_log):
-		if log:
-			os.makedirs(os.path.dirname(log), exist_ok=True)
-			self.log = open(log, 'a', 1)
-		else:
-			self.log = None
+		Log.__init__(self, log)
 
 		if access_log:
 			os.makedirs(os.path.dirname(log), exist_ok=True)

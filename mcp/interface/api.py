@@ -1,7 +1,7 @@
 import json
 
-import common
-from .. import manager, servers, sources, users
+from mcp import manager, servers, sources, users
+from mcp.interface import common
 
 class ServersHandler(common.AuthorizedHandler):
 	def forbidden(self):
@@ -17,5 +17,8 @@ class ServerHandler(common.AuthorizedHandler):
 
 	def forbidden(self):
 		return self.user.name in self.server.metadata.users
+
+	def do_get(self):
+		return 200, json.dumps(self.server)
 
 routes = { '/servers/': ServersHandler, '/servers/(' + servers.servers_allowed + ')(?:/(start|stop|reload|command|log|script))?': ServerHandler }

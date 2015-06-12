@@ -3,7 +3,7 @@ import shlex
 import shutil
 import subprocess
 
-from . import config, env, errors, log, sources
+from mcp import config, env, errors, log, sources
 
 def copy_contents(src, dst):
 	for entry in os.listdir(src):
@@ -42,10 +42,10 @@ def build(server_name, source_name, revision=None):
 	if subprocess.call([ shlex.quote(tmp_build + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(prefix) + ' --localstatedir=' + shlex.quote(prefix + '/var') ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
 		raise errors.BuildError('Failed to configure server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(tmp_build) ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build):
+	if subprocess.call([ 'make', '-C' + tmp_build ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build):
 		raise errors.BuildError('Failed to compile server')
 
-	if subprocess.call([ 'make', '-C' + shlex.quote(tmp_build), 'install' ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, env=env.build_env(tmp_install)):
+	if subprocess.call([ 'make', '-C' + tmp_build, 'install' ], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, env=env.get_build(tmp_install)):
 		raise errors.BuildError('Failed to install server')
 
 	#Configure

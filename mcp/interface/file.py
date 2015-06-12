@@ -3,7 +3,7 @@ import os
 import re
 import shutil
 
-import web
+from mcp.interface import web
 
 routes = {}
 
