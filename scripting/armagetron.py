@@ -2,6 +2,8 @@
 import sys
 import time
 
+poll_interval = 0.1
+
 ladderlog = sys.stdin
 server = sys.stdout
 
@@ -83,7 +85,7 @@ def run():
 	while True:
 		line = ladderlog.readline()
 		if not line:
-			time.sleep(0.1)
+			time.sleep(poll_interval)
 			continue
 		if line.startswith('QUIT'):
 			break
