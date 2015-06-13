@@ -87,4 +87,4 @@ def port_get_next():
 
 	return None
 
-server_db = db.Database(os.path.dirname(__file__) + '/db/servers.db', [ 'server', 'source', 'revision', 'port', 'autostart', 'users' ])
+server_db = db.Database(os.path.dirname(__file__) + '/db/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users'])

@@ -9,7 +9,6 @@ from mcp import config, env, errors, log, servers
 class Script(object):
 	def __init__(self, server):
 		self.server = server
-		self.prefix = config.prefix + '/' + name
 		self.exe = self.prefix + '/scripts/script.py'
 
 		self.proc = None
@@ -21,7 +20,7 @@ class Script(object):
 		if not self.exists():
 			raise errors.ScriptNonExistentError()
 
-		self.proc = subprocess.Popen([ sys.executable, self.prefix + '/scripts/script.py' ], stdin=open(self.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.prefix + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.prefix + '/var')
+		self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.server.prefix + '/var')
 
 	def stop(self):
 		if self.is_running():
@@ -47,7 +46,7 @@ class Server(object):
 	def __init__(self, metadata):
 		self.name = metadata.server
 		self.metadata = metadata
-		self.prefix = config.prefix + '/' + name
+		self.prefix = config.prefix + '/' + self.name
 		self.exe = self.prefix + '/bin/armagetronad-dedicated'
 
 		self.proc = None
@@ -69,11 +68,13 @@ class Server(object):
 	def modify_metadata(self, port=None, autostart=None, users=None):
 		servers.modify(self.name, port, autostart, users)
 
+		self.metadata = servers.get(self.name)
+
 	def start(self):
 		if not self.exists():
 			raise errors.ServerNonexistentError()
 
-		self.proc = subprocess.Popen([ self.bin, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data' ], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), preexec_fn=env.demote, env=env.get_user(), cwd=self.prefix)
+		self.proc = subprocess.Popen([self.bin, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data'], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), preexec_fn=env.demote, env=env.get_user(), cwd=self.prefix)
 
 		if self.script.exists():
 			self.script.start()

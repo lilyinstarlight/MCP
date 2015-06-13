@@ -71,4 +71,4 @@ def remove(username):
 
 	user_db.remove(username)
 
-user_db = db.Database(os.path.dirname(__file__) + '/db/users.db', [ 'username', 'hash', 'key', 'admin', 'active', 'servers' ])
+user_db = db.Database(os.path.dirname(__file__) + '/db/users.db', ['username', 'hash', 'key', 'admin', 'active', 'servers'])

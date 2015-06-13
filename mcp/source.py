@@ -15,7 +15,7 @@ def branch(source_name, url):
 	log.cmdlog.message(message)
 	log.cmdlog.message('=' * len(message))
 
-	if subprocess.call([ 'bzr', 'branch', url, prefix ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
+	if subprocess.call(['bzr', 'branch', url, prefix], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 		raise errors.BzrError('Failed to clone bzr tree')
 
 def pull(source_name):
@@ -25,7 +25,7 @@ def pull(source_name):
 	log.cmdlog.message(message)
 	log.cmdlog.message('=' * len(message))
 
-	if subprocess.call([ 'bzr', 'pull', prefix ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
+	if subprocess.call(['bzr', 'pull', prefix], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 		raise errors.BzrError('Failed to pull bzr tree')
 
 def prepare(source_name, dst, revision=None):
@@ -38,7 +38,7 @@ def prepare(source_name, dst, revision=None):
 		log.cmdlog.message(message)
 		log.cmdlog.message('=' * len(message))
 
-		if subprocess.call([ 'bzr', 'revert', '-r' + revision, dst ], stdout=log.cmdlog, stderr=subprocess.STDOUT):
+		if subprocess.call(['bzr', 'revert', '-r' + revision, dst], stdout=log.cmdlog, stderr=subprocess.STDOUT):
 			raise errors.BzrError('Failed to revert bzr tree to revision')
 
 def remove(source_name):

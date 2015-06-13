@@ -5,7 +5,7 @@ from mcp import users
 from mcp.interface import web
 
 class AuthorizedHandler(web.HTTPHandler):
-	auth_types = [ 'Basic', 'Key' ]
+	auth_types = ['Basic', 'Key']
 	realm = 'unknown'
 
 	def __init__(self, request, response, groups):

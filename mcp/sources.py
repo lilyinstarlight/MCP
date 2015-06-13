@@ -43,4 +43,4 @@ def remove(source_name):
 
 	source.remove(source_name)
 
-source_db = db.Database(os.path.dirname(__file__) + '/db/sources.db', [ 'source', 'url', 'revision' ])
+source_db = db.Database(os.path.dirname(__file__) + '/db/sources.db', ['source', 'url', 'revision'])

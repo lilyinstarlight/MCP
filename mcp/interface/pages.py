@@ -15,4 +15,4 @@ class UserHandler(common.PageHandler):
 class LoginHandler(common.PageHandler):
 	page = 'login.html'
 
-routes = { '/': IndexHandler, '/server': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler }
+routes = {'/': IndexHandler, '/server': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler}
