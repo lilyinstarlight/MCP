@@ -82,8 +82,8 @@ setup(
 	author_email='fkmclane@gmail.com',
 	url='http://github.com/fkmclane/MCP',
 	license='MIT',
-	packages=[ 'mcp', 'mcp.interface' ],
-	package_data={ 'mcp': [ '../config.py' ], 'mcp.routes': [ 'html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*' ] },
-	scripts=[ 'bin/mcp' ],
-	cmdclass={ 'install': cmd_install }
+	packages=['mcp', 'mcp.interface'],
+	package_data={'mcp': ['../config.py'], 'mcp.routes': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*']},
+	scripts=['bin/mcp'],
+	cmdclass={'install': cmd_install}
 )
