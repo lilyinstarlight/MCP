@@ -80,6 +80,12 @@ def build(server_name, source_name, revision=None):
 			pass
 		with open(prefix + '/var/ladderlog.txt', 'a') as file:
 			pass
+		with open(prefix + '/server.log', 'a') as file:
+			pass
+		with open(prefix + '/error.log', 'a') as file:
+			pass
+		with open(prefix + '/script-error.log', 'a') as file:
+			pass
 	except:
 		raise errors.ConfigError('Failed to create necessary files')
 

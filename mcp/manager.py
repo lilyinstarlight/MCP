@@ -165,6 +165,8 @@ def run(poll_interval=0.5):
 			server.stop()
 
 def start():
+	global running, thread
+
 	if self.is_running():
 		return
 
@@ -173,6 +175,8 @@ def start():
 	thread.start()
 
 def stop():
+	global running, thread
+
 	if not self.is_running():
 		return
 
