@@ -20,7 +20,7 @@ class UserHandler(common.AuthorizedHandler):
 
 class UserInfoHandler(UserHandler):
 	def do_get(self):
-		return 200, json.dumps({'name': self.userentry.name, 'key': self.userentry.key, 'admin': self.userentry.admin, 'active': self.userentry.active, 'servers': self.userentry.servers})
+		return 200, json.dumps({'username': self.userentry.username, 'key': self.userentry.key, 'admin': self.userentry.admin, 'active': self.userentry.active, 'servers': self.userentry.servers})
 
 users_base = '/users/'
 user_base = users_base + '(' + users.users_allowed + ')'
