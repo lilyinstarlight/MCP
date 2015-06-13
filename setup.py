@@ -35,11 +35,11 @@ def configure_init():
 	print()
 
 	if response == "1":
-		file_util.copy_file('init/sysv/mcp', '/etc/init.d/')
+		file_util.copy_file('service/sysv/mcp', '/etc/init.d/')
 	elif response == "2":
-		file_util.copy_file('init/openrc/mcp', '/etc/init.d/')
+		file_util.copy_file('service/openrc/mcp', '/etc/init.d/')
 	elif response == "3":
-		file_util.copy_file('init/systemd/mcp.service', '/usr/lib/systemd/system/')
+		file_util.copy_file('service/systemd/mcp.service', '/usr/lib/systemd/system/')
 		subprocess.call(['systemctl', 'daemon-reload'])
 
 def configure_user():
