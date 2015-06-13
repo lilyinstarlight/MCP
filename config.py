@@ -17,7 +17,7 @@ config = '/home/armagetron/config'
 scripting = '/home/armagetron/scripting'
 
 #Max size of server log files in kB before they are rotated; None to disable server log rotation
-maxlogsize = 102400
+maxlogsize = 100
 
 #User to run each server under; None to disable running the servers as a different user
 user = 'armagetron'

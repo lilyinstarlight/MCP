@@ -7,7 +7,7 @@ from mcp import config, cron, manager
 scheduler = None
 
 def rotate_log(prefix, filename):
-	if os.path.getsize(filename) > config.maxlogsize:
+	if os.path.getsize(filename) > config.maxlogsize*1024:
 		shutil.copy(prefix + '/' + filename, prefix + '/log/' + datetime.strftime('%Y-%m-%d_%H-%M') + '.' + filename)
 		with open(filename, 'w') as file:
 			pass
