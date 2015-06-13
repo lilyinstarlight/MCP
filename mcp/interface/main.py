@@ -1,12 +1,11 @@
 from mcp import config, log
-from mcp.interface import web, api, pages, res
+from mcp.interface import web, api, pages
 
 httpd = None
 routes = {}
 
 routes.update(api.routes)
 routes.update(pages.routes)
-routes.update(res.routes)
 
 def start():
 	global httpd
