@@ -55,60 +55,38 @@ def build(server_name, source_name, revision=None):
 
 	try:
 		copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
-	except:
-		raise errors.ConfigError('Failed to move configuration files')
-
-	try:
-		shutil.rmtree(prefix + '/etc')
-	except:
-		raise errors.ConfigError('Failed to remove "etc" directory')
-
-	try:
-		copy_contents(config.config, prefix + '/config')
-	except:
-		raise errors.ConfigError('Failed to copy custom configuration files')
-
-	try:
 		copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
 	except:
 		raise errors.ConfigError('Failed to move data files')
 
 	try:
+		shutil.rmtree(prefix + '/etc')
 		shutil.rmtree(prefix + '/share')
 	except:
-		raise errors.ConfigError('Failed to remove "share" directory')
+		raise errors.ConfigError('Failed to remove unnecessary directories')
 
 	try:
 		os.makedirs(prefix + '/var', exist_ok=True)
+		os.makedirs(prefix + '/scripts', exist_ok=True)
+		os.makedirs(prefix + '/user', exist_ok=True)
+		os.makedirs(prefix + '/log', exist_ok=True)
 	except:
-		raise errors.ConfigError('Failed to create "var" directory')
+		raise errors.ConfigError('Failed to create necessary directories')
 
 	try:
 		with open(prefix + '/config/settings_custom.cfg', 'a') as file:
 			pass
-
 		with open(prefix + '/config/server_port.cfg', 'a') as file:
 			pass
-
 		with open(prefix + '/var/ladderlog.txt', 'a') as file:
 			pass
 	except:
 		raise errors.ConfigError('Failed to create necessary files')
 
 	try:
-		os.makedirs(prefix + '/scripts', exist_ok=True)
+		copy_contents(config.config, prefix + '/config')
 	except:
-		raise errors.ConfigError('Failed to create "scripts" directory')
-
-	try:
-		os.makedirs(prefix + '/user', exist_ok=True)
-	except:
-		raise errors.ConfigError('Failed to create "user" directory')
-
-	try:
-		os.makedirs(prefix + '/log', exist_ok=True)
-	except:
-		raise errors.ConfigError('Failed to create "log" directory')
+		raise errors.ConfigError('Failed to copy custom configuration files')
 
 	#Merge
 	message = 'Merging ' + server_name
