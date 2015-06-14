@@ -44,6 +44,12 @@ def modify(server_name, port=None, autostart=None, users=None):
 		server_obj.autostart = autostart
 
 	if users:
+		import mcp.users
+
+		for user in users:
+			if server_name not in mcp.users.get(user).servers:
+				user.servers.append(server_name)
+
 		server_obj.users = users
 
 def upgrade(server_name, source_name=None, revision=None):

@@ -56,13 +56,23 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
 
 	if password:
 		user.hash = hash(password)
+
 	if key:
 		user.key = key
+
 	if admin:
 		user.admin = admin
+
 	if active:
 		user.active = active
+
 	if servers:
+		import mcp.servers
+
+		for server in servers:
+			if username not in mcp.servers.get(server).users:
+				server.users.append(username)
+
 		user.servers = servers
 
 def remove(username):
