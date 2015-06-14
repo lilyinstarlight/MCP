@@ -57,6 +57,17 @@ class UserInfoHandler(UserHandler):
 
 		return 204, ''
 
+	def do_delete(self):
+		if not self.user.admin:
+			self.forbidden_error()
+
+		if not self.userentry:
+			raise web.HTTPError(404)
+
+		users.remove(self.userentry.username)
+
+		return 204, ''
+
 users_base = '/users/'
 user_base = users_base + '(' + users.users_allowed + ')'
 
