@@ -5,7 +5,7 @@ from mcp.interface import common
 
 class SourcesHandler(common.AuthorizedHandler):
 	def forbidden(self):
-		return True
+		return False
 
 	def do_get(self):
 		return 200, json.dumps(list(iter(sources.source_db)))
