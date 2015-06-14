@@ -27,6 +27,9 @@ class ServerLogHandler(ServerHandler):
 		return 200, open(self.server.prefix + '/server.log', 'r')
 
 class ServerConfigHandler(ScriptHandler):
+	def do_get(self):
+		return 200, open(self.server.prefix + '/config/settings_custom.cfg', 'r')
+
 	def do_put(self):
 		with open(self.server.prefix + '/config/settings_custom.cfg', 'w') as file:
 			file.write(self.request.body);
@@ -67,6 +70,9 @@ class ScriptInfoHandler(ScriptHandler):
 		return 200, json.dumps({'name': self.server.name, 'running': self.script.is_running()})
 
 class ScriptSourceHandler(ScriptHandler):
+	def do_get(self):
+		return 200, open(self.server.prefix + '/scripts/script.py', 'r')
+
 	def do_put(self):
 		with open(self.server.prefix + '/scripts/script.py', 'w') as file:
 			file.write(self.request.body);
