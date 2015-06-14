@@ -1,7 +1,7 @@
 import json
 
 from mcp import users
-from mcp.interface import common
+from mcp.interface import common, web
 
 class UsersHandler(common.AuthorizedHandler):
 	def forbidden(self):
@@ -16,11 +16,46 @@ class UserHandler(common.AuthorizedHandler):
 		self.userentry = users.get(self.groups[0])
 
 	def forbidden(self):
-		return self.user.name != self.userentry.name
+		return not self.userentry or self.user.name != self.userentry.name or not self.user.active
 
 class UserInfoHandler(UserHandler):
 	def do_get(self):
+		if not self.userentry:
+			raise web.HTTPError(404)
+
 		return 200, json.dumps({'username': self.userentry.username, 'key': self.userentry.key, 'admin': self.userentry.admin, 'active': self.userentry.active, 'servers': self.userentry.servers})
+
+	def add(self, password, key, admin, active, servers):
+		if not self.user.admin:
+			self.forbidden_error()
+
+		users.add(self.groups[0], password, key, admin, active, servers)
+
+	def modify(self, password, key, admin, active, servers):
+		if (admin != None or active != None or servers != None) and not self.user.admin:
+			self.forbidden_error()
+
+		users.modify(self.userentry.username, password, key, admin, active, servers)
+
+	def do_put(self):
+		info = json.loads(self.request.body)
+
+		if not self.userentry:
+			self.add(info['password'], info['key'], info['admin'], info['active'], info['servers'])
+		else:
+			self.modify(info['password'], info['key'], info['admin'], info['active'], info['servers'])
+
+		return 204, ''
+
+	def do_patch(self):
+		if not self.userentry:
+			raise web.HTTPError(404)
+
+		info = json.loads(self.request.body)
+
+		self.modify(info.get('password'), info.get('key'), info.get('admin'), info.get('active'), info.get('servers'))
+
+		return 204, ''
 
 users_base = '/users/'
 user_base = users_base + '(' + users.users_allowed + ')'
