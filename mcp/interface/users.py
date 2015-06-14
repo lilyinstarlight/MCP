@@ -42,10 +42,12 @@ class UserInfoHandler(UserHandler):
 
 		if not self.userentry:
 			self.add(info['password'], info['key'], info['admin'], info['active'], info['servers'])
+
+			return 201, ''
 		else:
 			self.modify(info['password'], info['key'], info['admin'], info['active'], info['servers'])
 
-		return 204, ''
+			return 204, ''
 
 	def do_patch(self):
 		if not self.userentry:
