@@ -1,3 +1,7 @@
+function goto(uri) {
+	location.href = uri;
+}
+
 function change(element, child) {
 	var root = document.getElementById(element);
 	for(var node in root.childNodes) {
