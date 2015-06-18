@@ -35,7 +35,11 @@ class ServerInfoHandler(ServerHandler):
 		self.server.modify_metadata(port, autostart, users)
 
 		if source != None or revision != None:
+			self.server.stop()
+
 			self.server.upgrade(source, revision)
+
+			self.server.start()
 
 	def do_put(self):
 		info = json.loads(self.request.body)
