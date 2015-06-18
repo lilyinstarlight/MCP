@@ -42,3 +42,7 @@ host = ''
 
 #Port to listen on for the web interface
 port = 80
+
+#Path to TLS/SSL key and certificate files; None to disable TLS encryption
+tlskey = None
+tlscert = None
