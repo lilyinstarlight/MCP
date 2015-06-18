@@ -16,7 +16,7 @@ class UserHandler(common.AuthorizedHandler):
 		self.userentry = users.get(self.groups[0])
 
 	def forbidden(self):
-		return not self.userentry or self.user.name != self.userentry.name or not self.user.active
+		return not self.userentry or self.user.name != self.userentry.name
 
 class UserInfoHandler(UserHandler):
 	def do_get(self):

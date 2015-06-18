@@ -30,7 +30,7 @@ class AuthorizedHandler(web.HTTPHandler):
 		if not self.authorized():
 			self.auth_error()
 
-		if not self.user.admin and self.forbidden():
+		if (self.forbidden() or not self.user.active) and not self.user.admin:
 			self.forbidden_error()
 
 		web.HTTPHandler.respond(self)
