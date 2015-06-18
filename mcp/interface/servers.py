@@ -22,6 +22,54 @@ class ServerInfoHandler(ServerHandler):
 	def do_get(self):
 		return 200, json.dumps({'name': self.server.name, 'running': self.server.is_running(), 'source': self.server.metadata.source, 'revision': self.server.metadata.revision, 'port': self.server.metadata.port, 'autostart': self.server.metadata.autostart, 'users': self.server.metadata.users})
 
+	def add(self, source, revision, port, autostart, users):
+		if not self.user.admin:
+			self.forbidden_error()
+
+		manager.create(self.groups[0], source, revision, port, autostart, users)
+
+	def modify(self, source, revision, port, autostart, users):
+		if (port != None or autostart != None) and not self.user.admin:
+			self.forbidden_error()
+
+		self.server.modify_metadata(port, autostart, users)
+
+		if source != None or revision != None:
+			self.server.upgrade(source, revision)
+
+	def do_put(self):
+		info = json.loads(self.request.body)
+
+		if not self.server:
+			self.add(info['source'], info['revision'], info['port'], info['autostart'], info['users'])
+
+			return 201, ''
+		else:
+			self.modify(info['source'], info['revision'], info['port'], info['autostart'], info['users'])
+
+			return 204, ''
+
+	def do_patch(self):
+		if not self.server:
+			raise web.HTTPError(404)
+
+		info = json.loads(self.request.body)
+
+		self.modify(info.get('source'), info.get('revision'), info.get('port'), info.get('autostart'), info.get('users'))
+
+		return 204, ''
+
+	def do_delete(self):
+		if not self.user.admin:
+			self.forbidden_error()
+
+		if not self.server:
+			raise web.HTTPError(404)
+
+		manager.destroy(self.server.name)
+
+		return 204, ''
+
 class ServerLogHandler(ServerHandler):
 	def do_get(self):
 		return 200, open(self.server.prefix + '/server.log', 'r')
@@ -74,10 +122,11 @@ class ScriptSourceHandler(ScriptHandler):
 		return 200, open(self.server.prefix + '/scripts/script.py', 'r')
 
 	def do_put(self):
+		self.script.stop()
+
 		with open(self.server.prefix + '/scripts/script.py', 'w') as file:
 			file.write(self.request.body);
 
-		self.script.stop()
 		self.script.start()
 
 		return 204, ''
