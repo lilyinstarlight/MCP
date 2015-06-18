@@ -152,7 +152,7 @@ function load() {
 		lineNumbers: true,
 		lineWrapping: true,
 		showTrailingSpace: true,
-		theme: 'arma',
+		theme: 'mcp',
 		placeholder: 'Here you can specify your server\'s custom settings.  There is no need to set TALK_TO_MASTER or GLOBAL_ID here, but you should set your server\'s name and set yourself as an Owner.'
 	});
 
@@ -165,7 +165,7 @@ function load() {
 		lineWrapping: true,
 		showTrailingSpace: true,
 		matchBrackets: true,
-		theme: 'arma',
+		theme: 'mcp',
 		placeholder: 'Here you can add a custom server script written in Python.  There is an API available that makes it easy to add ladderlog event handlers and chat commands but also keeps track of various game elements.  Check the API for details.'
 	});
 

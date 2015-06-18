@@ -268,7 +268,7 @@ function load() {
 		lineNumbers: true,
 		lineWrapping: true,
 		showTrailingSpace: true,
-		theme: 'arma',
+		theme: 'mcp',
 		placeholder: 'Here you can specify configuration global to every server.  Generally GLOBAL_ID and TALK_TO_MASTER are turned on here but you should also specify a SERVER_DNS.'
 	});
 
