@@ -26,6 +26,10 @@ class Log(object):
 	def message(self, message):
 		self.write(self.timestamp() + ' ' + message + '\n')
 
+	def head(self, header):
+		self.message(header)
+		self.message('=' * len(header))
+
 	def info(self, message):
 		self.message('INFO: ' + message)
 

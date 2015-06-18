@@ -32,9 +32,7 @@ def build(server_name, source_name, revision=None):
 	sources.prepare(source_name, tmp_build, revision)
 
 	#Build
-	message = 'Building ' + server_name
-	log.cmdlog.message(message)
-	log.cmdlog.message('=' * len(message))
+	log.cmdlog.head('Building ' + server_name)
 
 	if subprocess.call([shlex.quote(tmp_build + '/bootstrap.sh')], stdout=log.cmdlog, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
 		raise errors.BuildError('Failed to bootstrap server')
@@ -49,9 +47,7 @@ def build(server_name, source_name, revision=None):
 		raise errors.BuildError('Failed to install server')
 
 	#Configure
-	message = 'Configuring ' + server_name
-	log.cmdlog.message(message)
-	log.cmdlog.message('=' * len(message))
+	log.cmdlog.head('Configuring ' + server_name)
 
 	try:
 		copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
@@ -95,9 +91,7 @@ def build(server_name, source_name, revision=None):
 		raise errors.ConfigError('Failed to copy custom configuration files')
 
 	#Merge
-	message = 'Merging ' + server_name
-	log.cmdlog.message(message)
-	log.cmdlog.message('=' * len(message))
+	log.cmdlog.head('Merging ' + server_name)
 
 	try:
 		copy_contents(tmp_install, prefix)
