@@ -1,8 +1,8 @@
-.multi {
+select[multiple] {
 	width: 100%;
 	height: 50em;
 }
 
-.mini {
+select[multiple] .mini {
 	height: 10em;
 }

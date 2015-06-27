@@ -1,20 +1,20 @@
+pre {
+	height: 50em;
+}
+
 .status {
 	font-weight: bold;
 }
 
-.commands {
+.command table {
 	width: 100%;
 }
 
-.commands td {
+.command table td {
 	width: 100%;
 	padding: 5px;
 }
 
-.command_box {
+#command_input {
 	width: 100%;
-}
-
-.log {
-	height: 50em;
 }
