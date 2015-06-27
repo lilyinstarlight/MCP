@@ -19,7 +19,7 @@
 		</header>
 
 		<main>
-			<form id="login" onsubmit="login(); goto('/server')" onkeypress="if(event.keyCode == 13) this.submit()">
+			<form id="login" onsubmit="login(this.elements['user'].value, this.elements['password'].value); goto('/server')" onkeypress="if(event.keyCode == 13) this.submit()">
 				<table>
 					<tr>
 						<td><label for="user">Username: </label></td>
