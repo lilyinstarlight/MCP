@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>MCP Administration</title>
+		<title>Administration - MCP</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1"/>
 
@@ -19,7 +19,7 @@
 	<body>
 		<header>
 			<img src="/res/aalogo.png" alt=""/>
-			<span>MCP Administration</span>
+			<span>Administration</span>
 		</header>
 
 		<nav>
@@ -36,7 +36,7 @@
 				<span id="working" style="display: none"></span>
 				<ul>
 					<li><button onclick="goto('/server')">Server</button></li>
-					<li><button onclick="logout(); goto('/')">Logout</button></li>
+					<li><button onclick="logout(goto.bind(null, '/'))">Logout</button></li>
 				</ul>
 			</span>
 		</nav>

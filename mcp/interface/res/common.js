@@ -4,10 +4,12 @@ function goto(uri) {
 
 function change(element, child) {
 	var root = document.getElementById(element);
+
 	for(var node in root.childNodes) {
-		if(root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'div')
+		if(root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'section')
 			root.childNodes[node].style.display = 'none';
 	}
+
 	document.getElementById(child).style.display = 'block';
 }
 

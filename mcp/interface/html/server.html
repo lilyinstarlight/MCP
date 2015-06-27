@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Server Administration</title>
+		<title>Server - MCP</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1"/>
 
@@ -18,7 +18,7 @@
 	<body>
 		<header>
 			<img src="/res/aalogo.png" alt=""/>
-			<span>Server Administration</span>
+			<span>Server</span>
 		</header>
 
 		<nav>
@@ -35,7 +35,7 @@
 					<li><select id="server_select" onchange="change_server(this.value)"></select></li>
 					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
 					<li><button onclick="goto('/user')">User</button></li>
-					<li><button onclick="logout(); goto('/')">Logout</button></li>
+					<li><button onclick="logout(goto.bind(null, '/'))">Logout</button></li>
 				</ul>
 			</span>
 		</nav>
@@ -73,7 +73,7 @@
 								<input id="command_input" type="text" onkeypress="if(event.keyCode == 13) this.form.submit()" disabled/>
 							</td>
 							<td>
-								<button id="command_send_button" onclick="this.form.submit()" disabled>Send</button>
+								<button id="command_submit" onclick="this.form.submit()" disabled>Send</button>
 							</td>
 						</tr>
 					</table>

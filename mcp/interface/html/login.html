@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Server Administration</title>
+		<title>Login - MCP</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=latin1"/>
 
@@ -15,11 +15,11 @@
 	<body>
 		<header>
 			<img src="/res/aalogo.png" alt=""/>
-			<span>Server Administration</span>
+			<span>Login</span>
 		</header>
 
 		<main>
-			<form id="login" onsubmit="login(this.elements['user'].value, this.elements['password'].value); goto('/server')" onkeypress="if(event.keyCode == 13) this.submit()">
+			<form onsubmit="login(this.elements['user'].value, this.elements['password'].value, goto.bind(null, '/server'))" onkeypress="if(event.keyCode == 13) this.submit()">
 				<table>
 					<tr>
 						<td><label for="user">Username: </label></td>

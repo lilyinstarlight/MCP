@@ -4,7 +4,8 @@ function login(username, password, callback) {
 	get('/users/' + username, auth, function(request) {
 		if(request.status == 200) {
 			user = JSON.parse(request.responseText);
-			setLoginCookie(username, user.key);
+			set_cookie(username, user.key);
+
 			typeof callback == 'function' && callback();
 		}
 		else if(request.status == 401)
@@ -12,4 +13,10 @@ function login(username, password, callback) {
 		else
 			alert('Error logging in');
 	});
+}
+
+function logout(callback) {
+	unset_cookie();
+
+	typeof callback == 'function' && callback();
 }
