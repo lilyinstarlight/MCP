@@ -1,4 +1,4 @@
-.menu {
+nav {
 	background: #369;
 	border-width: 2px 0px 2px 0px;
 	border-style: solid;
@@ -6,26 +6,37 @@
 	overflow: auto;
 }
 
-.menu .button {
+nav ul {
+	padding: 0px;
+	margin: 0px;
+}
+
+nav li {
+	list-style-type: none;
+	display: inline;
+	float: left;
+}
+
+nav button {
 	width: 80px;
 	padding: 5px 0px 5px 0px;
 	border-style: solid;
 	border-color: #000;
 }
 
-.menu .left .button {
+nav .left button {
 	border-width: 0px 2px 0px 0px;
 }
 
-.menu .right .button {
+nav .right button {
 	border-width: 0px 0px 0px 2px;
 }
 
-.menu form {
+nav form {
 	display: inline;
 }
 
-.content {
+main {
 	border-width: 0px 2px 2px 2px;
 	border-style: solid;
 	border-color: #000;
