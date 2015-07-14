@@ -69,8 +69,9 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
 	if servers:
 		import mcp.servers
 
-		for server in servers:
-			if username not in mcp.servers.get(server).users:
+		for server_name in servers:
+			server = mcp.servers.get(server_name)
+			if username not in server.users:
 				server.users.append(username)
 
 		user.servers = servers

@@ -46,8 +46,9 @@ def modify(server_name, port=None, autostart=None, users=None):
 	if users:
 		import mcp.users
 
-		for user in users:
-			if server_name not in mcp.users.get(user).servers:
+		for username in users:
+			user = mcp.users.get(username)
+			if server_name not in user.servers:
 				user.servers.append(server_name)
 
 		server_obj.users = users
