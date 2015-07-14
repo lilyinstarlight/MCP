@@ -66,14 +66,14 @@
 					</span>
 				</nav>
 
-				<form id="command" onsubmit="send_command(this.elements['command_input'].value)">
+				<form id="command" onsubmit="send_command(this.elements['command_input'].value); return false">
 					<table>
 						<tr>
 							<td>
-								<input id="command_input" type="text" onkeypress="if(event.keyCode == 13) this.form.submit()" disabled/>
+								<input id="command_input" type="text" disabled/>
 							</td>
 							<td>
-								<button id="command_submit" onclick="this.form.submit()" disabled>Send</button>
+								<button id="command_submit" type="submit" disabled>Send</button>
 							</td>
 						</tr>
 					</table>
