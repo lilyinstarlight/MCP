@@ -1,48 +1,48 @@
-#Prefix where servers are kept
+# prefix where servers are kept
 prefix = '/home/armagetron/servers'
 
-#Whether or not to allow server creation
+# whether or not to allow server creation
 creation = True
 
-#Directory where the sources are kept; ignored if creation is disabled
+# directory where the sources are kept; ignored if creation is disabled
 sources = '/home/armagetron/sources'
 
-#Temprorary directory to build under; ignored if creation is disabled
+# temprorary directory to build under; ignored if creation is disabled
 tmp = '/tmp/mcp'
 
-#Directory where default configuration is kept; ignored if creation is disabled
+# directory where default configuration is kept; ignored if creation is disabled
 config = '/home/armagetron/config'
 
-#Directory where the scripting library is kept; None to disable the scripting library
+# directory where the scripting library is kept; None to disable the scripting library
 scripting = '/home/armagetron/scripting'
 
-#Max size of server log files in kB before they are rotated; None to disable server log rotation
+# max size of server log files in kB before they are rotated; None to disable server log rotation
 maxlogsize = 100
 
-#User to run each server under; None to disable running the servers as a different user
+# user to run each server under; None to disable running the servers as a different user
 user = 'armagetron'
 
-#Range to automatically choose server ports
+# range to automatically choose server ports
 portrange = (4534, 4634)
 
-#Path to manager log; None to disable logging
+# path to manager log; None to disable logging
 log = '/var/log/mcp/manager.log'
 
-#Path to command output log; None to disable logging
+# path to command output log; None to disable logging
 cmdlog = '/var/log/mcp/command.log'
 
-#Path to HTTP log; None to disable logging
+# path to HTTP log; None to disable logging
 httpdlog = '/var/log/mcp/httpd.log'
 
-#Path to HTTP access log; None to disable logging
+# path to HTTP access log; None to disable logging
 accesslog = '/var/log/mcp/access.log'
 
-#Host of the web interface (leave blank unless you know what you are doing)
+# host of the web interface (leave blank unless you know what you are doing)
 host = ''
 
-#Port to listen on for the web interface
+# port to listen on for the web interface
 port = 80
 
-#Path to TLS/SSL key and certificate files; None to disable TLS encryption
+# path to TLS/SSL key and certificate files; None to disable TLS encryption
 tlskey = None
 tlscert = None

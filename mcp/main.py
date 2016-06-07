@@ -5,17 +5,17 @@ from mcp import interface, log, manager, rotate
 
 log.mcplog.info(name + ' ' + version + ' starting...')
 
-#Start everything
+# start everything
 manager.start()
 rotate.start()
 interface.start()
 
-#Cleanup (exit) function
+# cleanup (exit) function
 def exit():
-	interface.stop()
-	rotate.stop()
-	manager.stop()
+    interface.stop()
+    rotate.stop()
+    manager.stop()
 
-#Use the function for both SIGINT and SIGTERM
+# use the function for both SIGINT and SIGTERM
 for sig in signal.SIGINT, signal.SIGTERM:
-	signal.signal(sig, exit)
+    signal.signal(sig, exit)

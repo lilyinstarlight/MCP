@@ -1,63 +1,63 @@
 class Error(Exception):
-	def __init__(self, msg=None):
-		self.msg = msg
+    def __init__(self, msg=None):
+        self.msg = msg
 
 class NoServerError(Error):
-	pass
+    pass
 
 class InvalidServerError(Error):
-	pass
+    pass
 
 class ServerRunningError(Error):
-	pass
+    pass
 
 class ServerStoppedError(Error):
-	pass
+    pass
 
 class ServerExistsError(Error):
-	pass
+    pass
 
 class ServerNonexistentError(Error):
-	pass
+    pass
 
 class ScriptNonexistentError(Error):
-	pass
+    pass
 
 class NoServerCreationError(Error):
-	pass
+    pass
 
 class BuildError(Error):
-	pass
+    pass
 
 class ConfigError(Error):
-	pass
+    pass
 
 class MergeError(Error):
-	pass
+    pass
 
 class NoSourceError(Error):
-	pass
+    pass
 
 class InvalidSourceError(Error):
-	pass
+    pass
 
 class SourceExistsError(Error):
-	pass
+    pass
 
 class BzrError(Error):
-	pass
+    pass
 
 class InvalidPortError(Error):
-	pass
+    pass
 
 class PortExistsError(Error):
-	pass
+    pass
 
 class NoUserError(Error):
-	pass
+    pass
 
 class InvalidUserError(Error):
-	pass
+    pass
 
 class UserExistsError(Error):
-	pass
+    pass

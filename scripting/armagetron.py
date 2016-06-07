@@ -94,7 +94,7 @@ def run():
 			for handler in commands[command[0]]:
 				handler(command)
 
-#Grid stuff
+# grid stuff
 
 class Team:
 	def __init__(self, name):
@@ -276,7 +276,7 @@ class Grid:
 
 		return zone
 
-	#Ladderlog commands
+	# ladderlog commands
 
 	def new_round(self, command):
 		self.round += 1
