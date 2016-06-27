@@ -53,7 +53,7 @@ Edit `config.py` to match your directory structure and preferences. Below is a l
 - `sources` directory is optional and contains the source code to the server software from which the servers are created.
 - `tmp` directory is optional and contains the located where servers will be built before being merged.
 - `config` directory is optional and contains the default set of configuration copied to every server when created.
-- `scripting` directory is also optional and contains the scripting library (in the `scripting` directory of the project).
+- `scripting` directory is also optional and contains scripting libraries that can be chosen by the user.
 - `database` is the directory under which database files will go.
 - `maxlogsize` is maximum size a server log will get (in KB) before it is rotated into the `logs` directory.
 - `portrange` is the range of ports from which servers will automatically be configured if their port is not set.
