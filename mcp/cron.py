@@ -1,10 +1,10 @@
 import logging
-import sys
 import threading
 import time
 
 name = 'cron.py'
 version = '0.3'
+
 
 class Field(object):
     def __init__(self, param):
@@ -12,6 +12,7 @@ class Field(object):
 
     def __repr__(self):
         return 'cron.Field(' + repr(self.param) + ')'
+
 
 class All(Field):
     def __init__(self):
@@ -23,12 +24,14 @@ class All(Field):
     def __repr__(self):
         return 'cron.All()'
 
+
 class Every(Field):
     def __eq__(self, value):
         return value % self.param == 0
 
     def __repr__(self):
         return 'cron.Every(' + repr(self.param) + ')'
+
 
 class Int(Field):
     def __eq__(self, value):
@@ -37,12 +40,14 @@ class Int(Field):
     def __repr__(self):
         return repr(self.param)
 
+
 class List(Field):
     def __eq__(self, value):
         return value in self.param
 
     def __repr__(self):
         return repr(self.param)
+
 
 def create_field(value):
     if isinstance(value, Field):
@@ -53,6 +58,7 @@ def create_field(value):
         return List(value)
     else:
         raise TypeError()
+
 
 class Job(object):
     def __init__(self, function, args=(), kwargs={}, name=None, minute=All(), hour=All(), day=All(), month=All(), weekday=All()):
@@ -83,10 +89,11 @@ class Job(object):
     def run(self):
         self.function(*self.args, **self.kwargs)
 
+
 class Scheduler(object):
     def __init__(self, log=logging.getLogger(__name__), time=time.localtime):
         self.log = log
-        self.time= time
+        self.time = time
 
         self.jobs = []
         self.jobs_lock = threading.Lock()

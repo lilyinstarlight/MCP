@@ -12,7 +12,7 @@ import threading
 
 # module details
 name = 'web.py'
-version = '0.1rc3'
+version = '0.1'
 
 # server details
 server_version = name + '/' + version
@@ -102,47 +102,57 @@ status_messages = {
 }
 
 
-class ResLock(object):
+class ResLock:
+    class RWLock:
+        def __init__(self):
+            self.write = threading.Lock()
+            self.read = threading.Condition(self.write)
+            self.readers = 0
+            self.threads = 0
+
     def __init__(self):
         self.locks = {}
-        self.locks_count = {}
         self.locks_lock = threading.Lock()
 
-    def acquire(self, resource):
+    def acquire(self, resource, nonatomic):
         with self.locks_lock:
             if resource not in self.locks:
-                lock = threading.Lock()
+                lock = ResLock.RWLock()
                 self.locks[resource] = lock
-                self.locks_count[resource] = 1
             else:
                 lock = self.locks[resource]
-                self.locks_count[resource] += 1
 
-        lock.acquire()
+            lock.threads += 1
 
-    def release(self, resource):
+        if nonatomic:
+            with lock.write:
+                lock.readers += 1
+        else:
+            lock.write.acquire()
+
+            if lock.readers > 0:
+                lock.read.wait()
+
+    def release(self, resource, nonatomic):
         with self.locks_lock:
             lock = self.locks[resource]
-            if self.locks_count[resource] == 1:
+
+            lock.threads -= 1
+
+            if lock.threads == 0:
                 del self.locks[resource]
-                del self.locks_count[resource]
-            else:
-                self.locks_count[resource] -= 1
 
-        lock.release()
+        if nonatomic:
+            with lock.write:
+                lock.readers -= 1
 
-    def wait(self, resource):
-        with self.locks_lock:
-            try:
-                lock = self.locks[resource]
-            except KeyError:
-                return
-
-        lock.acquire()
-        lock.release()
+                if lock.readers == 0:
+                    lock.read.notify_all()
+        else:
+            lock.write.release()
 
 
-class HTTPLog(object):
+class HTTPLog:
     def __init__(self, httpd_log, access_log):
         if httpd_log:
             os.makedirs(os.path.dirname(httpd_log), exist_ok=True)
@@ -173,8 +183,8 @@ class HTTPLog(object):
     def info(self, message):
         self.message('INFO: ' + message)
 
-    def warn(self, message):
-        self.message('WARN: ' + message)
+    def warning(self, message):
+        self.message('WARNING: ' + message)
 
     def error(self, message):
         self.message('ERROR: ' + message)
@@ -190,7 +200,7 @@ class HTTPLog(object):
         self.access_write(host + ' ' + rfc931 + ' ' + authuser + ' ' + self.timestamp() + ' "' + request + '" ' + code + ' ' + size + '\n')
 
 
-class HTTPHeaders(object):
+class HTTPHeaders:
     def __init__(self):
         # lower case header -> value
         self.headers = {}
@@ -204,6 +214,15 @@ class HTTPHeaders(object):
 
     def __len__(self):
         return len(self.headers)
+
+    def __getitem__(self, key):
+        return self.headers[key.lower()]
+
+    def __setitem__(self, key, value):
+        self.set(key, value)
+
+    def __delitem__(self, key):
+        self.remove(key)
 
     def clear(self):
         self.headers.clear()
@@ -243,7 +262,7 @@ class HTTPError(Exception):
         self.status_message = status_message
 
 
-class HTTPHandler(object):
+class HTTPHandler:
     nonatomic = ['options', 'head', 'get']
 
     def __init__(self, request, response, groups):
@@ -251,6 +270,12 @@ class HTTPHandler(object):
         self.response = response
         self.method = self.request.method.lower()
         self.groups = groups
+
+    def encode(self, body):
+        return body
+
+    def decode(self, body):
+        return body
 
     def methods(self):
         # lots of magic for finding all lower case attributes beginning with 'do_' and removing the 'do_'
@@ -276,10 +301,21 @@ class HTTPHandler(object):
                 self.check_continue()
                 self.response.wfile.write((http_version + ' 100 ' + status_messages[100] + '\r\n\r\n').encode(http_encoding))
 
-            self.request.body = self.request.rfile.read(body_length)
+            # decode body from input
+            self.request.body = self.decode(self.request.rfile.read(body_length))
 
         # run the do_* method of the implementation
-        return getattr(self, 'do_' + self.method)()
+        raw_response = getattr(self, 'do_' + self.method)()
+
+        # encode body from output
+        try:
+            status, response = raw_response
+
+            return status, self.encode(response)
+        except ValueError:
+            status, status_msg, response = raw_response
+
+            return status, status_msg, self.encode(response)
 
     def check_continue(self):
         pass
@@ -333,7 +369,7 @@ class HTTPErrorHandler(HTTPHandler):
         return self.error.code, status_message, message
 
 
-class HTTPResponse(object):
+class HTTPResponse:
     def __init__(self, connection, client_address, server, request):
         self.connection = connection
         self.client_address = client_address
@@ -356,10 +392,7 @@ class HTTPResponse(object):
 
             try:
                 # try to get the resource, locking if atomic
-                if nonatomic:
-                    self.server.res_lock.wait(self.request.resource)
-                else:
-                    self.server.res_lock.acquire(self.request.resource)
+                self.server.res_lock.acquire(self.request.resource, nonatomic)
 
                 # get the raw response
                 raw_response = self.request.handler.respond()
@@ -389,8 +422,7 @@ class HTTPResponse(object):
                 raw_response = error_handler.respond()
             finally:
                 # make sure to unlock if locked before
-                if not nonatomic:
-                    self.server.res_lock.release(self.request.resource)
+                self.server.res_lock.release(self.request.resource, nonatomic)
 
             # get data from response
             try:
@@ -484,7 +516,7 @@ class HTTPResponse(object):
         self.wfile.close()
 
 
-class HTTPRequest(object):
+class HTTPRequest:
     def __init__(self, connection, client_address, server, timeout=None):
         self.connection = connection
         self.client_address = client_address
@@ -732,7 +764,7 @@ class HTTPServer(socketserver.TCPServer):
                 # make sure all threads are alive and restart dead ones
                 for i, thread in enumerate(self.worker_threads):
                     if not thread.is_alive():
-                        self.log.warn('Worker ' + str(i) + ' died and another is starting in its place')
+                        self.log.warning('Worker ' + str(i) + ' died and another is starting in its place')
                         thread = threading.Thread(target=self.worker, name='http-worker', args=(i,))
                         self.worker_threads[i] = thread
                         thread.start()
