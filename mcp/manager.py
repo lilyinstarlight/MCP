@@ -20,7 +20,7 @@ class Script(object):
         if not self.exists():
             raise errors.ScriptNonExistentError()
 
-        self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), preexec_fn=env.demote, env=env.env, cwd=self.server.prefix + '/var')
+        self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), env=env.get_script(), cwd=self.server.prefix + '/var')
 
     def stop(self):
         if self.is_running():
@@ -74,7 +74,7 @@ class Server(object):
         if not self.exists():
             raise errors.ServerNonexistentError()
 
-        self.proc = subprocess.Popen([self.bin, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data'], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), preexec_fn=env.demote, env=env.get_user(), cwd=self.prefix)
+        self.proc = subprocess.Popen([self.bin, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data'], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), env=env.get_server(), cwd=self.prefix)
 
         if self.script.exists():
             self.script.start()

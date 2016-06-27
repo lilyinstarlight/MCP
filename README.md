@@ -81,7 +81,7 @@ After the configuration is complete, run the setup script:
 ```
 The setup script will ask a few questions about your system then automatically install the files. It additionally creates the folders specified in `config.py` if they don't exist. The administrator user has access to all of the servers and to the administration interface.
 
-Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `mcp` as root.
+Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `mcp` as the desired user.
 
 ### Downloading sources
 
@@ -157,9 +157,6 @@ There is a live demo at http://mcp.fkmclane.net/. It shows off the web interface
 
 ### What if I want to use my own scripting library?
 Well, you simply need to place it in the `library` folder of the project and reinstall. You can also (optionally) create your own `api.html` so that the documentation is available in the web interface.
-
-### Can I run the daemon as a user other than root?
-Theoretically, the daemon could run as a non-root user but it is not recommended. Running the servers as a different user would not work, the HTTP port would need to be greater than 1024, and server creation and user management may not work.
 
 ### I want to use this on Windows but it isn't working!
 Well that isn't a question and I'm afraid I can't help you there. I don't mess with Windows often and don't have time to fiddle with an unsupported operating system for a single person. This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install [Ubuntu](http://www.ubuntu.com/) then install this software.
