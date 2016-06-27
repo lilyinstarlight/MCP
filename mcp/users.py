@@ -6,7 +6,7 @@ import string
 
 from mcp import db, errors
 
-users_allowed = '^[0-9a-zA-Z-_+]+$'
+users_allowed = '[0-9a-zA-Z-_+]+'
 
 key_length = 24
 key_chars = string.ascii_letters + string.digits
@@ -40,7 +40,7 @@ def get(username):
     return user_db.get(username)
 
 def add(username, password, key='', admin=False, active=True, servers=[]):
-    if not re.match(users_allowed, username):
+    if not re.match('^' + users_allowed + '$', username):
         raise errors.InvalidUserError()
 
     if user_db.get(username):

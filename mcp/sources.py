@@ -5,13 +5,13 @@ import subprocess
 
 from mcp import db, errors, source
 
-sources_allowed = '[0-9a-zA-Z-_+.]+$'
+sources_allowed = '[0-9a-zA-Z-_+.]+'
 
 def get(source_name):
     return source_db.get(source_name)
 
 def add(source_name, url):
-    if not re.match(sources_allowed, source_name):
+    if not re.match('^' + sources_allowed + '$', source_name):
         raise errors.InvalidSourceError()
 
     if source_db.get(source_name):
