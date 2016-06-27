@@ -1,7 +1,7 @@
 import json
 
-from mcp import sources
-from mcp.interface import common
+from mcp.model import source
+from mcp.api import handler
 
 class SourcesHandler(common.AuthorizedHandler):
     def forbidden(self):

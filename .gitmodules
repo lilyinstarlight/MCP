@@ -1,0 +1,9 @@
+[submodule "mcp/lib/cron.py"]
+	path = mcp/lib/cron.py
+	url = https://github.com/fkmclane/cron.py.git
+[submodule "mcp/lib/db.py"]
+	path = mcp/lib/db.py
+	url = https://github.com/fkmclane/db.py.git
+[submodule "mcp/lib/web.py"]
+	path = mcp/lib/web.py
+	url = https://github.com/fkmclane/web.py.git

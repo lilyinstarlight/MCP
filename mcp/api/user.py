@@ -1,7 +1,8 @@
 import json
 
-from mcp import users
-from mcp.interface import common, web
+from mcp.model import user
+from mcp.api import handler
+from mcp.lib import web
 
 class UsersHandler(common.AuthorizedHandler):
     def forbidden(self):

@@ -1,7 +1,8 @@
 import json
 
-from mcp import manager, servers
-from mcp.interface import common
+from mcp import manager
+from mcp.model import server
+from mcp.api import handler
 
 class ServersHandler(common.AuthorizedHandler):
     def forbidden(self):

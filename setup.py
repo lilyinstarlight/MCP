@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from distutils.core import setup
 
+from mcp import name, version
+
 setup(
     name=name,
     version=version,

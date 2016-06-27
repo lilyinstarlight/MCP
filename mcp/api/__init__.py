@@ -5,3 +5,5 @@ routes = {}
 routes.update(servers.routes)
 routes.update(sources.routes)
 routes.update(users.routes)
+
+__all__ = ['routes']
