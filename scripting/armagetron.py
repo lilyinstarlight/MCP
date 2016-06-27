@@ -2,7 +2,7 @@
 import sys
 import time
 
-poll_interval = 0.1
+poll_interval = 0.5
 
 ladderlog = sys.stdin
 server = sys.stdout
