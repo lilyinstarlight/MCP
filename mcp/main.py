@@ -1,18 +1,19 @@
 import signal
 
 from mcp import name, version
-from mcp import interface, log, manager, rotate
+from mcp.common import log
+from mcp.service import http, manager, rotate
 
 log.mcplog.info(name + ' ' + version + ' starting...')
 
 # start everything
 manager.start()
 rotate.start()
-interface.start()
+http.start()
 
 # cleanup (exit) function
 def exit():
-    interface.stop()
+    http.stop()
     rotate.stop()
     manager.stop()
 
