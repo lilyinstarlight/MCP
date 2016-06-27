@@ -16,6 +16,9 @@ config = '/var/lib/mcp/config'
 # directory where the scripting library is kept; None to disable the scripting library
 scripting = '/var/lib/mcp/scripting'
 
+# directory where the databases are kept
+database = '/var/db/mcp'
+
 # max size of server log files in kB before they are rotated; None to disable server log rotation
 maxlogsize = 100
 

@@ -6,6 +6,8 @@ import string
 
 from mcp import db, errors
 
+# TODO: copy all of these changes to servers and sources
+
 users_allowed = '[0-9a-zA-Z-_+]+'
 
 key_length = 24
@@ -20,8 +22,8 @@ def check_user(username, password):
 
     if user and user.hash == hash(password):
         return user
-    else:
-        return None
+
+    raise errors.NoUserError()
 
 def check_key(key):
     if key == '':
@@ -31,7 +33,7 @@ def check_key(key):
         if user.key == key:
             return user
 
-    return None
+    raise errors.NoUserError()
 
 def gen_key(user):
     user.hash = ''.join(key_rnd.choice(key_chars) for _ in range(key_length))
@@ -43,16 +45,20 @@ def add(username, password, key='', admin=False, active=True, servers=[]):
     if not re.match('^' + users_allowed + '$', username):
         raise errors.InvalidUserError()
 
-    if user_db.get(username):
+    if username in user_db:
         raise errors.UserExistsError()
 
-    return user_db.add(username, hash(password), key, admin, active, servers)
+    user = user_db.Entry(username, hash(password), key, admin, active, servers)
+
+    user_db[username] = user
+
+    return user
 
 def modify(username, password=None, key=None, admin=None, active=None, servers=None):
-    user = user_db.get(username)
-
-    if not user:
-        raise errors.NoUserError()
+    try:
+        user = user_db.get(username)
+    except KeyError as error:
+        raise errors.NoUserError() from error
 
     if password:
         user.hash = hash(password)
@@ -77,9 +83,10 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
         user.servers = servers
 
 def remove(username):
+    # TODO: turn into an except thingy
     if not user_db.get(username):
         raise errors.NoUserError()
 
     user_db.remove(username)
 
-user_db = db.Database(os.path.dirname(__file__) + '/db/users.db', ['username', 'hash', 'key', 'admin', 'active', 'servers'])
+user_db = db.Database(config.database + '/db/users.db', ['username', 'hash', 'key', 'admin', 'active', 'servers'])
