@@ -98,17 +98,6 @@ def build(server_name, source_name, revision=None):
     except:
         raise errors.MergeError('Failed to copy server')
 
-    if env.passwd:
-        try:
-            chown_contents(prefix + '/config', env.passwd.pw_uid, env.passwd.pw_gid)
-            chown_contents(prefix + '/data', env.passwd.pw_uid, env.passwd.pw_gid)
-            chown_contents(prefix + '/log', env.passwd.pw_uid, env.passwd.pw_gid)
-            chown_contents(prefix + '/scripts', env.passwd.pw_uid, env.passwd.pw_gid)
-            chown_contents(prefix + '/user', env.passwd.pw_uid, env.passwd.pw_gid)
-            chown_contents(prefix + '/var', env.passwd.pw_uid, env.passwd.pw_gid)
-        except:
-            raise errors.MergeError('Failed to set permissions')
-
 def set_port(server_name, port):
     prefix = config.prefix + '/' + server_name
 
