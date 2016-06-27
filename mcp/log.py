@@ -33,8 +33,8 @@ class Log(object):
     def info(self, message):
         self.message('INFO: ' + message)
 
-    def warn(self, message):
-        self.message('WARN: ' + message)
+    def warning(self, message):
+        self.message('WARNING: ' + message)
 
     def error(self, message):
         self.message('ERROR: ' + message)

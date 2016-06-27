@@ -143,21 +143,21 @@ def run(poll_interval=0.5):
                 if server.proc:
                     if server.is_quit():
                         server.stop()
-                        log.mcplog.warn(server.name + ' stopped by itself.')
+                        log.mcplog.warning(server.name + ' stopped by itself.')
                     elif server.is_dead():
                         server.proc.stdout.write('WARNING: The server did not gracefully quit: now restarting.\n')
-                        log.mcplog.warn(server.name + ' did not gracefully quit.')
+                        log.mcplog.warning(server.name + ' did not gracefully quit.')
                         server.stop()
                         server.start()
-                        log.mcplog.warn(server.name + ' restarted.')
+                        log.mcplog.warning(server.name + ' restarted.')
 
                     if server.script.proc:
                         if server.script.is_quit():
                             server.script.stop()
-                            log.mcplog.warn(server.name + ' script stopped by itself.')
+                            log.mcplog.warning(server.name + ' script stopped by itself.')
                         elif server.script.is_dead():
                             server.script.stop()
-                            log.mcplog.warn(server.name + ' script did not gracefully quit.')
+                            log.mcplog.warning(server.name + ' script did not gracefully quit.')
 
             time.sleep(poll_interval)
     finally:
