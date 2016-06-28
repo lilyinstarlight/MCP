@@ -11,7 +11,7 @@ manager.start()
 rotate.start()
 http.start()
 
-# cleanup (exit) function
+# cleanup function
 def exit():
     http.stop()
     rotate.stop()

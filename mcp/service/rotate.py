@@ -2,7 +2,11 @@ import datetime
 import os
 import shutil
 
-from mcp import config, cron, manager
+from mcp import config
+
+from mcp.common import log
+from mcp.service import manager
+from mcp.lib import cron
 
 scheduler = None
 
@@ -21,7 +25,7 @@ def rotate():
 def start():
     global scheduler
 
-    scheduler = cron.Scheduler()
+    scheduler = cron.Scheduler(log=log.mcplog)
     scheduler.add(cron.Job(rotate, minute=0))
     scheduler.start()
 
