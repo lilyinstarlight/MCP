@@ -7,3 +7,6 @@
 [submodule "mcp/lib/web.py"]
 	path = mcp/lib/web.py
 	url = https://github.com/fkmclane/web.py.git
+[submodule "mcp/control/script/armagetron.py"]
+	path = mcp/control/script/armagetron.py
+	url = https://github.com/fkmclane/armagetron.py.git
