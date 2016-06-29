@@ -118,6 +118,7 @@ To create servers, you must be on a unix-like system with a modern C++ compiler.
 - libxml2-devel
 - protobuf-devel
 - boost-devel (optional, 0.4 only)
+- libZThread-devel (optional, 0.2.8 only)
 - bzr
 
 #### Arch
