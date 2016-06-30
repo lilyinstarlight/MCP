@@ -4,7 +4,8 @@ import sys
 import threading
 import time
 
-from mcp import config, env, errors, log, servers
+from mcp.common import env, error, log
+from mcp.model import server
 
 class Script(object):
     def __init__(self, server):

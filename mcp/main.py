@@ -1,6 +1,7 @@
 import signal
 
 from mcp import name, version
+
 from mcp.common import log
 from mcp.service import http, manager, rotate
 
