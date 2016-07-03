@@ -47,8 +47,8 @@ class HTTPLog(Log):
         Log.__init__(self, log)
 
         if access_log:
-            os.makedirs(os.path.dirname(log), exist_ok=True)
-            self.access_log = open(log, 'a', 1)
+            os.makedirs(os.path.dirname(access_log), exist_ok=True)
+            self.access_log = open(access_log, 'a', 1)
         else:
             self.access_log = None
 
