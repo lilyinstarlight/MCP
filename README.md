@@ -3,10 +3,12 @@ MCP
 
 MCP, short for [Master Control Program](http://tron.wikia.com/wiki/MCP), is a complete multi-server management framework for [Armagetron Advanced](http://armagetronad.org). For more information see the forum post [here](http://forums3.armagetronad.net/viewtopic.php?f=2&t=23250).
 
+
 What is this?
 -------------
 
 MCP is a complete package that will manage multiple server daemons, provide an easy to use web interface, and provide a python based scripting library for Armagetron Advanced. It was created out of a frustration with poorly written and unintuitive Armagetron server managers none of which provided a nice web interface. Most seemed to be quickly hacked up projects just to get something working and used bad or insecure techniques. This project solves these problems in a simple Python daemon that serves a RESTful HTTP API and a set of web pages that use it for control. This project is designed for a unix-like system and should run well on Linux, Mac OS, and FreeBSD but should also work on Windows in a unix-like environment (Cygwin) though it probably won't have server creation functionality.
+
 
 Features
 --------
@@ -30,17 +32,6 @@ Features
 - Full syntax highlighting for the settings and script
 - Multiple people can administer the same server at once
 - Full user and server creation from an administration panel
-
-### Scripting Library
-- Adding multiple callbacks to a single ladderlog command
-- Chat command handlers
-- Full support for non-ascii characters
-- Default set of ladderlog handlers keep track of
-	- Current round
-	- The number of players
-	- The players and their name, IP address, score, and status
-	- The teams and their name, score, players, and player positions
-	- The zones and their various features
 
 
 Installing
@@ -147,7 +138,7 @@ Questions
 ---------
 
 ### Is there a demo?
-There is a live demo at https://mcp.fooster.io/. It shows off the web interface and the simplicity of the scripting library. The sample script shows how to reset the server settings when everyone leaves the server. Login with user: `demo` and password: `demo`.
+There is a live demo at https://mcp.fooster.io/. It shows off the web interface and the simplicity of the [armagetron.py](https://github.com/fkmclane/armagetron.py) scripting library. The sample script shows how to reset the server settings when everyone leaves the server. Login with user: `demo` and password: `demo`.
 
 ### What if I want to use my own scripting library?
 Place it in a directory in the `script` directory of the `mcp.control` package, create a `script.json` file, and reinstall. You can also (optionally) create your own `api.html` so that the documentation is available in the web interface.
