@@ -12,6 +12,6 @@ setup(
     url='http://github.com/fkmclane/MCP',
     license='MIT',
     packages=['mcp', 'mcp.api', 'mcp.common', 'mcp.control', 'mcp.lib', 'mcp.model', 'mcp.page', 'mcp.service'],
-    package_data={'mcp.control': ['script/*.*', 'script/armagetron.py/*.*', 'server/*.*', 'server/config/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*']},
+    package_data={'mcp.control': ['script/*.*', 'script/armagetron.py/*.*', 'server/*.*', 'server/config/*.*'], 'mcp.lib': ['**/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*']},
     scripts=['bin/mcp'],
 )
