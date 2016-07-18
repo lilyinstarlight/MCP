@@ -10,3 +10,6 @@
 [submodule "mcp/control/script/armagetron.py"]
 	path = mcp/control/script/armagetron.py
 	url = https://github.com/fkmclane/armagetron.py.git
+[submodule "mcp/lib/log.py"]
+	path = mcp/lib/log.py
+	url = /home/foster/src/log.py/
