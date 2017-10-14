@@ -8,8 +8,6 @@ from fooster import db
 
 from mcp import errors
 
-# TODO: copy all of these changes to servers and sources
-
 users_allowed = '[0-9a-zA-Z-_+]+'
 
 key_length = 24

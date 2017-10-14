@@ -6,7 +6,6 @@ from fooster import cron
 
 from mcp import config
 
-from mcp.common import log
 from mcp.service import manager
 
 scheduler = None
@@ -26,7 +25,7 @@ def rotate():
 def start():
     global scheduler
 
-    scheduler = cron.Scheduler(log=log.mcplog)
+    scheduler = cron.Scheduler()
     scheduler.add(cron.Job(rotate, minute=0))
     scheduler.start()
 

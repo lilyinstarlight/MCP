@@ -1,11 +1,14 @@
+import logging
 import os
 import subprocess
 import sys
 import threading
 import time
 
-from mcp.common import env, error, log
+from mcp.common import env, error
 from mcp.model import server
+
+log = logging.getLogger('mcp')
 
 class Script(object):
     def __init__(self, server):
@@ -144,21 +147,21 @@ def run(poll_interval=0.5):
                 if server.proc:
                     if server.is_quit():
                         server.stop()
-                        log.mcplog.warning(server.name + ' stopped by itself.')
+                        log.warning(server.name + ' stopped by itself.')
                     elif server.is_dead():
                         server.proc.stdout.write('WARNING: The server did not gracefully quit: now restarting.\n')
-                        log.mcplog.warning(server.name + ' did not gracefully quit.')
+                        log.warning(server.name + ' did not gracefully quit.')
                         server.stop()
                         server.start()
-                        log.mcplog.warning(server.name + ' restarted.')
+                        log.warning(server.name + ' restarted.')
 
                     if server.script.proc:
                         if server.script.is_quit():
                             server.script.stop()
-                            log.mcplog.warning(server.name + ' script stopped by itself.')
+                            log.warning(server.name + ' script stopped by itself.')
                         elif server.script.is_dead():
                             server.script.stop()
-                            log.mcplog.warning(server.name + ' script did not gracefully quit.')
+                            log.warning(server.name + ' script did not gracefully quit.')
 
             time.sleep(poll_interval)
     finally:
