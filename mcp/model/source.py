@@ -3,7 +3,9 @@ import re
 import shutil
 import subprocess
 
-from mcp import db, errors, source
+from fooster import db
+
+from mcp import errors, source
 
 sources_allowed = '[0-9a-zA-Z-_+.]+'
 

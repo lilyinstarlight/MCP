@@ -2,11 +2,12 @@ import datetime
 import os
 import shutil
 
+from fooster import cron
+
 from mcp import config
 
 from mcp.common import log
 from mcp.service import manager
-from mcp.lib import cron
 
 scheduler = None
 

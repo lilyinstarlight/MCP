@@ -1,6 +1,6 @@
 import os
 
-from mcp.lib import web
+from fooster import web
 
 
 class PageHandler(web.page.PageHandler):

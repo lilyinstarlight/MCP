@@ -4,7 +4,9 @@ import random
 import re
 import string
 
-from mcp import db, errors
+from fooster import db
+
+from mcp import errors
 
 # TODO: copy all of these changes to servers and sources
 
