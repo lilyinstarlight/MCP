@@ -4,8 +4,8 @@ import shutil
 import subprocess
 
 from mcp import config
-from mcp.common import cmd, env, errors
-from mcp.control import sources
+from mcp.common import cmd, env, error
+from mcp.control import source
 
 def copy_contents(src, dst):
     for entry in os.listdir(src):

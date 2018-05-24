@@ -1,5 +1,7 @@
 from mcp import config, api, page
 
+from fooster import web
+
 
 httpd = None
 routes = {}
@@ -11,7 +13,7 @@ routes.update(page.routes)
 def start():
     global httpd
 
-    httpd = web.HTTPServer((config.host, config.port), routes, keyfile=config.tlskey, certfile=config.tlscert)
+    httpd = web.HTTPServer((config.addr, config.port), routes, keyfile=config.tlskey, certfile=config.tlscert)
     httpd.start()
 
 

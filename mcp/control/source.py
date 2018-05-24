@@ -2,7 +2,7 @@ import logging
 import shutil
 
 from mcp import config
-from mcp.common import cmd, errors
+from mcp.common import cmd, error
 
 def get_revision(source_name):
     prefix = config.sources + '/' + source_name

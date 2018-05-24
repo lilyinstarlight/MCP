@@ -3,7 +3,9 @@ import re
 
 from fooster import db
 
-from mcp import config, errors, server, sources
+from mcp import config
+from mcp.common import error
+from mcp.control import server, source
 
 servers_allowed = '[0-9a-zA-Z-_+]+'
 

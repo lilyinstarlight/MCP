@@ -1,10 +1,10 @@
-from mcp.api import mcp, servers, sources, users
+from mcp.api import mcp, server, source, user
 
 routes = {}
 
 routes.update(mcp.routes)
-routes.update(servers.routes)
-routes.update(sources.routes)
-routes.update(users.routes)
+routes.update(server.routes)
+routes.update(source.routes)
+routes.update(user.routes)
 
 __all__ = ['routes']

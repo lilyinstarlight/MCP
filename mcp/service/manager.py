@@ -11,8 +11,8 @@ from mcp.model import server
 log = logging.getLogger('mcp')
 
 class Script(object):
-    def __init__(self, server):
-        self.server = server
+    def __init__(self, serve):
+        self.server = serve
         self.exe = self.prefix + '/scripts/script.py'
 
         self.proc = None
@@ -67,12 +67,12 @@ class Server(object):
         if self.is_running():
             raise errors.ServerRunningError()
 
-        servers.upgrade(self.name, source_name, revision)
+        server.upgrade(self.name, source_name, revision)
 
     def modify_metadata(self, port=None, autostart=None, users=None):
-        servers.modify(self.name, port, autostart, users)
+        server.modify(self.name, port, autostart, users)
 
-        self.metadata = servers.get(self.name)
+        self.metadata = server.get(self.name)
 
     def start(self):
         if not self.exists():
@@ -125,53 +125,53 @@ def get(server_name):
     return server_list.get(server_name)
 
 def create(server_name, source_name, revision=None, port=0, autostart=True, users=[]):
-    entry = servers.create(server_name, source_name, revision, port, autostart, users)
+    entry = server.create(server_name, source_name, revision, port, autostart, users)
     server_list[entry.server] = Server(entry)
 
 def destroy(server_name):
     if server_list.get(server_name).is_running():
         raise errors.ServerRunningError()
 
-    servers.destroy(server_name)
+    server.destroy(server_name)
     del server_list[server_name]
 
 def run(poll_interval=0.5):
     server_list.clear()
-    for entry in servers.server_db:
+    for entry in server.server_db:
         server_list[entry.server] = Server(entry)
 
     try:
         while running:
-            for server in server_list.values():
+            for serve in server_list.values():
                 # check if each server is supposed to be running and poll for problems
-                if server.proc:
-                    if server.is_quit():
-                        server.stop()
+                if serve.proc:
+                    if serve.is_quit():
+                        serve.stop()
                         log.warning(server.name + ' stopped by itself.')
-                    elif server.is_dead():
-                        server.proc.stdout.write('WARNING: The server did not gracefully quit: now restarting.\n')
+                    elif serve.is_dead():
+                        serve.proc.stdout.write('WARNING: The server did not gracefully quit: now restarting.\n')
                         log.warning(server.name + ' did not gracefully quit.')
-                        server.stop()
-                        server.start()
+                        serve.stop()
+                        serve.start()
                         log.warning(server.name + ' restarted.')
 
-                    if server.script.proc:
-                        if server.script.is_quit():
-                            server.script.stop()
+                    if serve.script.proc:
+                        if serve.script.is_quit():
+                            serve.script.stop()
                             log.warning(server.name + ' script stopped by itself.')
-                        elif server.script.is_dead():
-                            server.script.stop()
+                        elif serve.script.is_dead():
+                            serve.script.stop()
                             log.warning(server.name + ' script did not gracefully quit.')
 
             time.sleep(poll_interval)
     finally:
-        for server in server_list:
-            server.stop()
+        for serve in server_list:
+            serve.stop()
 
 def start():
     global running, thread
 
-    if self.is_running():
+    if is_running():
         return
 
     running = True
@@ -181,7 +181,7 @@ def start():
 def stop():
     global running, thread
 
-    if not self.is_running():
+    if not is_running():
         return
 
     running = False

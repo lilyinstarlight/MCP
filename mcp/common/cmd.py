@@ -1,7 +1,12 @@
+import sys
+
 from mcp import config
 
 
-log = open(config.cmdlog, 'a')
+if config.cmdlog:
+    log = open(config.cmdlog, 'a')
+else:
+    log = sys.stdout
 
 
 def head(header):

@@ -37,8 +37,8 @@ httpdlog = '/var/log/mcp/httpd.log'
 # path to HTTP access log; None to disable logging
 accesslog = '/var/log/mcp/access.log'
 
-# host of the web interface (leave blank unless you know what you are doing)
-host = ''
+# address of the web interface (leave blank unless you know what you are doing)
+addr = ''
 
 # port to listen on for the web interface
 port = 8080

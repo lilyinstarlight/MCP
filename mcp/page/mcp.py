@@ -1,9 +1,10 @@
 import os
 
-from fooster import web
+from fooster.web import file
+from fooster.web import page
 
 
-class PageHandler(web.page.PageHandler):
+class PageHandler(page.PageHandler):
     directory = os.path.dirname(__file__) + '/html'
 
 
