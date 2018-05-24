@@ -4,24 +4,8 @@ import shutil
 import subprocess
 
 from mcp import config
-from mcp.common import cmd, env, error
+from mcp.common import cmd, env, error, util
 from mcp.control import source
-
-def copy_contents(src, dst):
-    for entry in os.listdir(src):
-        entry = src + '/' + entry
-        if os.path.isdir(entry):
-            copy_contents(entry, dst + '/' + entry)
-        else:
-            shutil.copy2(entry, dst + '/' + entry)
-
-def chown_contents(path, uid, gid):
-    for entry in os.listdir(path):
-        entry = path + '/' + entry
-        if os.path.isdir(entry):
-            chown_contents(entry, uid, gid)
-        else:
-            os.chown(entry, uid, gid)
 
 def build(server_name, source_name, revision=None):
     if not config.creation:
@@ -52,8 +36,8 @@ def build(server_name, source_name, revision=None):
     cmd.head('Configuring ' + server_name)
 
     try:
-        copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
-        copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
+        util.copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
+        util.copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
     except:
         raise errors.ConfigError('Failed to move data files')
 
@@ -88,7 +72,7 @@ def build(server_name, source_name, revision=None):
         raise errors.ConfigError('Failed to create necessary files')
 
     try:
-        copy_contents(config.config, prefix + '/config')
+        util.copy_contents(config.config, prefix + '/config')
     except:
         raise errors.ConfigError('Failed to copy custom configuration files')
 
@@ -96,7 +80,7 @@ def build(server_name, source_name, revision=None):
     cmd.head('Merging ' + server_name)
 
     try:
-        copy_contents(tmp_install, prefix)
+        util.copy_contents(tmp_install, prefix)
     except:
         raise errors.MergeError('Failed to copy server')
 

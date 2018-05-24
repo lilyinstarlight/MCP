@@ -1,5 +1,8 @@
 import argparse
 import logging
+import os
+import os.path
+import shutil
 import signal
 
 
@@ -77,11 +80,15 @@ if config.accesslog:
 
 from mcp import name, version
 
+from mcp import initial
 from mcp.service import http, manager, rotate
 
 log = logging.getLogger('mcp')
 
 log.info(name + ' ' + version + ' starting...')
+
+# check for starting files
+initial.check()
 
 # start everything
 manager.start()
