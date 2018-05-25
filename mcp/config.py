@@ -13,7 +13,7 @@ tmp = '/tmp/mcp'
 # directory where default configuration is kept; ignored if creation is disabled
 config = '/var/lib/mcp/config'
 
-# directory where the scripting library is kept; None to disable the scripting library
+# directory where the scripting libraries are kept; None to disable scripting libraries
 scripting = '/var/lib/mcp/scripting'
 
 # directory where the databases are kept

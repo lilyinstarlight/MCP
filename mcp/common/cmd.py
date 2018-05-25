@@ -1,10 +1,10 @@
 import sys
 
-from mcp import config
+import mcp.config
 
 
-if config.cmdlog:
-    log = open(config.cmdlog, 'a')
+if mcp.config.cmdlog:
+    log = open(mcp.config.cmdlog, 'a')
 else:
     log = sys.stdout
 

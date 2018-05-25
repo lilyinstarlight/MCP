@@ -4,9 +4,10 @@ import os
 import os.path
 import shutil
 import signal
+import sys
 
 
-from mcp import config
+import mcp.config
 
 
 parser = argparse.ArgumentParser(description='start a multi-server management framework for Armagetron Advanced')
@@ -23,84 +24,104 @@ parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
 args = parser.parse_args()
 
 if args.address:
-    config.addr = (args.address, config.addr[1])
+    mcp.config.addr = (args.address, mcp.config.addr[1])
 
 if args.port:
-    config.addr = (config.addr[0], args.port)
+    mcp.config.addr = (mcp.config.addr[0], args.port)
 
 if args.log:
     if args.log == 'none':
-        config.log = None
-        config.cmdlog = None
-        config.httpdlog = None
-        config.accesslog = None
+        mcp.config.log = None
+        mcp.config.cmdlog = None
+        mcp.config.httpdlog = None
+        mcp.config.accesslog = None
     else:
-        config.log = args.log + '/manager.log'
-        config.cmdlog = args.log + '/command.log'
-        config.httpdlog = args.log + '/httpd.log'
-        config.accesslog = args.log + '/access.log'
+        mcp.config.log = args.log + '/manager.log'
+        mcp.config.cmdlog = args.log + '/command.log'
+        mcp.config.httpdlog = args.log + '/httpd.log'
+        mcp.config.accesslog = args.log + '/access.log'
 
 if args.database:
-    config.database = args.database
+    mcp.config.database = args.database
 
 if args.prefix:
-    config.prefix = args.prefix
+    mcp.config.prefix = args.prefix
 
 if args.sources:
-    config.sources = args.sources
+    mcp.config.sources = args.sources
 
 if args.config:
-    config.config = args.config
+    mcp.config.config = args.config
 
 if args.scripting:
-    config.scripting = args.scripting
+    mcp.config.scripting = args.scripting
 
 if args.tmp:
-    config.tmp = args.tmp
+    mcp.config.tmp = args.tmp
 
 
-if config.log:
-    logging.getLogger('mcp').addHandler(logging.FileHandler(config.log))
+if mcp.config.log:
+    logging.getLogger('mcp').addHandler(logging.FileHandler(mcp.config.log))
 
 
-if config.cmdlog:
-    logging.getLogger('cmd').addHandler(logging.FileHandler(config.cmdlog))
+if mcp.config.cmdlog:
+    logging.getLogger('cmd').addHandler(logging.FileHandler(mcp.config.cmdlog))
 
 
-if config.httpdlog:
-    httpdlog_handler = logging.FileHandler(config.httpdlog)
+if mcp.config.httpdlog:
+    httpdlog_handler = logging.FileHandler(mcp.config.httpdlog)
     httpdlog_handler.setFormatter(web.HTTPLogFormatter())
 
     logging.getLogger('http').addHandler(httpdlog_handler)
 
 
-if config.accesslog:
-    logging.getLogger('web').addHandler(logging.FileHandler(config.accesslog))
+if mcp.config.accesslog:
+    logging.getLogger('web').addHandler(logging.FileHandler(mcp.config.accesslog))
 
 
 from mcp import name, version
 
-from mcp import initial
-from mcp.service import http, manager, rotate
+import mcp.initial
+import mcp.service.http
+import mcp.service.manager
+import mcp.service.rotate
 
 log = logging.getLogger('mcp')
 
 log.info(name + ' ' + version + ' starting...')
 
 # check for starting files
-initial.check()
+mcp.initial.check()
 
 # start everything
-manager.start()
-rotate.start()
-http.start()
+mcp.service.manager.start()
+mcp.service.rotate.start()
+mcp.service.http.start()
+
+restart = False
 
 # cleanup function
 def exit():
-    http.stop()
-    rotate.stop()
-    manager.stop()
+    mcp.service.http.stop()
+
+# restart function
+def restart():
+    global restart
+    restart = True
+
+    exit()
 
 # use the function for both SIGINT and SIGTERM
 for sig in signal.SIGINT, signal.SIGTERM:
     signal.signal(sig, exit)
+
+# use SIGUSR1 for restart
+signal.signal(signal.SIGUSR1, restart)
+
+mcp.service.http.join()
+
+mcp.service.rotate.stop()
+mcp.service.manager.stop()
+
+if restart:
+    os.execv(sys.argv[0], sys.argv)

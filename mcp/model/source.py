@@ -3,23 +3,29 @@ import re
 import shutil
 import subprocess
 
-from fooster import db
+import fooster.db
 
-from mcp import errors, source
+import mcp.config
+import mcp.error
+
+import mcp.control.source
 
 sources_allowed = '[0-9a-zA-Z-_+.]+'
+
+def items():
+    return iter(source_db)
 
 def get(source_name):
     return source_db.get(source_name)
 
 def add(source_name, url):
     if not re.match('^' + sources_allowed + '$', source_name):
-        raise errors.InvalidSourceError()
+        raise mcp.error.InvalidSourceError()
 
     if source_db.get(source_name):
-        raise errors.SourceExistsError()
+        raise mcp.error.SourceExistsError()
 
-    source.branch(source_name, url)
+    mcp.control.source.branch(source_name, url)
 
     return source_db.add(source_name, url, get_revision(source_name))
 
@@ -27,22 +33,22 @@ def update(source_name):
     source_obj = source_db.get(source_name)
 
     if not source_obj:
-        raise errors.NoSourceError()
+        raise mcp.error.NoSourceError()
 
-    source.pull(source_name)
+    mcp.control.source.pull(source_name)
 
-    source_obj.revision = source.get_revision(source_name)
+    source_obj.revision = mcp.control.source.get_revision(source_name)
 
 def prepare(source_name, dst, revision=None):
     if not source_db.get(source_name):
-        raise errors.NoSourceError()
+        raise mcp.error.NoSourceError()
 
-    source.prepare(source_name, dst, revision)
+    mcp.control.source.prepare(source_name, dst, revision)
 
 def remove(source_name):
     if not source_db.get(source_name):
-        raise errors.NoSourceError()
+        raise mcp.error.NoSourceError()
 
-    source.remove(source_name)
+    mcp.control.source.remove(source_name)
 
-source_db = db.Database(config.database + '/db/sources.db', ['source', 'url', 'revision'])
+source_db = fooster.db.Database(mcp.config.database + '/db/sources.db', ['source', 'url', 'revision'])

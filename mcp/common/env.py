@@ -1,7 +1,5 @@
 import os
 
-from mcp import config
-
 
 base_env = os.environ.copy()
 

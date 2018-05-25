@@ -1,55 +1,57 @@
 import os
 import os.path
 
-from mcp import config
-
-from mcp.common import util
+import mcp.config
+import mcp.common.util
 
 
 def check():
     try:
-        os.mkdirs(config.prefix)
+        os.makedirs(mcp.config.prefix)
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(config.sources)
+        os.makedirs(mcp.config.sources)
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(config.config)
-        util.copy_contents(os.path.join(__file__, 'control/server'), config.config)
+        os.makedirs(mcp.config.config)
+        mcp.common.util.copy_contents(os.path.join(__file__, 'control/server'), mcp.config.config)
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(config.scripting)
-        util.copy_contents(os.path.join(__file__, 'control/script'), config.scripting)
+        os.makedirs(mcp.config.scripting)
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(config.database)
+        os.makedirs(mcp.config.database)
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(os.path.dirname(config.log))
+        if mcp.config.log:
+            os.makedirs(os.path.dirname(mcp.config.log))
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(os.path.dirname(config.cmdlog))
+        if mcp.config.cmdlog:
+            os.makedirs(os.path.dirname(mcp.config.cmdlog))
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(os.path.dirname(config.httpdlog))
+        if mcp.config.httpdlog:
+            os.makedirs(os.path.dirname(mcp.config.httpdlog))
     except FileExistsError:
         pass
 
     try:
-        os.mkdirs(os.path.dirname(config.accesslog))
+        if mcp.config.accesslog:
+            os.makedirs(os.path.dirname(mcp.config.accesslog))
     except FileExistsError:
         pass

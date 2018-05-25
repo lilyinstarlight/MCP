@@ -1,37 +1,34 @@
 import os
 
-from fooster.web import file
-from fooster.web import page
+import fooster.web.file
+
+import mcp.common.http
 
 
-class PageHandler(page.PageHandler):
-    directory = os.path.dirname(__file__) + '/html'
-
-
-class IndexHandler(PageHandler):
+class IndexHandler(mcp.common.http.PageHandler):
     page = 'index.html'
 
 
-class SetupHandler(PageHandler):
+class SetupHandler(mcp.common.http.PageHandler):
     page = 'setup.html'
 
 
-class ServerHandler(PageHandler):
+class ServerHandler(mcp.common.http.PageHandler):
     page = 'server.html'
 
 
-class AdminHandler(PageHandler):
+class AdminHandler(mcp.common.http.PageHandler):
     page = 'admin.html'
 
 
-class UserHandler(PageHandler):
+class UserHandler(mcp.common.http.PageHandler):
     page = 'user.html'
 
 
-class LoginHandler(PageHandler):
+class LoginHandler(mcp.common.http.PageHandler):
     page = 'login.html'
 
 
 routes = {'/': IndexHandler, '/setup': SetupHandler, '/server': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler}
 
-routes.update(file.new(os.path.dirname(__file__) + '/res', '/res'))
+routes.update(fooster.web.file.new(os.path.dirname(__file__) + '/res', '/res'))

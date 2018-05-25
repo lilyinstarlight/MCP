@@ -1,19 +1,21 @@
-from mcp import config, api, page
+import fooster.web
 
-from fooster import web
+import mcp.config
+import mcp.api
+import mcp.page
 
 
 httpd = None
 routes = {}
 
-routes.update(api.routes)
-routes.update(page.routes)
+routes.update(mcp.api.routes)
+routes.update(mcp.page.routes)
 
 
 def start():
     global httpd
 
-    httpd = web.HTTPServer((config.addr, config.port), routes, keyfile=config.tlskey, certfile=config.tlscert)
+    httpd = fooster.web.HTTPServer((mcp.config.addr, mcp.config.port), routes, keyfile=mcp.config.tlskey, certfile=mcp.config.tlscert)
     httpd.start()
 
 
@@ -22,3 +24,9 @@ def stop():
 
     httpd.close()
     httpd = None
+
+
+def join():
+    global httpd
+
+    httpd.join()
