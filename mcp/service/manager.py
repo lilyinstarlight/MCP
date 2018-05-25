@@ -51,7 +51,6 @@ class Script(object):
 class Server(object):
     def __init__(self, metadata):
         self.name = metadata.server
-        self.metadata = metadata
         self.prefix = config.prefix + '/' + self.name
         self.exe = self.prefix + '/bin/armagetronad-dedicated'
 
@@ -59,22 +58,11 @@ class Server(object):
 
         self.script = Script(self)
 
-        if self.metadata.autostart:
+        if metadata.autostart:
             self.start()
 
     def exists(self):
         return os.path.isfile(self.exe)
-
-    def upgrade(self, source_name=None, revision=None):
-        if self.is_running():
-            raise mcp.error.ServerRunningError()
-
-        mcp.model.server.upgrade(self.name, source_name, revision)
-
-    def modify_metadata(self, port=None, autostart=None, users=None):
-        mcp.model.server.modify(self.name, port, autostart, users)
-
-        self.metadata = mcp.model.server.get(self.name)
 
     def start(self):
         if not self.exists():

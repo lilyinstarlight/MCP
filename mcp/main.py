@@ -98,18 +98,14 @@ mcp.service.manager.start()
 mcp.service.rotate.start()
 mcp.service.http.start()
 
-restart = False
-
 # cleanup function
 def exit():
     mcp.service.http.stop()
 
 # restart function
 def restart():
-    global restart
-    restart = True
-
-    exit()
+    mcp.service.manager.stop()
+    mcp.service.manager.start()
 
 # use the function for both SIGINT and SIGTERM
 for sig in signal.SIGINT, signal.SIGTERM:
@@ -122,6 +118,3 @@ mcp.service.http.join()
 
 mcp.service.rotate.stop()
 mcp.service.manager.stop()
-
-if restart:
-    os.execv(sys.argv[0], sys.argv)

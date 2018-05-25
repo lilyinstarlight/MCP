@@ -17,15 +17,8 @@ class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.json.JSONHandler)
         except errors.NoUserError:
             raise auth.AuthError('Key', 'MCP')
 
-    def forbidden(self):
-        return False
-
-class AdminAuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.json.JSONHandler):
-    def auth_key(self, key):
+    def login(self, username, password):
         try:
-            return mcp.model.user.check_key(key)
+            return mcp.model.user.check_username(key)
         except errors.NoUserError:
-            raise auth.AuthError('Key', 'MCP')
-
-    def forbidden(self):
-        return not self.auth.admin
+            raise auth.AuthError('Basic', 'MCP')

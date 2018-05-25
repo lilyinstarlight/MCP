@@ -6,6 +6,8 @@ import fooster.db
 import mcp.config
 import mcp.error
 
+import mcp.model.user
+
 import mcp.control.server
 
 servers_allowed = '[0-9a-zA-Z-_+]+'
@@ -52,10 +54,8 @@ def modify(server_name, port=None, autostart=None, users=None):
         server_obj.autostart = autostart
 
     if users:
-        import mcp.users
-
         for username in users:
-            user = mcp.users.get(username)
+            user = mcp.model.user.get(username)
             if server_name not in user.servers:
                 user.servers.append(server_name)
 

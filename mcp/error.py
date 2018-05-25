@@ -44,6 +44,15 @@ class InvalidSourceError(Error):
 class SourceExistsError(Error):
     pass
 
+class NoLibraryError(Error):
+    pass
+
+class InvalidLibraryError(Error):
+    pass
+
+class LibraryExistsError(Error):
+    pass
+
 class BzrError(Error):
     pass
 
