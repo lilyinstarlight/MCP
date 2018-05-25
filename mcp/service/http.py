@@ -1,4 +1,5 @@
 import fooster.web
+import fooster.web.json
 
 import mcp.config
 import mcp.api
@@ -7,9 +8,12 @@ import mcp.page
 
 httpd = None
 routes = {}
+error_routes = {}
 
 routes.update(mcp.api.routes)
 routes.update(mcp.page.routes)
+
+error_routes.update(fooster.web.json.new_error())
 
 
 def start():

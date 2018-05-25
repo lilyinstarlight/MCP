@@ -13,6 +13,7 @@ import mcp.config
 parser = argparse.ArgumentParser(description='start a multi-server management framework for Armagetron Advanced')
 parser.add_argument('-a', '--address', dest='address', help='address to bind')
 parser.add_argument('-p', '--port', type=int, dest='port', help='port to bind')
+parser.add_argument('-t', '--template', dest='template', help='template directory to use')
 parser.add_argument('-l', '--log', dest='log', help='log directory to use')
 parser.add_argument('--db', '--database', dest='database', help='database directory to use')
 parser.add_argument('--prefix', dest='prefix', help='prefix directory to use')
@@ -28,6 +29,9 @@ if args.address:
 
 if args.port:
     mcp.config.addr = (mcp.config.addr[0], args.port)
+
+if args.template:
+    config.template = args.template
 
 if args.log:
     if args.log == 'none':
@@ -82,6 +86,7 @@ if mcp.config.accesslog:
 from mcp import name, version
 
 import mcp.initial
+import mcp.common.daemon
 import mcp.service.http
 import mcp.service.manager
 import mcp.service.rotate
@@ -92,6 +97,9 @@ log.info(name + ' ' + version + ' starting...')
 
 # check for starting files
 mcp.initial.check()
+
+# fill in daemon details
+mcp.common.daemon.pid = os.getpid()
 
 # start everything
 mcp.service.manager.start()
@@ -114,7 +122,9 @@ for sig in signal.SIGINT, signal.SIGTERM:
 # use SIGUSR1 for restart
 signal.signal(signal.SIGUSR1, restart)
 
+# wait for http to finish
 mcp.service.http.join()
 
+# stop background services
 mcp.service.rotate.stop()
 mcp.service.manager.stop()

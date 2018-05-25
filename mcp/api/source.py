@@ -25,6 +25,8 @@ class Index(mcp.common.http.AuthHandler):
             mcp.model.source.add(self.request.body['name'], self.request.body['url'])
         except KeyError:
             raise fooster.web.HTTPError(400)
+        except mcp.error.BzrError:
+            raise fooster.web.HTTPError(400)
         except mcp.error.InvalidSourceError:
             raise fooster.web.HTTPError(403)
         except mcp.error.SourceExistsError:

@@ -37,6 +37,10 @@ httpdlog = '/var/log/mcp/httpd.log'
 # path to HTTP access log; None to disable logging
 accesslog = '/var/log/mcp/access.log'
 
+# template directory to use
+import os.path
+template = os.path.dirname(__file__) + '/html'
+
 # address of the web interface (leave blank unless you know what you are doing)
 addr = ''
 

@@ -77,5 +77,46 @@ class Server(mcp.common.http.AuthHandler):
 
         return 204, None
 
+class Script(mcp.common.http.AuthHandler):
+    def do_get(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except errors.NoServerError:
+            raise fooster.web.HTTPError(404)
 
-routes = {'/api/server/': Index, '/api/server/(' + mcp.model.server.servers_allowed + ')': Server}
+        return 200, mcp.model.server.script_get(self.groups[0])
+
+    def do_put(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except errors.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        mcp.services.manager.get(self.groups[0]).script.stop()
+
+        mcp.model.server.script_set(self.groups[0], self.request.body)
+
+        mcp.services.manager.get(self.groups[0]).script.start()
+
+        return 200, mcp.model.server.script_get(self.groups[0])
+
+    def do_delete(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except errors.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        if not self.auth.admin:
+            raise fooster.web.HTTPError(403)
+
+        mcp.services.manager.get(self.groups[0]).script.stop()
+
+        mcp.model.server.script_destroy(self.groups[0])
+
+        return 204, None
+
+
+routes = {'/api/server/': Index, '/api/server/(' + mcp.model.server.servers_allowed + ')': Server, '/api/server/(' + mcp.model.server.servers_allowed + ')/script': Script}

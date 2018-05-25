@@ -7,7 +7,8 @@ import mcp.common.http
 
 class Restart(mcp.common.http.AuthHandler):
     def do_post(self):
-        os.kill(mcp.common.pid.pid, signal.SIGUSR1)
+        # send SIGUSR1 to main process
+        os.kill(mcp.common.daemon.pid, signal.SIGUSR1)
 
         return 204, None
 
