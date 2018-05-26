@@ -6,7 +6,7 @@ import fooster.cron
 
 import mcp.config
 
-import mcp.service.manager
+import mcp.model.server
 
 scheduler = None
 
@@ -17,10 +17,10 @@ def rotate_log(prefix, filename):
             pass
 
 def rotate():
-    for server in mcp.service.manager.server_list:
-        rotate_log(server.prefix, 'server.log')
-        rotate_log(server.prefix, 'error.log')
-        rotate_log(server.prefix, 'script-error.log')
+    for entry in mcp.model.server.items():
+        rotate_log(mcp.config.prefix + '/' + entry.server, 'server.log')
+        rotate_log(mcp.config.prefix + '/' + entry.server, 'error.log')
+        rotate_log(mcp.config.prefix + '/' + entry.server, 'script-error.log')
 
 def start():
     global scheduler

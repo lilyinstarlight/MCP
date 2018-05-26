@@ -22,7 +22,7 @@ def add(source_name, url):
     if not re.match('^' + sources_allowed + '$', source_name):
         raise mcp.error.InvalidSourceError()
 
-    if source_db.get(source_name):
+    if source_name in source_db:
         raise mcp.error.SourceExistsError()
 
     mcp.control.source.branch(source_name, url)
@@ -30,25 +30,25 @@ def add(source_name, url):
     return source_db.add(source_name, url, mcp.control.source.get_revision(source_name))
 
 def update(source_name):
-    source_obj = source_db.get(source_name)
-
-    if not source_obj:
+    if source_name not in source_db:
         raise mcp.error.NoSourceError()
 
     mcp.control.source.pull(source_name)
 
-    source_obj.revision = mcp.control.source.get_revision(source_name)
+    source_db[source_name].revision = mcp.control.source.get_revision(source_name)
 
 def prepare(source_name, dst, revision=None):
-    if not source_db.get(source_name):
+    if source_name not in source_db:
         raise mcp.error.NoSourceError()
 
     mcp.control.source.prepare(source_name, dst, revision)
 
 def remove(source_name):
-    if not source_db.get(source_name):
+    if source_name not in source_db:
         raise mcp.error.NoSourceError()
 
     mcp.control.source.remove(source_name)
+
+    del source_db[source_name]
 
 source_db = fooster.db.Database(mcp.config.database + '/db/sources.db', ['source', 'url', 'revision'])

@@ -22,7 +22,7 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
     if not re.match('^' + servers_allowed + '$', server_name):
         raise mcp.error.InvalidServerError()
 
-    if server_db.get(server_name):
+    if server_name in server_db:
         raise mcp.error.ServerExistsError()
 
     if not mcp.model.source.get(source_name):
@@ -47,7 +47,7 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
     return server_db.add(server_name, source_name, revision, port, autostart, users)
 
 def modify(server_name, port=None, autostart=None, users=None):
-    server_obj = server_db.get(server_name)
+    server_obj = server_db[server_name]
 
     if port != None:
         mcp.control.server.set_port(server_name, port)
@@ -67,7 +67,7 @@ def modify(server_name, port=None, autostart=None, users=None):
         server_obj.users = users
 
 def upgrade(server_name, source_name=None, revision=None):
-    server_obj = server_db.get(server_name)
+    server_obj = server_db[server_name]
 
     if not server_obj:
         raise mcp.error.NoServerError()
@@ -83,12 +83,39 @@ def upgrade(server_name, source_name=None, revision=None):
     server_obj.revision = revision
 
 def destroy(server_name):
-    if not server_db.get(server_name):
+    if server_name not in server_db:
         raise mcp.error.NoServerError()
+
+    if server_db[server_name].running:
+        raise mcp.error.ServerRunningError()
 
     mcp.control.server.destroy(server_name)
 
-    server_db.remove(server_name)
+    del server_db[server_name]
+
+def start(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    server_db[server_name].running = True
+
+def stop(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    server_db[server_name].running = False
+
+def script_start(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    server_db[server_name].script_running = True
+
+def script_stop(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    server_db[server_name].script_running = False
 
 def port_check(port):
     return port and port > 0 and port < 65536
@@ -107,4 +134,4 @@ def port_get_next():
 
     return None
 
-server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users'])
+server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users', 'running', 'script_running'])

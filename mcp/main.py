@@ -1,5 +1,6 @@
 import argparse
 import logging
+import multiprocessing
 import os
 import os.path
 import shutil
@@ -103,6 +104,7 @@ mcp.initial.check()
 
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()
+mcp.common.daemon.sync = multiprocessing.Manager()
 
 # cleanup function
 def exit(signum, frame):

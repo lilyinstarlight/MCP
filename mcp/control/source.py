@@ -11,7 +11,7 @@ def get_revision(source_name):
     prefix = mcp.config.sources + '/' + source_name
 
     with open(prefix + '/.bzr/branch/last-revision', 'r') as file:
-        return file.read().split(' ', 1)[0]
+        return int(file.read().split(' ', 1)[0])
 
 def branch(source_name, url):
     prefix = mcp.config.sources + '/' + source_name

@@ -58,10 +58,11 @@ class Server(mcp.common.http.AuthHandler):
         if 'source' in self.request.body or 'revision' in self.request.body:
             mcp.model.server.upgrade(self.groups[0], self.request.body['source'] if 'source' in self.request.body else None, self.request.body['revision'] if 'revision' in self.request.body else None)
 
-        mcp.services.manager.get(self.groups[0]).stop()
-        mcp.services.manager.get(self.groups[0]).start()
+        mcp.model.server.stop(self.groups[0])
+        if 'running' in self.request.body and self.request.body['running']:
+            mcp.model.server.start(self.groups[0])
 
-        return 200, dict(mcp.model.server.get(self.request.body['name']))
+        return 200, dict(mcp.model.server.get(self.groups[0]))
 
     def do_delete(self):
         try:
@@ -73,8 +74,7 @@ class Server(mcp.common.http.AuthHandler):
         if not self.auth.admin:
             raise fooster.web.HTTPError(403)
 
-        mcp.services.manager.get(self.groups[0]).stop()
-
+        mcp.model.server.stop(self.groups[0])
         mcp.model.server.destroy(self.groups[0])
 
         return 204, None
@@ -96,11 +96,10 @@ class Script(mcp.common.http.AuthHandler):
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
-        mcp.services.manager.get(self.groups[0]).script.stop()
-
-        mcp.model.server.script_set(self.groups[0], self.request.body)
-
-        mcp.services.manager.get(self.groups[0]).script.start()
+        mcp.model.server.script_stop(self.groups[0])
+        if self.request.body:
+            mcp.model.server.script_set(self.groups[0], self.request.body)
+        mcp.model.server.script_start(self.groups[0])
 
         return 200, mcp.model.server.script_get(self.groups[0])
 
@@ -114,9 +113,9 @@ class Script(mcp.common.http.AuthHandler):
         if not self.auth.admin:
             raise fooster.web.HTTPError(403)
 
-        mcp.services.manager.get(self.groups[0]).script.stop()
+        mcp.model.server.script_stop(self.groups[0])
 
-        mcp.model.server.script_destroy(self.groups[0])
+        mcp.model.server.script_remove(self.groups[0])
 
         return 204, None
 

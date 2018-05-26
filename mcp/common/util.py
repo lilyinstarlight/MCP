@@ -3,17 +3,19 @@ import os.path
 import shutil
 
 def copy_contents(src, dst):
+    os.makedirs(dst, exist_ok=True)
+
     for entry in os.listdir(src):
-        entry = src + '/' + entry
-        if os.path.isdir(entry):
-            copy_contents(entry, dst + '/' + entry)
+        full = src + '/' + entry
+        if os.path.isdir(full):
+            copy_contents(full, dst + '/' + entry)
         else:
-            shutil.copy2(entry, dst + '/' + entry)
+            shutil.copy2(full, dst + '/' + entry)
 
 def chown_contents(path, uid, gid):
     for entry in os.listdir(path):
-        entry = path + '/' + entry
-        if os.path.isdir(entry):
-            chown_contents(entry, uid, gid)
+        full = path + '/' + entry
+        if os.path.isdir(full):
+            chown_contents(full, uid, gid)
         else:
-            os.chown(entry, uid, gid)
+            os.chown(full, uid, gid)

@@ -71,9 +71,9 @@ def add(username, password, salt=None, key=None, admin=False, active=True, serve
 
 def modify(username, password=None, key=None, admin=None, active=None, servers=None):
     try:
-        user = user_db.get(username)
-    except KeyError as error:
-        raise mcp.error.NoUserError() from error
+        user = user_db[username]
+    except KeyError:
+        raise mcp.error.NoUserError()
 
     if password:
         user.hash = hash(password, user.salt)
@@ -98,8 +98,7 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
         user.servers = servers
 
 def remove(username):
-    # TODO: turn into an except thingy
-    if not user_db.get(username):
+    if username not in user_db:
         raise mcp.error.NoUserError()
 
     user_db.remove(username)

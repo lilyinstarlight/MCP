@@ -1,1 +1,2 @@
 pid = None
+sync = None
