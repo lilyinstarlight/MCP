@@ -106,6 +106,15 @@ mcp.initial.check()
 mcp.common.daemon.pid = os.getpid()
 mcp.common.daemon.sync = multiprocessing.Manager()
 
+# fix multiprocessing ctrl+c
+signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+# start everything
+mcp.service.manager.start()
+mcp.service.rotate.start()
+mcp.service.update.start()
+mcp.service.http.start()
+
 # cleanup function
 def exit(signum, frame):
     mcp.service.http.stop()
@@ -121,12 +130,6 @@ for sig in signal.SIGINT, signal.SIGTERM:
 
 # use SIGUSR1 for restart
 signal.signal(signal.SIGUSR1, restart)
-
-# start everything
-mcp.service.manager.start()
-mcp.service.rotate.start()
-mcp.service.update.start()
-mcp.service.http.start()
 
 # wait for http to finish
 mcp.service.http.join()
