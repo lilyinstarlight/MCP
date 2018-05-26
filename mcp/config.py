@@ -39,7 +39,8 @@ accesslog = '/var/log/mcp/access.log'
 
 # template directory to use
 import os.path
-template = os.path.dirname(__file__) + '/html'
+template = os.path.dirname(__file__) + '/page/html'
+resource = os.path.dirname(__file__) + '/page/res'
 
 # address of the web interface (leave blank unless you know what you are doing)
 addr = ''

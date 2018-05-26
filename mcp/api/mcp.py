@@ -1,7 +1,7 @@
 import os
 import signal
 
-import mcp.common.pid
+import mcp.common.daemon
 import mcp.common.http
 
 

@@ -23,7 +23,7 @@ class Index(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.source.add(self.request.body['name'], self.request.body['url'])
-        except KeyError:
+        except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.BzrError:
             raise fooster.web.HTTPError(400)
@@ -43,7 +43,7 @@ class Source(mcp.common.http.AuthHandler):
 
         try:
             return 200, dict(mcp.model.source.get(self.groups[0]))
-        except errors.NoSourceError:
+        except mcp.error.NoSourceError:
             raise fooster.web.HTTPError(404)
 
     def do_put(self):
@@ -52,18 +52,18 @@ class Source(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.source.update(self.groups[0])
-        except errors.NoSourceError:
+        except mcp.error.NoSourceError:
             raise fooster.web.HTTPError(404)
 
-        return 200, dict(mcp.model.source.get(self.request.body['name']))
+        return 200, dict(mcp.model.source.get(self.groups[0]))
 
     def do_delete(self):
         if not self.auth.admin:
             raise fooster.web.HTTPError(404)
 
         try:
-            mcp.model.source.destroy(self.groups[0])
-        except errors.NoSourceError:
+            mcp.model.source.remove(self.groups[0])
+        except mcp.error.NoSourceError:
             raise fooster.web.HTTPError(404)
 
         return 204, None

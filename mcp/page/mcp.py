@@ -39,4 +39,4 @@ class LoginHandler(mcp.common.http.PageHandler):
 
 routes = {'/': IndexHandler, '/setup': SetupHandler, '/server': ServerHandler, '/admin': AdminHandler, '/user': UserHandler, '/login': LoginHandler}
 
-routes.update(fooster.web.file.new(mcp.config.template + '/res', '/res'))
+routes.update(fooster.web.file.new(mcp.config.resource, '/res'))

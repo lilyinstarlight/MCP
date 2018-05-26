@@ -12,11 +12,13 @@ import mcp.error
 users_allowed = '[0-9a-zA-Z-_+]+'
 
 key_length = 24
-key_chars = string.ascii_letters + string.digits
-key_rnd = random.SystemRandom()
+salt_length = 8
+
+rand_chars = string.ascii_letters + string.digits
+rand_rng = random.SystemRandom()
 
 def hash(password, salt):
-    return hashlib.sha256(salt + password.encode()).hexdigest()
+    return hashlib.sha256(salt.encode() + password.encode()).hexdigest()
 
 def check_user(username, password):
     user = user_db.get(username)
@@ -27,7 +29,7 @@ def check_user(username, password):
     raise mcp.error.NoUserError()
 
 def check_key(key):
-    if key == '':
+    if not key:
         return None
 
     for user in user_db:
@@ -36,8 +38,14 @@ def check_key(key):
 
     raise mcp.error.NoUserError()
 
-def gen_key(user):
-    user.hash = ''.join(key_rnd.choice(key_chars) for _ in range(key_length))
+def gen_rand(length):
+    return ''.join(rand_rng.choice(rand_chars) for _ in range(length))
+
+def gen_key():
+    return gen_rand(key_length)
+
+def gen_salt():
+    return gen_rand(salt_length)
 
 def items():
     return iter(user_db)
@@ -45,12 +53,15 @@ def items():
 def get(username):
     return user_db.get(username)
 
-def add(username, password, key='', admin=False, active=True, servers=[]):
+def add(username, password, salt=None, key=None, admin=False, active=True, servers=[]):
     if not re.match('^' + users_allowed + '$', username):
         raise mcp.error.InvalidUserError()
 
     if username in user_db:
         raise mcp.error.UserExistsError()
+
+    if not salt:
+        salt = gen_salt()
 
     user = user_db.Entry(username, hash(password, salt), salt, key, admin, active, servers)
 
@@ -77,7 +88,7 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
         user.active = active
 
     if servers:
-        import mcp.servers
+        import mcp.model.server
 
         for server_name in servers:
             server = mcp.servers.get(server_name)

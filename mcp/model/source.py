@@ -27,7 +27,7 @@ def add(source_name, url):
 
     mcp.control.source.branch(source_name, url)
 
-    return source_db.add(source_name, url, get_revision(source_name))
+    return source_db.add(source_name, url, mcp.control.source.get_revision(source_name))
 
 def update(source_name):
     source_obj = source_db.get(source_name)

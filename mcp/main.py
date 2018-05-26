@@ -46,22 +46,22 @@ if args.log:
         mcp.config.accesslog = args.log + '/access.log'
 
 if args.database:
-    mcp.config.database = args.database
+    mcp.config.database = os.path.abspath(args.database)
 
 if args.prefix:
-    mcp.config.prefix = args.prefix
+    mcp.config.prefix = os.path.abspath(args.prefix)
 
 if args.sources:
-    mcp.config.sources = args.sources
+    mcp.config.sources = os.path.abspath(args.sources)
 
 if args.config:
-    mcp.config.config = args.config
+    mcp.config.config = os.path.abspath(args.config)
 
 if args.scripting:
-    mcp.config.scripting = args.scripting
+    mcp.config.scripting = os.path.abspath(args.scripting)
 
 if args.tmp:
-    mcp.config.tmp = args.tmp
+    mcp.config.tmp = os.path.abspath(args.tmp)
 
 
 if mcp.config.log:
@@ -86,10 +86,13 @@ if mcp.config.accesslog:
 from mcp import name, version
 
 import mcp.initial
+
 import mcp.common.daemon
+
 import mcp.service.http
 import mcp.service.manager
 import mcp.service.rotate
+import mcp.service.update
 
 log = logging.getLogger('mcp')
 
@@ -101,17 +104,12 @@ mcp.initial.check()
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()
 
-# start everything
-mcp.service.manager.start()
-mcp.service.rotate.start()
-mcp.service.http.start()
-
 # cleanup function
-def exit():
+def exit(signum, frame):
     mcp.service.http.stop()
 
 # restart function
-def restart():
+def restart(signum, frame):
     mcp.service.manager.stop()
     mcp.service.manager.start()
 
@@ -122,9 +120,16 @@ for sig in signal.SIGINT, signal.SIGTERM:
 # use SIGUSR1 for restart
 signal.signal(signal.SIGUSR1, restart)
 
+# start everything
+mcp.service.manager.start()
+mcp.service.rotate.start()
+mcp.service.update.start()
+mcp.service.http.start()
+
 # wait for http to finish
 mcp.service.http.join()
 
 # stop background services
+mcp.service.update.stop()
 mcp.service.rotate.stop()
 mcp.service.manager.stop()

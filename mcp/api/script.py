@@ -26,7 +26,7 @@ class Index(mcp.common.http.AuthHandler):
         try:
             # add requested source from URL
             mcp.model.script.add(self.request.body['name'], self.request.body['url'])
-        except KeyError:
+        except (KeyError, TypeError):
             # url parameters not found
             raise fooster.web.HTTPError(400)
         except mcp.error.BzrError:
@@ -53,7 +53,7 @@ class Library(mcp.common.http.AuthHandler):
 
         try:
             return 200, dict(mcp.model.script.get(self.groups[0]))
-        except errors.NoLibraryError:
+        except mcp.error.NoLibraryError:
             raise fooster.web.HTTPError(404)
 
     def do_put(self):
@@ -63,7 +63,7 @@ class Library(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.script.update(self.groups[0])
-        except errors.NoLibraryError:
+        except mcp.error.NoLibraryError:
             raise fooster.web.HTTPError(404)
 
         return 200, dict(mcp.model.script.get(self.request.body['name']))
@@ -75,7 +75,7 @@ class Library(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.script.destroy(self.groups[0])
-        except errors.NoLibraryError:
+        except mcp.error.NoLibraryError:
             raise fooster.web.HTTPError(404)
 
         return 204, None

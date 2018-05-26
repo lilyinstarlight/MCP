@@ -4,6 +4,8 @@ import fooster.web.auth
 import fooster.web.json
 import fooster.web.page
 
+import mcp.error
+
 import mcp.model.user
 
 
@@ -14,11 +16,11 @@ class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.json.JSONHandler)
     def auth_key(self, key):
         try:
             return mcp.model.user.check_key(key)
-        except errors.NoUserError:
-            raise auth.AuthError('Key', 'MCP')
+        except mcp.error.NoUserError:
+            raise fooster.web.auth.AuthError('Key', 'MCP')
 
     def login(self, username, password):
         try:
-            return mcp.model.user.check_username(key)
-        except errors.NoUserError:
-            raise auth.AuthError('Basic', 'MCP')
+            return mcp.model.user.check_user(username, password)
+        except mcp.error.NoUserError:
+            raise fooster.web.auth.AuthError('Basic', 'MCP')

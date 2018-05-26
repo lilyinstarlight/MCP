@@ -1,8 +1,12 @@
+import getpass
 import os
 import os.path
 
 import mcp.config
+
 import mcp.common.util
+
+import mcp.model.user
 
 
 def check():
@@ -58,3 +62,14 @@ def check():
             os.makedirs(os.path.dirname(mcp.config.accesslog))
     except FileExistsError:
         pass
+
+    for user in mcp.model.user.items():
+        if user.admin:
+            break
+    else:
+        print('Setup an administrator account:')
+
+        username = input('Username: ')
+        password = getpass.getpass('Password: ')
+
+        mcp.model.user.add(username, password, admin=True)

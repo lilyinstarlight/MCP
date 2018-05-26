@@ -23,26 +23,26 @@ def build(server_name, source_name, revision=None):
     mcp.control.source.prepare(source_name, tmp_build, revision)
 
     # build
-    cmd.head('Building ' + server_name)
+    mcp.common.cmd.head('Building ' + server_name)
 
-    if subprocess.call([shlex.quote(tmp_build + '/bootstrap.sh')], stdout=cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
+    if subprocess.call([shlex.quote('./bootstrap.sh')], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
         raise mcp.error.BuildError('Failed to bootstrap server')
 
-    if subprocess.call([shlex.quote(tmp_build + '/configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(prefix) + ' --localstatedir=' + shlex.quote(prefix + '/var')], stdout=cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
+    if subprocess.call([shlex.quote('./configure') + ' --enable-dedicated --enable-armathentication --disable-automakedefaults --disable-sysinstall --disable-useradd --disable-etc --disable-desktop --disable-initscripts --disable-uninstall --disable-games --prefix=' + shlex.quote(prefix) + ' --localstatedir=' + shlex.quote(prefix + '/var')], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, shell=True):
         raise mcp.error.BuildError('Failed to configure server')
 
-    if subprocess.call(['make', '-C' + tmp_build], stdout=cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build):
+    if subprocess.call(['make'], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build):
         raise mcp.error.BuildError('Failed to compile server')
 
-    if subprocess.call(['make', '-C' + tmp_build, 'install'], stdout=cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, env=env.get_build(tmp_install)):
+    if subprocess.call(['make', 'install'], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build, env=mcp.common.env.get_build(tmp_install)):
         raise mcp.error.BuildError('Failed to install server')
 
     # configure
-    cmd.head('Configuring ' + server_name)
+    mcp.common.cmd.head('Configuring ' + server_name)
 
     try:
-        util.copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
-        util.copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
+        mcp.common.util.copy_contents(prefix + '/etc/armagetronad-dedicated', prefix + '/config')
+        mcp.common.util.copy_contents(prefix + '/share/armagetronad-dedicated', prefix + '/data')
     except:
         raise mcp.error.ConfigError('Failed to move data files')
 
@@ -77,15 +77,15 @@ def build(server_name, source_name, revision=None):
         raise mcp.error.ConfigError('Failed to create necessary files')
 
     try:
-        util.copy_contents(mcp.config.config, prefix + '/config')
+        mcp.common.util.copy_contents(mcp.config.config, prefix + '/config')
     except:
         raise mcp.error.ConfigError('Failed to copy custom configuration files')
 
     # merge
-    cmd.head('Merging ' + server_name)
+    mcp.common.cmd.head('Merging ' + server_name)
 
     try:
-        util.copy_contents(tmp_install, prefix)
+        mcp.common.util.copy_contents(tmp_install, prefix)
     except:
         raise mcp.error.MergeError('Failed to copy server')
 

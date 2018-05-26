@@ -6,7 +6,7 @@ import fooster.db
 import mcp.config
 import mcp.error
 
-import mcp.model.user
+import mcp.model.source
 
 import mcp.control.server
 
@@ -25,8 +25,11 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
     if server_db.get(server_name):
         raise mcp.error.ServerExistsError()
 
+    if not mcp.model.source.get(source_name):
+        raise mcp.error.NoSourceError()
+
     if not revision:
-        revision = sources.get(source_name).revision
+        revision = mcp.model.source.get(source_name).revision
 
     if not port:
         port = port_get_next()
@@ -54,6 +57,8 @@ def modify(server_name, port=None, autostart=None, users=None):
         server_obj.autostart = autostart
 
     if users:
+        import mcp.model.user
+
         for username in users:
             user = mcp.model.user.get(username)
             if server_name not in user.servers:
@@ -71,7 +76,7 @@ def upgrade(server_name, source_name=None, revision=None):
         source_name = server_obj.source
 
     if not revision:
-        revision = sources.get(source_name).revision
+        revision = mcp.model.source.get(source_name).revision
 
     mcp.control.server.build(server_name, source_name, revision)
 

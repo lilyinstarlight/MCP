@@ -165,7 +165,7 @@ def start():
         return
 
     running = True
-    process = multiprocessing.Process(target=run)
+    process = multiprocessing.Process(target=run, name='mcp-manager')
     process.start()
 
 def stop():

@@ -22,17 +22,17 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.user.add(self.request.body['name'], self.request.body['url'])
-        except KeyError:
+            mcp.model.user.add(self.request.body['username'], self.request.body['password'], admin=bool(self.request.body['admin'] if 'admin' in self.request.body else False))
+        except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.InvalidUserError:
             raise fooster.web.HTTPError(403)
         except mcp.error.UserExistsError:
             raise fooster.web.HTTPError(409)
 
-        self.response.headers['Location'] = '/api/user/' + self.request.body['name']
+        self.response.headers['Location'] = '/api/user/' + self.request.body['username']
 
-        return 201, dict(mcp.model.user.get(self.request.body['name']))
+        return 201, dict(mcp.model.user.get(self.request.body['username']))
 
 class User(mcp.common.http.AuthHandler):
     def do_get(self):
@@ -41,7 +41,7 @@ class User(mcp.common.http.AuthHandler):
 
         try:
             return 200, dict(mcp.model.user.get(self.groups[0]))
-        except errors.NoUserError:
+        except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 
     def do_put(self):
@@ -49,8 +49,8 @@ class User(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(404)
 
         try:
-            mcp.model.user.add(self.groups[0])
-        except errors.NoUserError:
+            mcp.model.user.modify(self.groups[0])
+        except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 
         return 200, dict(mcp.model.user.get(self.request.body['name']))
@@ -61,7 +61,7 @@ class User(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.user.destroy(self.groups[0])
-        except errors.NoUserError:
+        except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 
         return 204, None

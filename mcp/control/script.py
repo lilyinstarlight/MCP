@@ -1,3 +1,5 @@
+import shutil
+
 import mcp.config
 import mcp.error
 
@@ -12,6 +14,11 @@ def branch(library_name, url):
 
     cmd.head('Branching ' + library_name)
 
+    try:
+        shutil.rmtree(prefix)
+    except:
+        pass
+
     if subprocess.call(['bzr', 'branch', url, prefix], stdout=cmd.log, stderr=subprocess.STDOUT):
         raise mcp.error.BzrError('Failed to clone bzr tree')
 
@@ -25,6 +32,11 @@ def pull(library_name):
 
 def prepare(library_name, dst, revision=None):
     prefix = mcp.config.scripting + '/' + library_name
+
+    try:
+        shutil.rmtree(dst)
+    except:
+        pass
 
     shutil.copytree(prefix, dst)
 
