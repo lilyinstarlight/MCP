@@ -73,3 +73,6 @@ class InvalidUserError(Error):
 
 class UserExistsError(Error):
     pass
+
+class NoLogLine(Error):
+    pass

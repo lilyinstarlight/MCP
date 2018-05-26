@@ -1,12 +1,12 @@
 function getServers(handler) {
-	get('/servers', function(request) {
+	get('/server/', auth_key, function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function start(server, callback) {
-	get('/server/' + server + '/start', function(request) {
+	put('/server/' + server, auth_key, {'running': true}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -15,7 +15,7 @@ function start(server, callback) {
 }
 
 function stop(server, callback) {
-	get('/server/' + server + '/stop', function(request) {
+	put('/server/' + server, auth_key, {'running': false}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -23,17 +23,8 @@ function stop(server, callback) {
 	});
 }
 
-function reload(server, callback) {
-	get('/server/' + server + '/reload', function(request) {
-		if(request.status == 200)
-			typeof callback == 'function' && callback();
-		else
-			alert('Error reloading server: ' + request.responseText);
-	});
-}
-
 function restart(server, callback) {
-	get('/server/' + server + '/restart', function(request) {
+	put('/server/' + server, auth_key, {'running': true}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -42,7 +33,7 @@ function restart(server, callback) {
 }
 
 function sendCommand(server, command, callback) {
-	post('/server/' + server + '/sendcommand', { 'command': command }, function(request) {
+	post('/server/' + server, auth_key, {'command': command}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -50,36 +41,46 @@ function sendCommand(server, command, callback) {
 	});
 }
 
+function reload(server, callback) {
+	sendCommand(server, 'INCLUDE settings.cfg', function() {
+		sendCommand(server, 'INCLUDE server_info.cfg', function() {
+			sendCommand(server, 'INCLUDE settings_custom.cfg', function() {
+				typeof callback == 'function' && callback();
+			});
+		});
+	});
+}
+
 function getStatus(server, handler) {
-	get('/server/' + server + '/status', function(request) {
+	get('/server/' + server, auth_key, function(request) {
 		if(request.status == 200)
-			handler(request.responseText);
+			handler(JSON.parse(request.responseText));
 	});
 }
 
 function getLog(server, handler) {
-	get('/server/' + server + '/get/log', function(request) {
+	get('/server/' + server + '/log', auth_key, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getScriptLog(server, handler) {
-	get('/server/' + server + '/get/scriptlog', function(request) {
+	get('/server/' + server + '/script/log', auth_key, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getSettings(server, handler) {
-	get('/server/' + server + '/get/settings', function(request) {
+	get('/server/' + server + '/settings', auth_key, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateSettings(server, settings, callback) {
-	post('/server/' + server + '/update/settings', { 'settings': settings }, function(request) {
+	post('/server/' + server + '/settings', auth_key, {'settings': settings}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -88,14 +89,14 @@ function updateSettings(server, settings, callback) {
 }
 
 function getScript(server, handler) {
-	get('/server/' + server + '/get/script', function(request) {
+	get('/server/' + server + '/script', auth_key, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateScript(server, script, callback) {
-	post('/server/' + server + '/update/script', { 'script': script }, function(request) {
+	post('/server/' + server + '/script', auth_key, {'script': script}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else

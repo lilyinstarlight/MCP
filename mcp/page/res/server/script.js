@@ -137,6 +137,7 @@ function refresh(force) {
 			getScript(server, function(response) {
 				if(script_text == response)
 					return;
+
 				script_text = response;
 				script.setValue(script_text);
 			});

@@ -24,7 +24,7 @@ function is_visible(element) {
 }
 
 function set_cookie(username, key) {
-	document.cookie = JSON.stringify({ 'username': username, 'key': key });
+	document.cookie = JSON.stringify({'username': username, 'key': key});
 }
 
 function unset_cookie() {
