@@ -63,6 +63,9 @@ def add(username, password, salt=None, key=None, admin=False, active=True, serve
     if not salt:
         salt = gen_salt()
 
+    if not key:
+        key = gen_key()
+
     user = user_db.Entry(username, hash(password, salt), salt, key, admin, active, servers)
 
     user_db[username] = user
