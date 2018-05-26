@@ -43,6 +43,9 @@ class Server(mcp.common.http.AuthHandler):
 
         return 200, dict(mcp.model.server.get(self.groups[0]))
 
+    def do_post(self):
+        pass
+
     def do_put(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -79,6 +82,49 @@ class Server(mcp.common.http.AuthHandler):
 
         return 204, None
 
+class Settings(mcp.common.http.AuthHandler):
+    def do_get(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except mcp.error.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        return 200, mcp.model.server.settings_get(self.groups[0])
+
+    def do_put(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except mcp.error.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        return 200, mcp.model.server.settings_get(self.groups[0])
+
+    def do_delete(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except mcp.error.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        mcp.model.server.settings_remove(self.groups[0])
+
+        return 204, None
+
+class Log(mcp.common.http.AuthHandler):
+    def do_get(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except mcp.error.NoServerError:
+            raise fooster.web.HTTPError(404)
+
+        try:
+            return 200, mcp.model.server.log_get(self.groups[0], self.request.query['last'] if 'last' in self.request.query else None)
+        except mcp.error.NoLogLine:
+            return 201, mcp.model.server.script_log_get(self.groups[0])
+
 class Script(mcp.common.http.AuthHandler):
     def do_get(self):
         try:
@@ -110,14 +156,24 @@ class Script(mcp.common.http.AuthHandler):
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
-        if not self.auth.admin:
-            raise fooster.web.HTTPError(403)
-
         mcp.model.server.script_stop(self.groups[0])
 
         mcp.model.server.script_remove(self.groups[0])
 
         return 204, None
 
+class ScriptLog(mcp.common.http.AuthHandler):
+    def do_get(self):
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except mcp.error.NoServerError:
+            raise fooster.web.HTTPError(404)
 
-routes = {'/api/server/': Index, '/api/server/(' + mcp.model.server.servers_allowed + ')': Server, '/api/server/(' + mcp.model.server.servers_allowed + ')/script': Script}
+        try:
+            return 200, mcp.model.server.script_log_get(self.groups[0], self.request.query['last'] if 'last' in self.request.query else None)
+        except mcp.error.NoLogLine:
+            return 201, mcp.model.server.script_log_get(self.groups[0])
+
+
+routes = {'/api/server/': Index, '/api/server/(' + mcp.model.server.servers_allowed + ')': Server, '/api/server/(' + mcp.model.server.servers_allowed + ')/settings': Settings, '/api/server/(' + mcp.model.server.servers_allowed + ')/log': Log, '/api/server/(' + mcp.model.server.servers_allowed + ')/script': Script, '/api/server/(' + mcp.model.server.servers_allowed + ')/script/log': ScriptLog}
