@@ -41,6 +41,6 @@ setup(
     author_email='fkmclane@gmail.com',
     install_requires=['fooster-web', 'fooster-db', 'fooster-cron'],
     packages=find_packages(),
-    package_data={'mcp.control': ['script/*.*', 'script/armagetron.py/*.*', 'server/*.*', 'server/config/*.*'], 'mcp.lib': ['**/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*']},
+    package_data={'mcp.control': ['server/*.*', 'server/config/*.*'], 'mcp.lib': ['**/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/codemirror/*.*']},
     entry_points = {'console_scripts': ['mcp = mcp.main']},
 )
