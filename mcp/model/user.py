@@ -1,3 +1,4 @@
+import time
 import hashlib
 import os
 import random
@@ -13,6 +14,8 @@ users_allowed = '[0-9a-zA-Z-_+]+'
 
 key_length = 24
 salt_length = 8
+token_length = 16
+token_lifetime = 4*3600
 
 rand_chars = string.ascii_letters + string.digits
 rand_rng = random.SystemRandom()
@@ -38,6 +41,25 @@ def check_key(key):
 
     raise mcp.error.NoUserError()
 
+def check_token(token):
+    if not token:
+        return None
+
+    for user in user_db:
+        if user.token == token and time.time() < user.expiry:
+            return user
+
+    raise mcp.error.NoUserError()
+
+def create_token(username):
+    if username not in user_db:
+        raise mcp.error.NoUserError()
+
+    user.token = gen_token()
+    user.expiry = time.time() + token_lifetime
+
+    return user.token
+
 def gen_rand(length):
     return ''.join(rand_rng.choice(rand_chars) for _ in range(length))
 
@@ -46,6 +68,9 @@ def gen_key():
 
 def gen_salt():
     return gen_rand(salt_length)
+
+def gen_token():
+    return gen_rand(token_length)
 
 def items():
     return iter(user_db)
@@ -106,4 +131,4 @@ def remove(username):
 
     user_db.remove(username)
 
-user_db = fooster.db.Database(mcp.config.database + '/db/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers'])
+user_db = fooster.db.Database(mcp.config.database + '/db/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])

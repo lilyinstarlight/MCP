@@ -11,9 +11,9 @@ import mcp.model.server
 scheduler = None
 
 def rotate_log(prefix, filename):
-    if os.path.getsize(filename) > mcp.config.maxlogsize*1024:
+    if os.path.getsize(prefix + '/' + filename) > mcp.config.maxlogsize*1024:
         shutil.copy(prefix + '/' + filename, prefix + '/log/' + datetime.strftime('%Y-%m-%d_%H-%M') + '.' + filename)
-        with open(filename, 'w') as file:
+        with open(prefix + '/' + filename, 'w') as file:
             pass
 
 def rotate():

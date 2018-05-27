@@ -1,10 +1,10 @@
 function login(username, password, callback) {
 	auth = 'Basic ' + btoa(username + ':' + password);
 
-	get('/users/' + username, auth, function(request) {
+	post('/users/' + username, {}, auth, function(request) {
 		if(request.status == 200) {
 			user = JSON.parse(request.responseText);
-			set_cookie(username, user.key);
+			set_cookie(username, user.token);
 
 			typeof callback == 'function' && callback();
 		}

@@ -117,6 +117,12 @@ def script_stop(server_name):
 
     server_db[server_name].script_running = False
 
+def send(server_name, command):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    server_db[server_name].command = '\n'.join(server_db[server_name].command.split('\n') + [command])
+
 def port_check(port):
     return port and port > 0 and port < 65536
 
@@ -134,4 +140,4 @@ def port_get_next():
 
     return None
 
-server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users', 'running', 'script_running'])
+server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'command'])

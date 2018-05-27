@@ -1,3 +1,5 @@
+var auth_token;
+
 var servers, server;
 
 var settings, settings_text;
@@ -148,6 +150,8 @@ function refresh(force) {
 }
 
 function load() {
+	auth_token = 'Token ' + get_cookie();
+
 	settings = CodeMirror(document.getElementById('settings_editor'), {
 		mode: 'settings',
 		lineNumbers: true,

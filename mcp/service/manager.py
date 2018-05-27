@@ -121,19 +121,30 @@ def run(poll_interval=0.5):
     for entry in mcp.model.server.items():
         server_processes[entry.server] = Server(entry)
 
+        entry.running = False
+        entry.script_running = False
+        entry.command = ''
+
     try:
         while running:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
                     if entry.server not in server_processes:
-                        server_processes[entry.server] = Server(entry.server)
+                        server_processes[entry.server] = Server(entry)
+
+                        entry.running = False
+                        entry.script_running = False
+                        entry.command = ''
 
                     # get process
                     process = server_processes[entry.server]
 
                     # check if each server is supposed to be running and poll for problems
                     if entry.running:
+                        for command in entry.command.split('\n'):
+                            process.send_command(command)
+
                         if not process.proc:
                             process.start()
                         elif process.is_quit():

@@ -38,19 +38,27 @@ class Server(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         return 200, dict(mcp.model.server.get(self.groups[0]))
 
     def do_post(self):
-        pass
+        try:
+            if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
+                raise fooster.web.HTTPError(404)
+        except AttributeError:
+            raise fooster.web.HTTPError(404)
+
+        mcp.model.server.send(self.groups[0], self.request.body)
+
+        return 204, None
 
     def do_put(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         if not self.auth.admin and ('port' in self.request.body or 'source' in self.request.body or 'revision' in self.request.body):
@@ -71,7 +79,7 @@ class Server(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         if not self.auth.admin:
@@ -87,7 +95,7 @@ class Settings(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         return 200, mcp.model.server.settings_get(self.groups[0])
@@ -96,7 +104,7 @@ class Settings(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         return 200, mcp.model.server.settings_get(self.groups[0])
@@ -105,7 +113,7 @@ class Settings(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         mcp.model.server.settings_remove(self.groups[0])
@@ -117,7 +125,7 @@ class Log(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         try:
@@ -130,7 +138,7 @@ class Script(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         return 200, mcp.model.server.script_get(self.groups[0])
@@ -139,7 +147,7 @@ class Script(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         mcp.model.server.script_stop(self.groups[0])
@@ -153,7 +161,7 @@ class Script(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         mcp.model.server.script_stop(self.groups[0])
@@ -167,7 +175,7 @@ class ScriptLog(mcp.common.http.AuthHandler):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
                 raise fooster.web.HTTPError(404)
-        except mcp.error.NoServerError:
+        except AttributeError:
             raise fooster.web.HTTPError(404)
 
         try:

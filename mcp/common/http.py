@@ -13,14 +13,23 @@ class PageHandler(fooster.web.page.PageHandler):
     directory = os.path.dirname(__file__) + '/html'
 
 class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.json.JSONHandler):
+    def login(self, username, password):
+        try:
+            return mcp.model.user.check_user(username, password)
+        except mcp.error.NoUserError:
+            raise fooster.web.auth.AuthError('Basic', 'MCP')
+
     def auth_key(self, key):
         try:
             return mcp.model.user.check_key(key)
         except mcp.error.NoUserError:
             raise fooster.web.auth.AuthError('Key', 'MCP')
 
-    def login(self, username, password):
+    def auth_token(self, token):
         try:
-            return mcp.model.user.check_user(username, password)
+            return mcp.model.user.check_token(token)
         except mcp.error.NoUserError:
-            raise fooster.web.auth.AuthError('Basic', 'MCP')
+            raise fooster.web.auth.AuthError('Token', 'MCP')
+
+    def forbidden(self):
+        return not self.auth.active

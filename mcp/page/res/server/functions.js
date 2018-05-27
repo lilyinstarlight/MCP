@@ -1,12 +1,12 @@
 function getServers(handler) {
-	get('/server/', auth_key, function(request) {
+	get('/api/server/', auth_token, function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function start(server, callback) {
-	put('/server/' + server, auth_key, {'running': true}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -15,7 +15,7 @@ function start(server, callback) {
 }
 
 function stop(server, callback) {
-	put('/server/' + server, auth_key, {'running': false}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': false}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -24,7 +24,7 @@ function stop(server, callback) {
 }
 
 function restart(server, callback) {
-	put('/server/' + server, auth_key, {'running': true}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -33,7 +33,7 @@ function restart(server, callback) {
 }
 
 function sendCommand(server, command, callback) {
-	post('/server/' + server, auth_key, {'command': command}, function(request) {
+	post('/api/server/' + server, auth_token, {'command': command}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -52,35 +52,35 @@ function reload(server, callback) {
 }
 
 function getStatus(server, handler) {
-	get('/server/' + server, auth_key, function(request) {
+	get('/api/server/' + server, auth_token, function(request) {
 		if(request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function getLog(server, handler) {
-	get('/server/' + server + '/log', auth_key, function(request) {
+	get('/api/server/' + server + '/log', auth_token, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getScriptLog(server, handler) {
-	get('/server/' + server + '/script/log', auth_key, function(request) {
+	get('/api/server/' + server + '/script/log', auth_token, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function getSettings(server, handler) {
-	get('/server/' + server + '/settings', auth_key, function(request) {
+	get('/api/server/' + server + '/settings', auth_token, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateSettings(server, settings, callback) {
-	post('/server/' + server + '/settings', auth_key, {'settings': settings}, function(request) {
+	post('/api/server/' + server + '/settings', auth_token, {'settings': settings}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else
@@ -89,14 +89,14 @@ function updateSettings(server, settings, callback) {
 }
 
 function getScript(server, handler) {
-	get('/server/' + server + '/script', auth_key, function(request) {
+	get('/api/server/' + server + '/script', auth_token, function(request) {
 		if(request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateScript(server, script, callback) {
-	post('/server/' + server + '/script', auth_key, {'script': script}, function(request) {
+	post('/api/server/' + server + '/script', auth_token, {'script': script}, function(request) {
 		if(request.status == 200)
 			typeof callback == 'function' && callback();
 		else

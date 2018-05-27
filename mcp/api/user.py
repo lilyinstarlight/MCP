@@ -58,6 +58,15 @@ class User(mcp.common.http.AuthHandler):
 
         return 200, dict(mcp.model.user.get(self.groups[0]))
 
+    def do_post(self):
+        if not self.auth.admin and self.groups[0] != self.auth.username:
+            raise fooster.web.HTTPError(404)
+
+        try:
+            return 200, {'token': mcp.model.user.create_token(self.groups[0])}
+        except mcp.error.NoUserError:
+            raise fooster.web.HTTPError(404)
+
     def do_delete(self):
         if not self.auth.admin and self.groups[0] != self.auth.username:
             raise fooster.web.HTTPError(404)
