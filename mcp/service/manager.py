@@ -112,7 +112,7 @@ class Server(object):
 
         self.proc.stdin.write(command + '\n')
 
-running = False
+running = multiprocessing.Value('b', False)
 process = None
 
 def run(poll_interval=0.5):
@@ -126,7 +126,7 @@ def run(poll_interval=0.5):
         entry.command = ''
 
     try:
-        while running:
+        while running.value:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
@@ -196,20 +196,20 @@ def run(poll_interval=0.5):
 def start():
     global running, process
 
-    if is_running():
+    if process:
         return
 
-    running = True
+    running.value = True
     process = multiprocessing.Process(target=run, name='mcp-manager')
     process.start()
 
 def stop():
     global running, process
 
-    if not is_running():
+    if not process:
         return
 
-    running = False
+    running.value = False
     process.join()
     process = None
 

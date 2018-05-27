@@ -21,12 +21,18 @@ error_routes.update(fooster.web.json.new_error())
 def start():
     global httpd
 
+    if httpd:
+        return
+
     httpd = fooster.web.HTTPServer((mcp.config.addr, mcp.config.port), routes, error_routes, keyfile=mcp.config.tlskey, certfile=mcp.config.tlscert, sync=mcp.common.daemon.sync)
     httpd.start()
 
 
 def stop():
     global httpd
+
+    if not httpd:
+        return
 
     httpd.close()
     httpd = None

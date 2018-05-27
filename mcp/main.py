@@ -99,15 +99,15 @@ log = logging.getLogger('mcp')
 
 log.info(name + ' ' + version + ' starting...')
 
+# fix multiprocessing ctrl+c
+signal.signal(signal.SIGINT, signal.SIG_IGN)
+
 # check for starting files
 mcp.initial.check()
 
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()
 mcp.common.daemon.sync = multiprocessing.Manager()
-
-# fix multiprocessing ctrl+c
-signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 # start everything
 mcp.service.manager.start()
