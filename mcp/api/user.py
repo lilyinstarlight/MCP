@@ -2,6 +2,7 @@ import os
 import signal
 
 import fooster.web
+import fooster.web.query
 
 import mcp.error
 
@@ -79,4 +80,4 @@ class User(mcp.common.http.AuthHandler):
         return 204, None
 
 
-routes = {'/api/user/': Index, '/api/user/(' + mcp.model.user.users_allowed + ')': User}
+routes = {'/api/user/' + fooster.web.query.regex: Index, '/api/user/(' + mcp.model.user.users_allowed + ')' + fooster.web.query.regex: User}

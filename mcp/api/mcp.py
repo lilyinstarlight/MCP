@@ -1,6 +1,8 @@
 import os
 import signal
 
+import fooster.web.query
+
 import mcp.common.daemon
 import mcp.common.http
 
@@ -13,4 +15,4 @@ class Restart(mcp.common.http.AuthHandler):
         return 204, None
 
 
-routes = {'/api/restart': Restart}
+routes = {'/api/restart' + fooster.web.query.regex: Restart}

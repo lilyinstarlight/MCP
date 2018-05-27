@@ -91,7 +91,7 @@ def add(username, password, salt=None, key=None, admin=False, active=True, serve
     if not key:
         key = gen_key()
 
-    user = user_db.Entry(username, hash(password, salt), salt, key, admin, active, servers)
+    user = user_db.Entry(username, hash(password, salt), salt, key, admin, active, servers, '', 0)
 
     user_db[username] = user
 
@@ -131,4 +131,4 @@ def remove(username):
 
     user_db.remove(username)
 
-user_db = fooster.db.Database(mcp.config.database + '/db/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])
+user_db = fooster.db.Database(mcp.config.database + '/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])

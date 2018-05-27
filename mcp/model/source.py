@@ -51,4 +51,4 @@ def remove(source_name):
 
     del source_db[source_name]
 
-source_db = fooster.db.Database(mcp.config.database + '/db/sources.db', ['source', 'url', 'revision'])
+source_db = fooster.db.Database(mcp.config.database + '/sources.db', ['source', 'url', 'revision'])

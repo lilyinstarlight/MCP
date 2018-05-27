@@ -3,6 +3,7 @@ import os.path
 import fooster.web.auth
 import fooster.web.json
 import fooster.web.page
+import fooster.web.query
 
 import mcp.error
 
@@ -12,7 +13,7 @@ import mcp.model.user
 class PageHandler(fooster.web.page.PageHandler):
     directory = os.path.dirname(__file__) + '/html'
 
-class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.json.JSONHandler):
+class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn, fooster.web.json.JSONHandler):
     def login(self, username, password):
         try:
             return mcp.model.user.check_user(username, password)

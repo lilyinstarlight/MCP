@@ -2,6 +2,7 @@ import os
 import signal
 
 import fooster.web
+import fooster.web.query
 
 import mcp.error
 
@@ -81,4 +82,4 @@ class Library(mcp.common.http.AuthHandler):
         return 204, None
 
 
-routes = {'/api/script/': Index, '/api/script/(' + mcp.model.script.libraries_allowed + ')': Library}
+routes = {'/api/script/' + fooster.web.query.regex: Index, '/api/script/(' + mcp.model.script.libraries_allowed + ')' + fooster.web.query.regex: Library}

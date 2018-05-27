@@ -2,6 +2,7 @@ import os
 import signal
 
 import fooster.web
+import fooster.web.query
 
 import mcp.error
 
@@ -184,4 +185,4 @@ class ScriptLog(mcp.common.http.AuthHandler):
             return 201, mcp.model.server.script_log_get(self.groups[0])
 
 
-routes = {'/api/server/': Index, '/api/server/(' + mcp.model.server.servers_allowed + ')': Server, '/api/server/(' + mcp.model.server.servers_allowed + ')/settings': Settings, '/api/server/(' + mcp.model.server.servers_allowed + ')/log': Log, '/api/server/(' + mcp.model.server.servers_allowed + ')/script': Script, '/api/server/(' + mcp.model.server.servers_allowed + ')/script/log': ScriptLog}
+routes = {'/api/server/' + fooster.web.query.regex: Index, '/api/server/(' + mcp.model.server.servers_allowed + ')' + fooster.web.query.regex: Server, '/api/server/(' + mcp.model.server.servers_allowed + ')/settings' + fooster.web.query.regex: Settings, '/api/server/(' + mcp.model.server.servers_allowed + ')/log' + fooster.web.query.regex: Log, '/api/server/(' + mcp.model.server.servers_allowed + ')/script' + fooster.web.query.regex: Script, '/api/server/(' + mcp.model.server.servers_allowed + ')/script/log' + fooster.web.query.regex: ScriptLog}

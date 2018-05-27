@@ -53,4 +53,4 @@ def remove(library_name):
 
     del library_db[library_name]
 
-library_db = fooster.db.Database(mcp.config.database + '/db/libraries.db', ['library', 'url', 'revision'])
+library_db = fooster.db.Database(mcp.config.database + '/libraries.db', ['library', 'url', 'revision'])

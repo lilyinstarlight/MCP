@@ -2,6 +2,7 @@ import os
 import signal
 
 import fooster.web
+import fooster.web.query
 
 import mcp.error
 
@@ -69,4 +70,4 @@ class Source(mcp.common.http.AuthHandler):
         return 204, None
 
 
-routes = {'/api/source/': Index, '/api/source/(' + mcp.model.source.sources_allowed + ')': Source}
+routes = {'/api/source/' + fooster.web.query.regex: Index, '/api/source/(' + mcp.model.source.sources_allowed + ')' + fooster.web.query.regex: Source}
