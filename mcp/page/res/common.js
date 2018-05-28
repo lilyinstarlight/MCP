@@ -5,8 +5,8 @@ function goto(uri) {
 function change(element, child) {
 	var root = document.getElementById(element);
 
-	for(var node in root.childNodes) {
-		if(root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'section')
+	for (var node in root.childNodes) {
+		if (root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'section')
 			root.childNodes[node].style.display = 'none';
 	}
 
@@ -14,10 +14,10 @@ function change(element, child) {
 }
 
 function is_visible(element) {
-	if(element == document)
+	if (element == document)
 		return true;
 
-	if(element.style.display == 'none')
+	if (element.style.display == 'none')
 		return false;
 	else
 		return is_visible(element.parentNode);
@@ -42,15 +42,18 @@ function XHR(address, method, auth, data, handler) {
 	var request = new XMLHttpRequest();
 
 	request.onreadystatechange = function() {
-		if(request.readyState == 4) {
-			if(handler != null)
+		if (request.readyState == 4) {
+			if (request.status == 401)
+				window.location.href = '/login';
+
+			if (handler != null)
 				handler(request);
 
 			completed = true;
 
 			count--;
 			working = document.getElementById('working');
-			if(count == 0 && working != null)
+			if (count == 0 && working != null)
 				working.style.display = 'none';
 		}
 	};
@@ -59,7 +62,7 @@ function XHR(address, method, auth, data, handler) {
 
 	request.setRequestHeader('Authorization', auth);
 
-	if(data != null) {
+	if (data != null) {
 		json = JSON.stringify(data);
 		request.setRequestHeader('Content-Type', 'application/json');
 		request.setRequestHeader('Content-Length', json.length);
@@ -73,7 +76,7 @@ function XHR(address, method, auth, data, handler) {
 	count++;
 	setTimeout(function() {
 		working = document.getElementById('working');
-		if(!completed && working != null)
+		if (!completed && working != null)
 			working.style.display = 'inline-block';
 	}, 500);
 }

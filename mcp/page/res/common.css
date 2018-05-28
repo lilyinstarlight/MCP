@@ -1,13 +1,14 @@
 html {
 	margin: 0px;
 	padding: 0px;
+	height: 100%;
 }
 
 body {
 	background: url('/res/background.png');
-	margin: 0px;
+	margin: 0px 0px 60px 0px;
 	padding: 0px;
-	height: 100%;
+	min-height: 100%;
 	min-width: 800px;
 	color: #DDD;
 }

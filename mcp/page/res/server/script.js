@@ -44,38 +44,38 @@ function saveScript() {
 }
 
 function refresh(force) {
-	if(typeof force != 'boolean')
+	if (typeof force != 'boolean')
 		force = false;
 
 	getServers(function(response) {
 		servers = response;
 
-		if(servers.length == 0) {
+		if (servers.length == 0) {
 			changeServer('');
 			document.getElementById('content').style.display = 'none';
 			document.getElementById('navigation').style.display = 'none';
 		}
-		else if(!server) {
+		else if (!server) {
 			changeServer(servers[0]);
 			document.getElementById('content').style.display = 'block';
 			document.getElementById('navigation').style.display = 'inline';
 		}
 
 		var select = document.createElement('select');
-		for(var name in servers) {
+		for (var name in servers) {
 			var option = document.createElement('option');
 			option.value = servers[name];
 			option.innerHTML = servers[name];
-			if(name == server)
+			if (name == server)
 				option.setAttribute('selected', 'selected');
 			select.appendChild(option);
 		}
 		document.getElementById('servers').innerHTML = select.innerHTML;
 	});
 
-	if(server) {
+	if (server) {
 		getStatus(server, function(status) {
-			switch(status) {
+			switch (status) {
 				case 'stopped':
 					document.getElementById('started').style.display = 'none';
 					document.getElementById('stopped').style.display = 'inline';
@@ -114,30 +114,30 @@ function refresh(force) {
 			}
 		});
 
-		if(isVisible(document.getElementById('log')) || force) {
+		if (isVisible(document.getElementById('log')) || force) {
 			getLog(server, function(response) {
 				document.getElementById('log').innerHTML = response;
 			});
 		}
 
-		if(isVisible(document.getElementById('script_log')) || force) {
+		if (isVisible(document.getElementById('script_log')) || force) {
 			getScriptLog(server, function(response) {
 				document.getElementById('script_log').innerHTML = response;
 			});
 		}
 
-		if(isVisible(document.getElementById('settings_editor')) || force) {
+		if (isVisible(document.getElementById('settings_editor')) || force) {
 			getSettings(server, function(response) {
-				if(settings_text == response)
+				if (settings_text == response)
 					return;
 				settings_text = response;
 				settings.setValue(settings_text);
 			});
 		}
 
-		if(isVisible(document.getElementById('script_editor')) || force) {
+		if (isVisible(document.getElementById('script_editor')) || force) {
 			getScript(server, function(response) {
-				if(script_text == response)
+				if (script_text == response)
 					return;
 
 				script_text = response;

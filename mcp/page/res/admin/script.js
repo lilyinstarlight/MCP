@@ -6,13 +6,13 @@ var user_selected, server_selected, source_selected;
 function userSelect() {
 	var selected = []
 	var options = document.getElementById('user_listing').options;
-	for(var option in options) {
-		if(options[option].selected)
+	for (var option in options) {
+		if (options[option].selected)
 			selected.push(options[option].value);
 	}
 	user_selected = selected;
 
-	if(selected.length > 0) {
+	if (selected.length > 0) {
 		document.getElementById('user_modify_button').className = 'button';
 		document.getElementById('user_destroy_button').className = 'button';
 
@@ -22,12 +22,12 @@ function userSelect() {
 
 		var user_servers = users[selected[0]].servers;
 		var select = document.createElement('select');
-		for(var server in servers) {
+		for (var server in servers) {
 			var option = document.createElement('option');
 			option.value = server;
 			option.innerHTML = server;
-			for(var user_server in user_servers) {
-				if(server == user_servers[user_server])
+			for (var user_server in user_servers) {
+				if (server == user_servers[user_server])
 					option.setAttribute('selected', 'selected');
 			}
 			select.appendChild(option);
@@ -48,8 +48,8 @@ function userSelect() {
 function submitUser() {
 	var servers = [];
 	var options = document.getElementById('user_create_servers').options;
-	for(var option in options) {
-		if(options[option].selected)
+	for (var option in options) {
+		if (options[option].selected)
 			servers.push(options[option].value);
 	}
 	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked, function() {
@@ -63,28 +63,28 @@ function submitUser() {
 function submitModifyUser() {
 	var servers = [];
 	var options = document.getElementById('user_modify_servers').options;
-	for(var option in options) {
-		if(options[option].selected)
+	for (var option in options) {
+		if (options[option].selected)
 			servers.push(options[option].value);
 	}
 	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, servers.join(','), document.getElementById('user_modify_admin').checked);
 }
 
 function userDestroy() {
-	for(var user in user_selected)
+	for (var user in user_selected)
 		destroyUser(user_selected[user])
 }
 
 function serverSelect() {
 	var selected = []
 	var options = document.getElementById('server_listing').options;
-	for(var option in options) {
-		if(options[option].selected)
+	for (var option in options) {
+		if (options[option].selected)
 			selected.push(options[option].value);
 	}
 	server_selected = selected;
 
-	if(selected.length > 0) {
+	if (selected.length > 0) {
 		document.getElementById('server_upgrade_button').className = 'button';
 		document.getElementById('server_destroy_button').className = 'button';
 	}
@@ -102,25 +102,25 @@ function submitServer() {
 }
 
 function serverUpgrade() {
-	for(var server in server_selected)
+	for (var server in server_selected)
 		upgradeServer(server_selected[server])
 }
 
 function serverDestroy() {
-	for(var server in server_selected)
+	for (var server in server_selected)
 		destroyServer(server_selected[server])
 }
 
 function sourceSelect() {
 	var selected = []
 	var options = document.getElementById('source_listing').options;
-	for(var option in options) {
-		if(options[option].selected)
+	for (var option in options) {
+		if (options[option].selected)
 			selected.push(options[option].value);
 	}
 	source_selected = selected;
 
-	if(selected.length > 0) {
+	if (selected.length > 0) {
 		document.getElementById('source_update_button').className = 'button';
 		document.getElementById('source_remove_button').className = 'button';
 	}
@@ -138,12 +138,12 @@ function submitSource() {
 }
 
 function sourceUpdate() {
-	for(var source in source_selected)
+	for (var source in source_selected)
 		updateSource(source_selected[source])
 }
 
 function sourceRemove() {
-	for(var source in source_selected)
+	for (var source in source_selected)
 		removeSource(source_selected[source])
 }
 
@@ -154,20 +154,20 @@ function saveConfig() {
 }
 
 function refresh(force) {
-	if(typeof force != 'boolean')
+	if (typeof force != 'boolean')
 		force = false;
 
 	getFeatures(function(response) {
 		features = response;
 
-		if(features.creation) {
+		if (features.creation) {
 			document.getElementById('config_button').className = 'button';
-			if(isVisible(document.getElementById('server_create_button')) || force)
+			if (isVisible(document.getElementById('server_create_button')) || force)
 				document.getElementById('server_create_button').className = 'button';
 		}
 		else {
 			document.getElementById('config_button').className = 'button disabled';
-			if(isVisible(document.getElementById('server_create_button')) || force)
+			if (isVisible(document.getElementById('server_create_button')) || force)
 				document.getElementById('server_create_button').className = 'button disabled';
 		}
 	});
@@ -175,15 +175,15 @@ function refresh(force) {
 	getUsers(function(response) {
 		users = response;
 
-		if(isVisible(document.getElementById('user_listing')) || force) {
+		if (isVisible(document.getElementById('user_listing')) || force) {
 			var select = document.createElement('select');
-			for(var user in response) {
+			for (var user in response) {
 				var option = document.createElement('option');
 				option.value = user;
 				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(', ') : '');
 				select.appendChild(option);
 			}
-			if(document.getElementById('user_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('user_listing').innerHTML != select.innerHTML) {
 				document.getElementById('user_listing').innerHTML = select.innerHTML;
 				userSelect();
 			}
@@ -193,29 +193,29 @@ function refresh(force) {
 	getServers(function(response) {
 		servers = response;
 
-		if(isVisible(document.getElementById('server_listing')) || force) {
+		if (isVisible(document.getElementById('server_listing')) || force) {
 			var select = document.createElement('select');
-			for(var server in response) {
+			for (var server in response) {
 				var option = document.createElement('option');
 				option.value = server;
 				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
 				select.appendChild(option);
 			}
-			if(document.getElementById('server_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('server_listing').innerHTML != select.innerHTML) {
 				document.getElementById('server_listing').innerHTML = select.innerHTML;
 				serverSelect();
 			}
 		}
 
-		if(isVisible(document.getElementById('user_create_servers')) || force) {
+		if (isVisible(document.getElementById('user_create_servers')) || force) {
 			var select = document.createElement('select');
-			for(var server in response) {
+			for (var server in response) {
 				var option = document.createElement('option');
 				option.value = server;
 				option.innerHTML = server;
 				select.appendChild(option);
 			}
-			if(document.getElementById('user_create_servers').innerHTML != select.innerHTML)
+			if (document.getElementById('user_create_servers').innerHTML != select.innerHTML)
 				document.getElementById('user_create_servers').innerHTML = select.innerHTML;
 		}
 	});
@@ -223,36 +223,36 @@ function refresh(force) {
 	getSources(function(response) {
 		sources = response;
 
-		if(isVisible(document.getElementById('source_listing')) || force) {
+		if (isVisible(document.getElementById('source_listing')) || force) {
 			var select = document.createElement('select');
-			for(var source in response) {
+			for (var source in response) {
 				var option = document.createElement('option');
 				option.value = source;
 				option.innerHTML = source + ' - r' + response[source].revision;
 				select.appendChild(option);
 			}
-			if(document.getElementById('source_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('source_listing').innerHTML != select.innerHTML) {
 				document.getElementById('source_listing').innerHTML = select.innerHTML;
 				sourceSelect();
 			}
 		}
 
-		if(isVisible(document.getElementById('server_source')) || force) {
+		if (isVisible(document.getElementById('server_source')) || force) {
 			var select = document.createElement('select');
-			for(var source in response) {
+			for (var source in response) {
 				var option = document.createElement('option');
 				option.value = source;
 				option.innerHTML = source;
 				select.appendChild(option);
 			}
-			if(document.getElementById('server_source').innerHTML != select.innerHTML)
+			if (document.getElementById('server_source').innerHTML != select.innerHTML)
 				document.getElementById('server_source').innerHTML = select.innerHTML;
 		}
 	});
 
-	if((isVisible(document.getElementById('config_editor')) || force) && features.creation) {
+	if ((isVisible(document.getElementById('config_editor')) || force) && features.creation) {
 		getConfig(function(response) {
-			if(config_text == response)
+			if (config_text == response)
 				return;
 			config_text = response;
 			config.setValue(response);

@@ -1,20 +1,20 @@
 function getFeatures(handler) {
-	get('/admin/features', function(request) {
-		if(request.status == 200)
+	get('/api/features', function(request) {
+		if (request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function getUsers(handler) {
-	get('/admin/get/users', function(request) {
-		if(request.status == 200)
+	get('/api/user/', function(request) {
+		if (request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function createUser(user, password, servers, admin, callback) {
-	post('/admin/create/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
-		if(request.status == 200)
+	post('/api/user/', {'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error creating user: ' + request.responseText);
@@ -22,8 +22,8 @@ function createUser(user, password, servers, admin, callback) {
 }
 
 function modifyUser(user, password, servers, admin, callback) {
-	post('/admin/modify/user', { 'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false' }, function(request) {
-		if(request.status == 200)
+	put('/api/user/' + user, {'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error modifying user: ' + request.responseText);
@@ -31,8 +31,8 @@ function modifyUser(user, password, servers, admin, callback) {
 }
 
 function destroyUser(user, callback) {
-	post('/admin/destroy/user', { 'user': user }, function(request) {
-		if(request.status == 200)
+	delete('/api/user/' + user, function(request) {
+		if (request.status == 204)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error destroying user: ' + request.responseText);
@@ -40,15 +40,15 @@ function destroyUser(user, callback) {
 }
 
 function getServers(handler) {
-	get('/admin/get/servers', function(request) {
-		if(request.status == 200)
+	get('/api/server/', function(request) {
+		if (request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
 function createServer(server, source, callback) {
-	post('/admin/create/server', { 'server': server, 'source': source }, function(request) {
-		if(request.status == 200)
+	post('/api/server/', {'server': server, 'source': source}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error creating server: ' + request.responseText);
@@ -56,8 +56,8 @@ function createServer(server, source, callback) {
 }
 
 function upgradeServer(server, callback) {
-	post('/admin/upgrade/server', { 'server': server }, function(request) {
-		if(request.status == 200)
+	put('/api/server/' + server, {'revision': null}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error upgrading server: ' + request.responseText);
@@ -65,33 +65,24 @@ function upgradeServer(server, callback) {
 }
 
 function destroyServer(server, callback) {
-	post('/admin/destroy/server', { 'server': server }, function(request) {
-		if(request.status == 200)
+	delete('/api/server/' + server, {}, function(request) {
+		if (request.status == 204)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error destroying server: ' + request.responseText);
 	});
 }
 
-function upgradeServers(callback) {
-	get('/admin/upgrade/servers', function(request) {
-		if(request.status == 200)
-			typeof callback == 'function' && callback();
-		else
-			alert('Error upgrading servers: ' + request.responseText);
-	});
-}
-
 function getSources(handler) {
-	get('/admin/get/sources', function(request) {
-		if(request.status == 200)
+	get('/api/source/', function(request) {
+		if (request.status == 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
-function addSource(source, bzr, callback) {
-	post('/admin/add/source', { 'source': source, 'bzr': bzr }, function(request) {
-		if(request.status == 200)
+function addSource(source, url, callback) {
+	post('/api/source/', {'source': source, 'url': url}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error adding source: ' + request.responseText);
@@ -99,8 +90,8 @@ function addSource(source, bzr, callback) {
 }
 
 function updateSource(source, callback) {
-	post('/admin/update/source', { 'source': source }, function(request) {
-		if(request.status == 200)
+	put('/api/source/' + source, {}, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error updating source: ' + request.responseText);
@@ -108,33 +99,24 @@ function updateSource(source, callback) {
 }
 
 function removeSource(source, callback) {
-	post('/admin/remove/source', { 'source': source }, function(request) {
-		if(request.status == 200)
+	delete('/api/source/' + source, {}, function(request) {
+		if (request.status == 204)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error removing source: ' + request.responseText);
 	});
 }
 
-function updateSources(callback) {
-	get('/admin/update/sources', function(request) {
-		if(request.status == 200)
-			typeof callback == 'function' && callback();
-		else
-			alert('Error updating sources: ' + request.responseText);
-	});
-}
-
 function getConfig(handler) {
-	get('/admin/get/config', function(request) {
-		if(request.status == 200)
+	get('/api/config', function(request) {
+		if (request.status == 200)
 			handler(request.responseText);
 	});
 }
 
 function updateConfig(config, callback) {
-	post('/admin/update/config', { 'config': config }, function(request) {
-		if(request.status == 200)
+	put('/api/config', config, function(request) {
+		if (request.status == 200)
 			typeof callback == 'function' && callback();
 		else
 			alert('Error updating config: ' + request.responseText);
