@@ -48,12 +48,15 @@ class User(mcp.common.http.AuthHandler):
         if not self.auth.admin and self.groups[0] != self.auth.username:
             raise fooster.web.HTTPError(404)
 
+        if ('admin' in self.request.body or 'active' in self.request.body or 'servers' in self.request.body) and not self.auth.admin:
+            raise fooster.web.HTTPError(403)
+
         try:
-            mcp.model.user.modify(self.groups[0])
+            mcp.model.user.modify(self.groups[0], self.request.body['password'] if 'password' in self.request.body else None, self.request.body['key'] if 'key' in self.request.body else None, self.request.body['admin'] if 'admin' in self.request.body else None, self.request.body['active'] if 'active' in self.request.body else None, self.request.body['servers'] if 'servers' in self.request.body else None)
         except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 
-        return 200, dict(mcp.model.user.get(self.request.body['name']))
+        return 200, dict(mcp.model.user.get(self.groups[0]))
 
     def do_delete(self):
         if not self.auth.admin and self.groups[0] != self.auth.username:
