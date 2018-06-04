@@ -4,7 +4,7 @@ function login(username, password, callback) {
 	post('/users/' + username, {}, auth, function(request) {
 		if (request.status == 200) {
 			user = JSON.parse(request.responseText);
-			set_cookie(username, user.token);
+			set_cookie(username, user.username + ':' + user.token);
 
 			typeof callback == 'function' && callback();
 		}

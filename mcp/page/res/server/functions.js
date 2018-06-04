@@ -1,4 +1,4 @@
-var auth_token = 'Token ' + get_cookie();
+var auth_token = 'Token ' + get_cookie().split(':')[0];
 
 function getServers(handler) {
 	get('/api/server/', auth_token, function(request) {

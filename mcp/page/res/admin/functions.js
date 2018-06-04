@@ -1,4 +1,4 @@
-var auth_token = 'Token ' + get_cookie();
+var auth_token = 'Token ' + get_cookie().split(':')[0];
 
 function getFeatures(handler) {
 	get('/api/features', auth_token, function(request) {
@@ -14,8 +14,8 @@ function getUsers(handler) {
 	});
 }
 
-function createUser(user, password, servers, admin, callback) {
-	post('/api/user/', auth_token, {'user': user, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+function createUser(user, password, key, servers, admin, callback) {
+	post('/api/user/', auth_token, {'user': user, 'key': key, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -23,8 +23,8 @@ function createUser(user, password, servers, admin, callback) {
 	});
 }
 
-function modifyUser(user, password, servers, admin, callback) {
-	put('/api/user/' + user, auth_token, {'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+function modifyUser(user, password, key, servers, admin, callback) {
+	put('/api/user/' + user, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else

@@ -18,7 +18,9 @@ function userSelect() {
 
 		document.getElementById('user_modify_name').value = selected[0];
 		document.getElementById('user_modify_password').value = '';
+		document.getElementById('user_modify_key').value = users[selected[0]].key;
 		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
+		document.getElementById('user_modify_active').checked = users[selected[0]].active;
 
 		var user_servers = users[selected[0]].servers;
 		var select = document.createElement('select');
@@ -40,8 +42,10 @@ function userSelect() {
 
 		document.getElementById('user_modify_name').value = '';
 		document.getElementById('user_modify_password').value = '';
+		document.getElementById('user_modify_key').value = '';
 		document.getElementById('user_modify_admin').checked = false;
 		document.getElementById('user_modify_servers').innerHTML = '';
+		document.getElementById('user_modify_checked').checked = false;
 	}
 }
 
@@ -55,8 +59,10 @@ function submitUser() {
 	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked, function() {
 		document.getElementById('user_create_name').value = '';
 		document.getElementById('user_create_password').value = '';
+		document.getElementById('user_create_key').value = '';
 		document.getElementById('user_create_admin').checked = false;
 		document.getElementById('user_create_servers').innerHTML = '';
+		document.getElementById('user_create_active').checked = true;
 	});
 }
 
@@ -67,7 +73,7 @@ function submitModifyUser() {
 		if (options[option].selected)
 			servers.push(options[option].value);
 	}
-	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, servers.join(','), document.getElementById('user_modify_admin').checked);
+	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked);
 }
 
 function userDestroy() {
@@ -154,7 +160,7 @@ function saveConfig() {
 }
 
 function refresh(force) {
-	if (typeof force != 'boolean')
+	if (typeof force !== 'boolean')
 		force = false;
 
 	getFeatures(function(response) {
@@ -183,7 +189,7 @@ function refresh(force) {
 				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(', ') : '');
 				select.appendChild(option);
 			}
-			if (document.getElementById('user_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('user_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('user_listing').innerHTML = select.innerHTML;
 				userSelect();
 			}
@@ -201,7 +207,7 @@ function refresh(force) {
 				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
 				select.appendChild(option);
 			}
-			if (document.getElementById('server_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('server_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('server_listing').innerHTML = select.innerHTML;
 				serverSelect();
 			}
@@ -215,7 +221,7 @@ function refresh(force) {
 				option.innerHTML = server;
 				select.appendChild(option);
 			}
-			if (document.getElementById('user_create_servers').innerHTML != select.innerHTML)
+			if (document.getElementById('user_create_servers').innerHTML !== select.innerHTML)
 				document.getElementById('user_create_servers').innerHTML = select.innerHTML;
 		}
 	});
@@ -231,7 +237,7 @@ function refresh(force) {
 				option.innerHTML = source + ' - r' + response[source].revision;
 				select.appendChild(option);
 			}
-			if (document.getElementById('source_listing').innerHTML != select.innerHTML) {
+			if (document.getElementById('source_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('source_listing').innerHTML = select.innerHTML;
 				sourceSelect();
 			}
@@ -245,7 +251,7 @@ function refresh(force) {
 				option.innerHTML = source;
 				select.appendChild(option);
 			}
-			if (document.getElementById('server_source').innerHTML != select.innerHTML)
+			if (document.getElementById('server_source').innerHTML !== select.innerHTML)
 				document.getElementById('server_source').innerHTML = select.innerHTML;
 		}
 	});
