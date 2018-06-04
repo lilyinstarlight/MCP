@@ -1,5 +1,3 @@
-var auth_token;
-
 var servers, server;
 
 var settings, settings_text;
@@ -44,13 +42,13 @@ function saveScript() {
 }
 
 function refresh(force) {
-	if (typeof force != 'boolean')
+	if (typeof force !== 'boolean')
 		force = false;
 
 	getServers(function(response) {
 		servers = response;
 
-		if (servers.length == 0) {
+		if (servers.length === 0) {
 			changeServer('');
 			document.getElementById('content').style.display = 'none';
 			document.getElementById('navigation').style.display = 'none';
@@ -66,7 +64,7 @@ function refresh(force) {
 			var option = document.createElement('option');
 			option.value = servers[name];
 			option.innerHTML = servers[name];
-			if (name == server)
+			if (name === server)
 				option.setAttribute('selected', 'selected');
 			select.appendChild(option);
 		}
@@ -128,7 +126,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('settings_editor')) || force) {
 			getSettings(server, function(response) {
-				if (settings_text == response)
+				if (settings_text === response)
 					return;
 				settings_text = response;
 				settings.setValue(settings_text);
@@ -137,7 +135,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('script_editor')) || force) {
 			getScript(server, function(response) {
-				if (script_text == response)
+				if (script_text === response)
 					return;
 
 				script_text = response;
@@ -150,8 +148,6 @@ function refresh(force) {
 }
 
 function load() {
-	auth_token = 'Token ' + get_cookie();
-
 	settings = CodeMirror(document.getElementById('settings_editor'), {
 		mode: 'settings',
 		lineNumbers: true,
