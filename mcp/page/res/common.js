@@ -1,8 +1,8 @@
-function goto(uri) {
+var goto = function(uri) {
 	location.href = uri;
 }
 
-function change(element, child) {
+var change = function(element, child) {
 	var root = document.getElementById(element);
 
 	for (var node in root.childNodes) {
@@ -13,7 +13,7 @@ function change(element, child) {
 	document.getElementById(child).style.display = 'block';
 }
 
-function is_visible(element) {
+var is_visible = function(element) {
 	if (element == document)
 		return true;
 
@@ -23,20 +23,20 @@ function is_visible(element) {
 		return is_visible(element.parentNode);
 }
 
-function set_cookie(username, key) {
+var set_cookie = function(username, key) {
 	document.cookie = JSON.stringify({'username': username, 'key': key});
 }
 
-function unset_cookie() {
+var unset_cookie = function() {
 	document.cookie = '';
 }
 
-function get_cookie() {
+var get_cookie = function() {
 	return JSON.parse(document.cookie);
 }
 
 var count = 0;
-function XHR(address, method, auth, data, handler) {
+var XHR = function(address, method, auth, data, handler) {
 	var completed = false;
 
 	var request = new XMLHttpRequest();
@@ -81,22 +81,22 @@ function XHR(address, method, auth, data, handler) {
 	}, 500);
 }
 
-function get(address, auth, handler) {
+var get = function(address, auth, handler) {
 	XHR(address, 'GET', auth, null, handler);
 }
 
-function post(address, auth, data, handler) {
+var post = function(address, auth, data, handler) {
 	XHR(address, 'POST', auth, data, handler);
 }
 
-function put(address, auth, data, handler) {
+var put = function(address, auth, data, handler) {
 	XHR(address, 'PUT', auth, data, handler);
 }
 
-function patch(address, auth, data, handler) {
+var patch = function(address, auth, data, handler) {
 	XHR(address, 'PATCH', auth, data, handler);
 }
 
-function delete(address, auth, handler) {
+var delete = function(address, auth, handler) {
 	XHR(address, 'DELETE', auth, null, handler);
 }

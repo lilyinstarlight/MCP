@@ -53,12 +53,12 @@
 							<ul>
 								<li><button id="user_create_button" onclick="change('users', 'user_create')">Create</button></li>
 								<li><button id="user_modify_button" onclick="change('users', 'user_modify')" disabled>Modify</button></li>
-								<li><button id="user_destroy_button" onclick="user_destroy()" disabled>Destroy</button></li>
+								<li><button id="user_destroy_button" onclick="userDestroy()" disabled>Destroy</button></li>
 							</ul>
 						</span>
 					</nav>
 
-					<select id="user_listing" onchange="user_select()" multiple></select>
+					<select id="user_listing" onchange="userSelect()" multiple></select>
 				</section>
 
 				<section id="user_create" style="display: none">
@@ -71,6 +71,10 @@
 							<tr>
 								<td><label for="user_create_password">Password: </label></td>
 								<td><input id="user_create_password" type="password"/></td>
+							</tr>
+							<tr>
+								<td><label for="user_create_key">API Key: </label></td>
+								<td><input id="user_create_key" type="password"/><button onclick="this.previousSibling.value = generateKey()">Generate</button></td>
 							</tr>
 							<tr>
 								<td><label for="user_create_admin">Admin: </label></td>
@@ -87,7 +91,7 @@
 							<tr></tr>
 							<tr>
 								<td><button onclick="change('users', 'user_list')">Cancel</button></td>
-								<td><button onclick="user_create(); change('users', 'user_list')">Create</button></td>
+								<td><button onclick="userCreate(); change('users', 'user_list')">Create</button></td>
 							</tr>
 						</table>
 					</form>
@@ -103,6 +107,10 @@
 							<tr>
 								<td><label for="user_modify_password">Password: </label></td>
 								<td><input id="user_modify_password" type="password"/></td>
+							</tr>
+							<tr>
+								<td><label for="user_modify_key">API Key: </label></td>
+								<td><input id="user_modify_key" type="password"/><button onclick="this.previousSibling.value = generateKey()">Generate</button></td>
 							</tr>
 							<tr>
 								<td><label for="user_modify_admin">Admin: </label></td>
@@ -126,25 +134,25 @@
 				</section>
 			</section>
 
-			<secion id="servers" style="display: none">
+			<section id="servers" style="display: none">
 				<section id="server_list">
 					<nav class="action">
 						<span class="left">
 							<ul>
 								<li><button id="server_create_button" onclick="change('servers', 'server_create')" disabled>Create</button></li>
-								<li><button id="server_upgrade_button" onclick="server_upgrade()" disabled>Upgrade</button></li>
-								<li><button id="server_destroy_button" onclick="server_destroy()" disabled>Destroy</button></li>
+								<li><button id="server_upgrade_button" onclick="serverUpgrade()" disabled>Upgrade</button></li>
+								<li><button id="server_destroy_button" onclick="serverDestroy()" disabled>Destroy</button></li>
 							</ul>
 						</span>
 
 						<span class="right">
 							<ul>
-								<li><button id=server_upgrade_all_button" onclick="server_upgrade_all()" disabled>Upgrade All</button></li>
+								<li><button id=server_upgrade_all_button" onclick="serverUpgradeAll()" disabled>Upgrade All</button></li>
 							</ul>
 						</span>
 					</nav>
 
-					<select id="server_listing" onchange="server_select()" multiple></select>
+					<select id="server_listing" onchange="serverSelect()" multiple></select>
 				</section>
 
 				<section id="server_create" style="display: none">
@@ -174,8 +182,8 @@
 						<span class="left">
 							<ul>
 								<li><button id="source_create_button" onclick="change('sources', 'source_add')" disabled>Add</button></li>
-								<li><button id="source_update_button" onclick="source_update()" disabled>Update</button></li>
-								<li><button id="source_remove_button" onclick="source_remove()" disabled>Remove</button></li>
+								<li><button id="source_update_button" onclick="sourceUpdate()" disabled>Update</button></li>
+								<li><button id="source_remove_button" onclick="sourceRemove()" disabled>Remove</button></li>
 							</ul>
 						</span>
 
@@ -214,7 +222,7 @@
 				<nav class="action">
 					<span class="right">
 						<ul>
-							<li><button id="config_submit" onclick="config_save()">Save</button></li>
+							<li><button id="config_submit" onclick="configSave()">Save</button></li>
 						</ul>
 					</span>
 				</nav>

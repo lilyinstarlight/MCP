@@ -17,7 +17,38 @@
 		</header>
 
 		<main>
-			<p>MCP</p>
+			<form onsubmit="modifyUser(this.elements['username'].value, this.elements['password'].value, this.elements['key'].value); return false">
+				<table>
+					<tr>
+						<td><label for="user_modify_username">Username: </label></td>
+						<td><input id="user_modify_username" type="text" disabled/></td>
+					</tr>
+					<tr>
+						<td><label for="user_modify_password">Password: </label></td>
+						<td><input id="user_modify_password" type="password"/></td>
+					</tr>
+					<tr>
+						<td><label for="user_modify_key">API Key: </label></td>
+						<td><input id="user_modify_key" type="password"/><button onclick="this.previousSibling.value = generateKey()">Generate</button></td>
+					</tr>
+					<tr>
+						<td><label for="user_modify_admin">Admin: </label></td>
+						<td><input id="user_modify_admin" type="checkbox" disabled/></td>
+					</tr>
+					<tr>
+						<td><label for="user_modify_active">Active: </label></td>
+						<td><input id="user_modify_active" type="checkbox" disabled/></td>
+					</tr>
+					<tr>
+						<td><label for="user_modify_servers">Servers: </label></td>
+						<td><select id="user_modify_servers" class="mini" multiple disabled></select></td>
+					</tr>
+					<tr></tr>
+					<tr>
+						<td><button type="submit">Modify</button></td>
+					</tr>
+				</table>
+			</form>
 		</main>
 	</body>
 </html>

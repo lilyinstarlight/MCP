@@ -1,21 +1,21 @@
 var auth_token = 'Token ' + get_cookie().split(':')[0];
 
-function getFeatures(handler) {
+var getFeatures = function(handler) {
 	get('/api/features', auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
-function getUsers(handler) {
+var getUsers = function(handler) {
 	get('/api/user/', auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
-function createUser(user, password, key, servers, admin, callback) {
-	post('/api/user/', auth_token, {'user': user, 'key': key, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+var createUser = function(user, password, key, servers, admin, active, callback) {
+	post('/api/user/', auth_token, {'user': user, 'key': key, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false', 'active': active ? 'true' : 'false'}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -23,8 +23,8 @@ function createUser(user, password, key, servers, admin, callback) {
 	});
 }
 
-function modifyUser(user, password, key, servers, admin, callback) {
-	put('/api/user/' + user, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin ? 'true' : 'false'}, function(request) {
+var modifyUser = function(user, password, key, servers, admin, active, callback) {
+	put('/api/user/' + user, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin ? 'true' : 'false', 'active': active ? 'true' : 'false'}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -32,7 +32,7 @@ function modifyUser(user, password, key, servers, admin, callback) {
 	});
 }
 
-function destroyUser(user, callback) {
+var destroyUser = function(user, callback) {
 	delete('/api/user/' + user, auth_token, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
@@ -41,14 +41,14 @@ function destroyUser(user, callback) {
 	});
 }
 
-function getServers(handler) {
+var getServers = function(handler) {
 	get('/api/server/', auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
-function createServer(server, source, callback) {
+var createServer = function(server, source, callback) {
 	post('/api/server/', auth_token, {'server': server, 'source': source}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
@@ -57,7 +57,7 @@ function createServer(server, source, callback) {
 	});
 }
 
-function upgradeServer(server, callback) {
+var upgradeServer = function(server, callback) {
 	put('/api/server/' + server, auth_token, {'revision': null}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
@@ -66,7 +66,7 @@ function upgradeServer(server, callback) {
 	});
 }
 
-function destroyServer(server, callback) {
+var destroyServer = function(server, callback) {
 	delete('/api/server/' + server, auth_token, {}, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
@@ -75,14 +75,14 @@ function destroyServer(server, callback) {
 	});
 }
 
-function getSources(handler) {
+var getSources = function(handler) {
 	get('/api/source/', auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
 }
 
-function addSource(source, url, callback) {
+var addSource = function(source, url, callback) {
 	post('/api/source/', auth_token, {'source': source, 'url': url}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
@@ -91,7 +91,7 @@ function addSource(source, url, callback) {
 	});
 }
 
-function updateSource(source, callback) {
+var updateSource = function(source, callback) {
 	put('/api/source/' + source, auth_token, {}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
@@ -100,7 +100,7 @@ function updateSource(source, callback) {
 	});
 }
 
-function removeSource(source, callback) {
+var removeSource = function(source, callback) {
 	delete('/api/source/' + source, auth_token, {}, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
@@ -109,14 +109,14 @@ function removeSource(source, callback) {
 	});
 }
 
-function getConfig(handler) {
+var getConfig = function(handler) {
 	get('/api/config', auth_token, function(request) {
 		if (request.status === 200)
 			handler(request.responseText);
 	});
 }
 
-function updateConfig(config, callback) {
+var updateConfig = function(config, callback) {
 	put('/api/config', auth_token, config, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();

@@ -1,4 +1,4 @@
-function login(username, password, callback) {
+var login = function(username, password, callback) {
 	auth = 'Basic ' + btoa(username + ':' + password);
 
 	post('/users/' + username, {}, auth, function(request) {
@@ -15,7 +15,7 @@ function login(username, password, callback) {
 	});
 }
 
-function logout(callback) {
+var logout = function(callback) {
 	unset_cookie();
 
 	typeof callback == 'function' && callback();

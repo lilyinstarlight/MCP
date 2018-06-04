@@ -1,11 +1,11 @@
 var username = get_cookie().split(':')[1]
 var user;
 
-function submitModifyUser() {
+var submitModifyUser = function() {
 	modifyUser(username, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value);
 }
 
-function refresh(force) {
+var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
 
@@ -36,7 +36,7 @@ function refresh(force) {
 	setTimeout(refresh, 500);
 }
 
-function load() {
+var load = function() {
 	refresh(true);
 }
 

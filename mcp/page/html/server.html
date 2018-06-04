@@ -66,7 +66,7 @@
 					</span>
 				</nav>
 
-				<form id="command" onsubmit="send_command(this.elements['command_input'].value); return false">
+				<form id="command" onsubmit="submitCommand(this.elements['command_input'].value); return false">
 					<table>
 						<tr>
 							<td>
@@ -86,7 +86,7 @@
 				<nav class="action">
 					<span class="right">
 						<ul>
-							<li><button id="settings_save_button" onclick="save_settings()">Start</button></li>
+							<li><button id="settings_save_button" onclick="saveSettings()">Start</button></li>
 						</ul>
 					</span>
 				</nav>
@@ -98,7 +98,7 @@
 				<nav class="action">
 					<span class="right">
 						<ul>
-							<li><button id="script_save_button" onclick="save_script()">Save</button></li>
+							<li><button id="script_save_button" onclick="saveScript()">Save</button></li>
 							<li><button id="script_editor_button" onclick="change('script', 'script_editor')">Editor</button></li>
 							<li><button id="script_log_button" onclick="change('script', 'script_console')">Console</button></li>
 						</ul>

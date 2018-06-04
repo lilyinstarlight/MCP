@@ -36,7 +36,7 @@ def check_key(key):
         return None
 
     for user in user_db:
-        if user.key == key:
+        if user.key == hash(key, user.salt):
             return user
 
     raise mcp.error.NoUserError()
@@ -89,9 +89,9 @@ def add(username, password, salt=None, key=None, admin=False, active=True, serve
         salt = gen_salt()
 
     if not key:
-        key = gen_key()
+        key = hash(gen_key(), salt)
 
-    user = user_db.Entry(username, hash(password, salt), salt, key, admin, active, servers, '', 0)
+    user = user_db.Entry(username, hash(password, salt), salt, hash(key, salt), admin, active, servers, '', 0)
 
     user_db[username] = user
 
@@ -107,7 +107,7 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
         user.hash = hash(password, user.salt)
 
     if key:
-        user.key = key
+        user.key = hash(key, user.salt)
 
     if admin:
         user.admin = admin

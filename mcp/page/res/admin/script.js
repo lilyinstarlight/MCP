@@ -3,7 +3,7 @@ var users, servers, sources;
 var config, config_text;
 var user_selected, server_selected, source_selected;
 
-function userSelect() {
+var userSelect = function() {
 	var selected = []
 	var options = document.getElementById('user_listing').options;
 	for (var option in options) {
@@ -18,7 +18,7 @@ function userSelect() {
 
 		document.getElementById('user_modify_name').value = selected[0];
 		document.getElementById('user_modify_password').value = '';
-		document.getElementById('user_modify_key').value = users[selected[0]].key;
+		document.getElementById('user_modify_key').value = '';
 		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
 		document.getElementById('user_modify_active').checked = users[selected[0]].active;
 
@@ -49,39 +49,49 @@ function userSelect() {
 	}
 }
 
-function submitUser() {
+var generateKey = function() {
+	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+	var key = '';
+	for (var i = 0; i < 24; i++)
+		key += chars.charAt(Math.floor(Math.random() * chars.length));
+
+	return key;
+}
+
+var submitUser = function() {
 	var servers = [];
 	var options = document.getElementById('user_create_servers').options;
 	for (var option in options) {
 		if (options[option].selected)
 			servers.push(options[option].value);
 	}
-	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, servers.join(','), document.getElementById('user_create_admin').checked, function() {
+	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, document.getElementById('user_create_key').value, servers.join(','), document.getElementById('user_create_admin').checked, document.getElementById('user_create_active').checked, function() {
 		document.getElementById('user_create_name').value = '';
 		document.getElementById('user_create_password').value = '';
 		document.getElementById('user_create_key').value = '';
 		document.getElementById('user_create_admin').checked = false;
-		document.getElementById('user_create_servers').innerHTML = '';
 		document.getElementById('user_create_active').checked = true;
+		document.getElementById('user_create_servers').innerHTML = '';
 	});
 }
 
-function submitModifyUser() {
+var submitModifyUser = function() {
 	var servers = [];
 	var options = document.getElementById('user_modify_servers').options;
 	for (var option in options) {
 		if (options[option].selected)
 			servers.push(options[option].value);
 	}
-	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked);
+	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
 }
 
-function userDestroy() {
+var userDestroy = function() {
 	for (var user in user_selected)
 		destroyUser(user_selected[user])
 }
 
-function serverSelect() {
+var serverSelect = function() {
 	var selected = []
 	var options = document.getElementById('server_listing').options;
 	for (var option in options) {
@@ -100,24 +110,29 @@ function serverSelect() {
 	}
 }
 
-function submitServer() {
+var submitServer = function() {
 	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value, function() {
 		document.getElementById('server_name').value = '';
 		document.getElementById('server_source').innerHTML = '';
 	});
 }
 
-function serverUpgrade() {
+var serverUpgrade = function() {
 	for (var server in server_selected)
 		upgradeServer(server_selected[server])
 }
 
-function serverDestroy() {
+var serverUpgradeAll = function() {
+	for (var server in servers)
+		upgradeServer(server['name'])
+}
+
+var serverDestroy = function() {
 	for (var server in server_selected)
 		destroyServer(server_selected[server])
 }
 
-function sourceSelect() {
+var sourceSelect = function() {
 	var selected = []
 	var options = document.getElementById('source_listing').options;
 	for (var option in options) {
@@ -136,30 +151,30 @@ function sourceSelect() {
 	}
 }
 
-function submitSource() {
+var submitSource = function() {
 	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value, function() {
 		document.getElementById('source_name').value = '';
 		document.getElementById('source_bzr').value = '';
 	});
 }
 
-function sourceUpdate() {
+var sourceUpdate = function() {
 	for (var source in source_selected)
 		updateSource(source_selected[source])
 }
 
-function sourceRemove() {
+var sourceRemove = function() {
 	for (var source in source_selected)
 		removeSource(source_selected[source])
 }
 
-function saveConfig() {
+var saveConfig = function() {
 	updateConfig(config.getValue(), function() {
 		alert('Config successfully saved');
 	});
 }
 
-function refresh(force) {
+var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
 
@@ -183,10 +198,10 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('user_listing')) || force) {
 			var select = document.createElement('select');
-			for (var user in response) {
+			for (var user in users) {
 				var option = document.createElement('option');
 				option.value = user;
-				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(', ') : '');
+				option.innerHTML = user + (response[user].admin ? ' (Admin)' : '') + (response[user].active ? '' : ' (Inactive)') + (response[user].servers.length > 0 ? ' - ' + response[user].servers.join(', ') : '');
 				select.appendChild(option);
 			}
 			if (document.getElementById('user_listing').innerHTML !== select.innerHTML) {
@@ -201,7 +216,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('server_listing')) || force) {
 			var select = document.createElement('select');
-			for (var server in response) {
+			for (var server in servers) {
 				var option = document.createElement('option');
 				option.value = server;
 				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
@@ -215,7 +230,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('user_create_servers')) || force) {
 			var select = document.createElement('select');
-			for (var server in response) {
+			for (var server in servers) {
 				var option = document.createElement('option');
 				option.value = server;
 				option.innerHTML = server;
@@ -231,7 +246,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('source_listing')) || force) {
 			var select = document.createElement('select');
-			for (var source in response) {
+			for (var source in sources) {
 				var option = document.createElement('option');
 				option.value = source;
 				option.innerHTML = source + ' - r' + response[source].revision;
@@ -245,7 +260,7 @@ function refresh(force) {
 
 		if (isVisible(document.getElementById('server_source')) || force) {
 			var select = document.createElement('select');
-			for (var source in response) {
+			for (var source in sources) {
 				var option = document.createElement('option');
 				option.value = source;
 				option.innerHTML = source;
@@ -268,7 +283,7 @@ function refresh(force) {
 	setTimeout(refresh, 500);
 }
 
-function load() {
+var load = function() {
 	config = CodeMirror(document.getElementById('config_editor'), {
 		mode: 'settings',
 		lineNumbers: true,

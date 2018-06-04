@@ -3,45 +3,45 @@ var servers, server;
 var settings, settings_text;
 var script, script_text;
 
-function changeServer(name) {
+var changeServer = function(name) {
 	server = name;
 	document.title = name ? name + ' - Server Administration' : 'Server Administration';
 }
 
-function startServer() {
+var startServer = function() {
 	start(server);
 }
 
-function stopServer() {
+var stopServer = function() {
 	stop(server);
 }
 
-function restartServer() {
+var restartServer = function() {
 	restart(server);
 }
 
-function reloadServer() {
+var reloadServer = function() {
 	reload(server);
 }
 
-function submitCommand() {
+var submitCommand = function() {
 	sendCommand(server, document.getElementById('command_box').value);
 	document.getElementById('command_box').value = '';
 }
 
-function saveSettings() {
+var saveSettings = function() {
 	updateSettings(server, settings.getValue(), function() {
 		alert('Settings successfully saved');
 	});
 }
 
-function saveScript() {
+var saveScript = function() {
 	updateScript(server, script.getValue(), function() {
 		alert('Script successfully saved');
 	});
 }
 
-function refresh(force) {
+var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
 
@@ -147,7 +147,7 @@ function refresh(force) {
 	setTimeout(refresh, 500);
 }
 
-function load() {
+var load = function() {
 	settings = CodeMirror(document.getElementById('settings_editor'), {
 		mode: 'settings',
 		lineNumbers: true,
