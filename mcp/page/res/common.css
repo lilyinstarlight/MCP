@@ -92,6 +92,10 @@ label {
 	float: right;
 }
 
+.none {
+	display: none;
+}
+
 .failure {
 	color: #f44;
 	font-weight: bold;
@@ -104,9 +108,14 @@ label {
 
 #working {
 	background: url('/res/working.gif') no-repeat center;
-	background-size: 25px;
-	width: 29px;
-	height: 29px;
+	background-size: 16px;
+	width: 18px;
+	height: 18px;
+	margin: 5px;
 	display: inline-block;
 	vertical-align: top;
+}
+
+#working.none {
+	display: none;
 }

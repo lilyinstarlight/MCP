@@ -52,7 +52,9 @@ def check_token(token):
     raise mcp.error.NoUserError()
 
 def create_token(username):
-    if username not in user_db:
+    try:
+        user = user_db[username]
+    except KeyError:
         raise mcp.error.NoUserError()
 
     user.token = gen_token()

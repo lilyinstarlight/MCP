@@ -62,7 +62,7 @@ var XHR = function(address, method, auth, data, handler) {
 
 	request.onreadystatechange = function() {
 		if (request.readyState == 4) {
-			if (request.status == 401)
+			if (request.status == 401 && window.location.pathname != '/login')
 				window.location.href = '/login';
 
 			if (handler != null)
