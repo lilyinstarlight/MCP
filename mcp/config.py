@@ -46,7 +46,7 @@ resource = os.path.dirname(__file__) + '/page/res'
 addr = ''
 
 # port to listen on for the web interface
-port = 8080
+port = 8000
 
 # path to TLS/SSL key and certificate files; None to disable TLS encryption
 tlskey = None
