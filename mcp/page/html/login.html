@@ -18,6 +18,15 @@
 			<span>Login</span>
 		</header>
 
+		<nav>
+			<span class="right">
+				<span id="working" style="display: none"></span>
+				<ul>
+					<li><button onclick="goto('/')">Index</button></li>
+				</ul>
+			</span>
+		</nav>
+
 		<main>
 			<form onsubmit="login(this.elements['user'].value, this.elements['password'].value, goto.bind(null, '/server')); return false">
 				<table>

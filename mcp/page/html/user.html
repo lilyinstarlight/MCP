@@ -16,6 +16,24 @@
 			<span>User</span>
 		</header>
 
+		<nav>
+			<span class="left" style="display: none">
+				<ul>
+					<li><button onclick="change('console')">Console</button></li>
+					<li><button onclick="change('settings')">Settings</button></li>
+					<li><button onclick="change('script')">Script</button></li>
+				</ul>
+			</span>
+			<span class="right">
+				<span id="working" style="display: none"></span>
+				<ul>
+					<li><button onclick="goto('/server')">Server</button></li>
+					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
+					<li><button onclick="unsetCookie(); goto('/')">Logout</button></li>
+				</ul>
+			</span>
+		</nav>
+
 		<main>
 			<form onsubmit="modifyUser(this.elements['username'].value, this.elements['password'].value, this.elements['key'].value); return false">
 				<table>

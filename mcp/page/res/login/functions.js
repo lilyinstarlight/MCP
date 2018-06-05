@@ -14,9 +14,3 @@ var login = function(username, password, callback) {
 			alert('Error logging in');
 	});
 };
-
-var logout = function(callback) {
-	unsetCookie();
-
-	typeof callback == 'function' && callback();
-};

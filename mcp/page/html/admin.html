@@ -36,7 +36,8 @@
 				<span id="working" style="display: none"></span>
 				<ul>
 					<li><button onclick="goto('/server')">Server</button></li>
-					<li><button onclick="logout(goto.bind(null, '/'))">Logout</button></li>
+					<li><button onclick="goto('/user')">User</button></li>
+					<li><button onclick="unsetCookie(); goto('/')">Logout</button></li>
 				</ul>
 			</span>
 		</nav>

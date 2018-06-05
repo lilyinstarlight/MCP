@@ -16,6 +16,19 @@
 			<span>Master Control Program</span>
 		</header>
 
+		<nav>
+			<span class="right">
+				<span id="working" style="display: none"></span>
+				<ul>
+					<li><button id="server_button" onclick="goto('/server')" style="display: none">Server</button></li>
+					<li><button id="user_button" onclick="goto('/user')" style="display: none">User</button></li>
+					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
+					<li><button id="login_button" onclick="goto('/login')">Login</button></li>
+					<li><button onclick="unsetCookie(); goto('/')">Logout</button></li>
+				</ul>
+			</span>
+		</nav>
+
 		<main>
 			<p>Welcome! Use the navigation buttons at the top to get started.</p>
 		</main>

@@ -33,9 +33,9 @@
 				<span id="working" style="display: none"></span>
 				<ul>
 					<li><select id="server_select" onchange="change_server(this.value)"></select></li>
-					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
 					<li><button onclick="goto('/user')">User</button></li>
-					<li><button onclick="logout(goto.bind(null, '/'))">Logout</button></li>
+					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
+					<li><button onclick="unsetCookie(); goto('/')">Logout</button></li>
 				</ul>
 			</span>
 		</nav>
