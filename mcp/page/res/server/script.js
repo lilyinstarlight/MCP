@@ -6,40 +6,40 @@ var script, script_text;
 var changeServer = function(name) {
 	server = name;
 	document.title = name ? name + ' - Server Administration' : 'Server Administration';
-}
+};
 
 var startServer = function() {
 	start(server);
-}
+};
 
 var stopServer = function() {
 	stop(server);
-}
+};
 
 var restartServer = function() {
 	restart(server);
-}
+};
 
 var reloadServer = function() {
 	reload(server);
-}
+};
 
 var submitCommand = function() {
 	sendCommand(server, document.getElementById('command_box').value);
 	document.getElementById('command_box').value = '';
-}
+};
 
 var saveSettings = function() {
 	updateSettings(server, settings.getValue(), function() {
 		alert('Settings successfully saved');
 	});
-}
+};
 
 var saveScript = function() {
 	updateScript(server, script.getValue(), function() {
 		alert('Script successfully saved');
 	});
-}
+};
 
 var refresh = function(force) {
 	if (typeof force !== 'boolean')
@@ -145,7 +145,7 @@ var refresh = function(force) {
 	}
 
 	setTimeout(refresh, 500);
-}
+};
 
 var load = function() {
 	settings = CodeMirror(document.getElementById('settings_editor'), {
@@ -171,6 +171,6 @@ var load = function() {
 	});
 
 	refresh(true);
-}
+};
 
 window.addEventListener('load', load, false);

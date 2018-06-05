@@ -47,7 +47,7 @@ var userSelect = function() {
 		document.getElementById('user_modify_servers').innerHTML = '';
 		document.getElementById('user_modify_checked').checked = false;
 	}
-}
+};
 
 var generateKey = function() {
 	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -57,7 +57,7 @@ var generateKey = function() {
 		key += chars.charAt(Math.floor(Math.random() * chars.length));
 
 	return key;
-}
+};
 
 var submitUser = function() {
 	var servers = [];
@@ -74,7 +74,7 @@ var submitUser = function() {
 		document.getElementById('user_create_active').checked = true;
 		document.getElementById('user_create_servers').innerHTML = '';
 	});
-}
+};
 
 var submitModifyUser = function() {
 	var servers = [];
@@ -84,12 +84,12 @@ var submitModifyUser = function() {
 			servers.push(options[option].value);
 	}
 	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
-}
+};
 
 var userDestroy = function() {
 	for (var user in user_selected)
 		destroyUser(user_selected[user])
-}
+};
 
 var serverSelect = function() {
 	var selected = []
@@ -108,29 +108,29 @@ var serverSelect = function() {
 		document.getElementById('server_upgrade_button').className = 'button disabled';
 		document.getElementById('server_destroy_button').className = 'button disabled';
 	}
-}
+};
 
 var submitServer = function() {
 	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value, function() {
 		document.getElementById('server_name').value = '';
 		document.getElementById('server_source').innerHTML = '';
 	});
-}
+};
 
 var serverUpgrade = function() {
 	for (var server in server_selected)
 		upgradeServer(server_selected[server])
-}
+};
 
 var serverUpgradeAll = function() {
 	for (var server in servers)
 		upgradeServer(server['name'])
-}
+};
 
 var serverDestroy = function() {
 	for (var server in server_selected)
 		destroyServer(server_selected[server])
-}
+};
 
 var sourceSelect = function() {
 	var selected = []
@@ -149,30 +149,30 @@ var sourceSelect = function() {
 		document.getElementById('source_update_button').className = 'button disabled';
 		document.getElementById('source_remove_button').className = 'button disabled';
 	}
-}
+};
 
 var submitSource = function() {
 	addSource(document.getElementById('source_name').value, document.getElementById('source_bzr').value, function() {
 		document.getElementById('source_name').value = '';
 		document.getElementById('source_bzr').value = '';
 	});
-}
+};
 
 var sourceUpdate = function() {
 	for (var source in source_selected)
 		updateSource(source_selected[source])
-}
+};
 
 var sourceRemove = function() {
 	for (var source in source_selected)
 		removeSource(source_selected[source])
-}
+};
 
 var saveConfig = function() {
 	updateConfig(config.getValue(), function() {
 		alert('Config successfully saved');
 	});
-}
+};
 
 var refresh = function(force) {
 	if (typeof force !== 'boolean')
@@ -281,7 +281,7 @@ var refresh = function(force) {
 	}
 
 	setTimeout(refresh, 500);
-}
+};
 
 var load = function() {
 	config = CodeMirror(document.getElementById('config_editor'), {
@@ -294,6 +294,6 @@ var load = function() {
 	});
 
 	refresh(true);
-}
+};
 
 window.addEventListener('load', load, false);

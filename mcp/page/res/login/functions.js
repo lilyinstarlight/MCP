@@ -13,10 +13,10 @@ var login = function(username, password, callback) {
 		else
 			alert('Error logging in');
 	});
-}
+};
 
 var logout = function(callback) {
-	unset_cookie();
+	unsetCookie();
 
 	typeof callback == 'function' && callback();
-}
+};

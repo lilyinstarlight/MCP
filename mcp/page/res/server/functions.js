@@ -5,7 +5,7 @@ var getServers = function(handler) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
-}
+};
 
 var start = function(server, callback) {
 	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
@@ -14,7 +14,7 @@ var start = function(server, callback) {
 		else
 			alert('Error starting server: ' + request.responseText);
 	});
-}
+};
 
 var stop = function(server, callback) {
 	put('/api/server/' + server, auth_token, {'running': false}, function(request) {
@@ -23,7 +23,7 @@ var stop = function(server, callback) {
 		else
 			alert('Error stopping server: ' + request.responseText);
 	});
-}
+};
 
 var restart = function(server, callback) {
 	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
@@ -32,7 +32,7 @@ var restart = function(server, callback) {
 		else
 			alert('Error restarting server: ' + request.responseText);
 	});
-}
+};
 
 var sendCommand = function(server, command, callback) {
 	post('/api/server/' + server, auth_token, {'command': command}, function(request) {
@@ -41,7 +41,7 @@ var sendCommand = function(server, command, callback) {
 		else
 			alert('Error sending command "' + command + '": ' + request.responseText);
 	});
-}
+};
 
 var reload = function(server, callback) {
 	sendCommand(server, 'INCLUDE settings.cfg', function() {
@@ -51,35 +51,35 @@ var reload = function(server, callback) {
 			});
 		});
 	});
-}
+};
 
 var getStatus = function(server, handler) {
 	get('/api/server/' + server, auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
-}
+};
 
 var getLog = function(server, handler) {
 	get('/api/server/' + server + '/log', auth_token, function(request) {
 		if (request.status === 200)
 			handler(request.responseText);
 	});
-}
+};
 
 var getScriptLog = function(server, handler) {
 	get('/api/server/' + server + '/script/log', auth_token, function(request) {
 		if (request.status === 200)
 			handler(request.responseText);
 	});
-}
+};
 
 var getSettings = function(server, handler) {
 	get('/api/server/' + server + '/settings', auth_token, function(request) {
 		if (request.status === 200)
 			handler(request.responseText);
 	});
-}
+};
 
 var updateSettings = function(server, settings, callback) {
 	post('/api/server/' + server + '/settings', auth_token, {'settings': settings}, function(request) {
@@ -88,20 +88,20 @@ var updateSettings = function(server, settings, callback) {
 		else
 			alert('Error updating settings: ' + request.responseText);
 	});
-}
+};
 
 var getScript = function(server, handler) {
 	get('/api/server/' + server + '/script', auth_token, function(request) {
 		if (request.status === 200)
 			handler(request.responseText);
 	});
-}
+};
 
-var updateScript = function(server, script, callback) {
+function updateScript(server, script, callback) {
 	post('/api/server/' + server + '/script', auth_token, {'script': script}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
 			alert('Error updating script: ' + request.responseText);
 	});
-}
+};

@@ -1,6 +1,6 @@
 var goto = function(uri) {
 	location.href = uri;
-}
+};
 
 var change = function(element, child) {
 	var root = document.getElementById(element);
@@ -11,29 +11,48 @@ var change = function(element, child) {
 	}
 
 	document.getElementById(child).style.display = 'block';
-}
+};
 
-var is_visible = function(element) {
+var isVisible = function(element) {
 	if (element == document)
 		return true;
 
 	if (element.style.display == 'none')
 		return false;
 	else
-		return is_visible(element.parentNode);
-}
+		return isVisible(element.parentNode);
+};
 
-var set_cookie = function(username, key) {
-	document.cookie = JSON.stringify({'username': username, 'key': key});
-}
+var setCookie = function(username, token) {
+    var date = new Date();
+    date.setTime(date.getTime() + 4*3600*1000);
 
-var unset_cookie = function() {
-	document.cookie = '';
-}
+    document.cookie = 'username=' + username + '; token=' + token + '; expires=' + date.toUTCString();
+};
 
-var get_cookie = function() {
-	return JSON.parse(document.cookie);
-}
+var unsetCookie = function() {
+    document.cookie = 'username=; token=; expires=' + new Date(0);
+};
+
+var splitCookie = function(name) {
+    var cookies = document.cookie.split(';');
+
+    for(var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+
+        while (cookie.charAt(0) == ' ')
+            cookie = cookie.substring(1);
+
+        if (cookie.indexOf(name + '=') == 0)
+            return cookie.substring(name.length + 1, cookie.length);
+    }
+
+    return '';
+};
+
+var getCookie = function() {
+	return {'username': splitCookie('username'), 'token': splitCookie('token')};
+};
 
 var count = 0;
 var XHR = function(address, method, auth, data, handler) {
@@ -79,24 +98,24 @@ var XHR = function(address, method, auth, data, handler) {
 		if (!completed && working != null)
 			working.style.display = 'inline-block';
 	}, 500);
-}
+};
 
 var get = function(address, auth, handler) {
 	XHR(address, 'GET', auth, null, handler);
-}
+};
 
 var post = function(address, auth, data, handler) {
 	XHR(address, 'POST', auth, data, handler);
-}
+};
 
 var put = function(address, auth, data, handler) {
 	XHR(address, 'PUT', auth, data, handler);
-}
+};
 
 var patch = function(address, auth, data, handler) {
 	XHR(address, 'PATCH', auth, data, handler);
-}
+};
 
-var delete = function(address, auth, handler) {
+var del = function(address, auth, handler) {
 	XHR(address, 'DELETE', auth, null, handler);
-}
+};
