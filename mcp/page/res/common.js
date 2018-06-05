@@ -84,7 +84,6 @@ var XHR = function(address, method, auth, data, handler) {
 	if (data != null) {
 		json = JSON.stringify(data);
 		request.setRequestHeader('Content-Type', 'application/json');
-		request.setRequestHeader('Content-Length', json.length);
 
 		request.send(json);
 	}
