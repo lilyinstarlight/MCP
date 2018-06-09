@@ -76,7 +76,7 @@
 							</tr>
 							<tr>
 								<td><label for="user_create_key">API Key: </label></td>
-								<td><input id="user_create_key" type="password"/><button onclick="this.previousSibling.value = generateKey()">Generate</button></td>
+								<td><input id="user_create_key" type="password"/><button onclick="this.previousSibling.value = generateKey(); return false">Generate</button></td>
 							</tr>
 							<tr>
 								<td><label for="user_create_admin">Admin: </label></td>
@@ -112,7 +112,7 @@
 							</tr>
 							<tr>
 								<td><label for="user_modify_key">API Key: </label></td>
-								<td><input id="user_modify_key" type="password"/><button onclick="this.previousSibling.value = generateKey()">Generate</button></td>
+								<td><input id="user_modify_key" type="password"/><button onclick="this.previousSibling.value = generateKey(); return false">Generate</button></td>
 							</tr>
 							<tr>
 								<td><label for="user_modify_admin">Admin: </label></td>

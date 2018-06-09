@@ -1,11 +1,11 @@
-var auth_token = 'Token ' + get_cookie().split(':')[0];
+var auth_token = 'Token ' + getCookie()['token'];
 
-var getUser = function(user, password, key, handler) {
+var getUser = function(user, handler) {
 	get('/api/user/' + user, auth_token, function(request) {
 		if (request.status === 200)
 			handler(JSON.parse(request.responseText));
 	});
-}
+};
 
 var modifyUser = function(user, password, key, callback) {
 	put('/api/user/' + user, auth_token, {'password': password, 'key': key}, function(request) {
@@ -14,4 +14,14 @@ var modifyUser = function(user, password, key, callback) {
 		else
 			alert('Error modifying user: ' + request.responseText);
 	});
-}
+};
+
+var generateKey = function() {
+	var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+	var key = '';
+	for (var i = 0; i < 24; i++)
+		key += chars[Math.floor(Math.random()*chars.length)];
+
+	return key;
+};

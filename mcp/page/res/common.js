@@ -27,7 +27,8 @@ var setCookie = function(username, token) {
     var date = new Date();
     date.setTime(date.getTime() + 4*3600*1000);
 
-    document.cookie = 'username=' + username + '; token=' + token + '; expires=' + date.toUTCString();
+    document.cookie = 'username=' + username + '; expires=' + date.toUTCString();
+    document.cookie = 'token=' + token + '; expires=' + date.toUTCString();
 };
 
 var unsetCookie = function() {
