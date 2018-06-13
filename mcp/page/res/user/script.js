@@ -1,8 +1,6 @@
 var username = getCookie()['username']
 var user;
 
-var form;
-
 var submitModifyUser = function() {
 	modifyUser(username, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value);
 };
@@ -39,19 +37,29 @@ var refresh = function(force) {
 };
 
 var load = function() {
-	form = document.getElementById('user_modify_form');
+	document.getElementById('logout_button').addEventListener('click', function(evt) {
+		unsetCookie();
+		goto('/');
 
-	form.addEventListener('submit', function(evt) {
-		modifyUser(form.elements['username'].value, form.elements['password'].value, form.elements['key'].value);
+		evt.preventDefault();
+	}, false);
+
+	document.getElementById('user_modify_generate').addEventListener('click', function(evt) {
+		document.getElementById('user_modify_form').elements['key'].value = generateKey();
 
 		evt.preventDefault();
 	}, false);
 
-	document.getElementById('user_modify_generate_button').addEventListener('click', function(evt) {
-		form.elements['key'].value = generateKey();
+	document.getElementById('user_modify_form').addEventListener('submit', function(evt) {
+		modifyUser(document.getElementById('user_modify_form').elements['username'].value, document.getElementById('user_modify_form').elements['password'].value, document.getElementById('user_modify_form').elements['key'].value);
 
 		evt.preventDefault();
 	}, false);
+
+	check(function(admin) {
+		if (admin)
+			document.getElementById('admin_button').className = '';
+	});
 
 	refresh(true);
 };

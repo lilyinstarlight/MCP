@@ -1,4 +1,11 @@
+var username = getCookie()['username'];
 var auth_token = 'Token ' + getCookie()['token'];
+
+var check = function(handler) {
+	get('/api/user/' + username, auth_token, function(request) {
+		handler(JSON.parse(request.responseText)['admin']);
+	});
+};
 
 var getUser = function(user, handler) {
 	get('/api/user/' + user, auth_token, function(request) {

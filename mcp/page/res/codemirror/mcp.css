@@ -1,4 +1,5 @@
 .cm-s-mcp.CodeMirror {
+	font-family: Armagetronad, monospace;
 	background: rgba(0, 0, 0, 0.2);
 	color: #ddd;
 }
@@ -20,54 +21,54 @@
 	border-left: 1px solid white !important;
 }
 
-.cm-s-mcp span.cm-comment {
+.cm-s-mcp .cm-comment {
 	color: #6900a1;
 }
 
-.cm-s-mcp span.cm-atom {
+.cm-s-mcp .cm-atom {
 	color: #845dc4;
 }
 
-.cm-s-mcp span.cm-number, .cm-s-mcp span.cm-attribute {
+.cm-s-mcp .cm-number, .cm-s-mcp .cm-attribute {
 	color: #ffd500;
 }
 
-.cm-s-mcp span.cm-keyword {
+.cm-s-mcp .cm-keyword {
 	color: #599eff;
 }
 
-.cm-s-mcp span.cm-string {
+.cm-s-mcp .cm-string {
 	color: #37f14a;
 }
 
-.cm-s-mcp span.cm-meta {
+.cm-s-mcp .cm-meta {
 	color: #7678e2;
 }
 
-.cm-s-mcp span.cm-variable-2, .cm-s-mcp span.cm-tag {
+.cm-s-mcp .cm-variable-2, .cm-s-mcp .cm-tag {
 	color: #99b2ff;
 }
 
-.cm-s-mcp span.cm-variable-3, .cm-s-mcp span.cm-def {
+.cm-s-mcp .cm-variable-3, .cm-s-mcp .cm-def {
 	color: white;
 }
 
-.cm-s-mcp span.cm-error {
+.cm-s-mcp .cm-error {
 	color: #9d1e15;
 }
 
-.cm-s-mcp span.cm-bracket {
+.cm-s-mcp .cm-bracket {
 	color: #8da6ce;
 }
 
-.cm-s-mcp span.cm-comment {
+.cm-s-mcp .cm-comment {
 	color: #6900a1;
 }
 
-.cm-s-mcp span.cm-builtin, .cm-s-mcp span.cm-special {
+.cm-s-mcp .cm-builtin, .cm-s-mcp .cm-special {
 	color: #ff9e59;
 }
 
-.cm-s-mcp span.cm-link {
+.cm-s-mcp .cm-link {
 	color: #845dc4;
 }

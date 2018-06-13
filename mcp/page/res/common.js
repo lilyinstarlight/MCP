@@ -1,26 +1,26 @@
 var goto = function(uri) {
-	location.href = uri;
+    location.href = uri;
 };
 
 var change = function(element, child) {
-	var root = document.getElementById(element);
+    var root = document.getElementById(element);
 
-	for (var node in root.childNodes) {
-		if (root.childNodes[node].nodeType == 1 && root.childNodes[node].tagName.toLowerCase() == 'section')
-			root.childNodes[node].style.display = 'none';
-	}
+    for (var node in root.childNodes) {
+	if (root.childNodes[node].nodeType === 1 && root.childNodes[node].tagName.toLowerCase() === 'section')
+	    root.childNodes[node].style.display = 'none';
+    }
 
-	document.getElementById(child).style.display = 'block';
+    document.getElementById(child).style.display = 'block';
 };
 
 var isVisible = function(element) {
-	if (element == document)
-		return true;
+    if (element === document)
+	return true;
 
-	if (element.style.display == 'none')
-		return false;
-	else
-		return isVisible(element.parentNode);
+    if (element.style.display === 'none')
+	return false;
+    else
+	return isVisible(element.parentNode);
 };
 
 var setCookie = function(username, token) {
@@ -32,90 +32,93 @@ var setCookie = function(username, token) {
 };
 
 var unsetCookie = function() {
-    document.cookie = 'username=; token=; expires=' + new Date(0);
+    document.cookie = 'username=; expires=' + new Date(0);
+    document.cookie = 'token=; expires=' + new Date(0);
 };
 
 var splitCookie = function(name) {
     var cookies = document.cookie.split(';');
 
     for(var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
+	var cookie = cookies[i];
 
-        while (cookie.charAt(0) == ' ')
-            cookie = cookie.substring(1);
+	while (cookie.charAt(0) === ' ')
+	    cookie = cookie.substring(1);
 
-        if (cookie.indexOf(name + '=') == 0)
-            return cookie.substring(name.length + 1, cookie.length);
+	if (cookie.indexOf(name + '=') === 0)
+	    return cookie.substring(name.length + 1, cookie.length);
     }
 
     return '';
 };
 
 var getCookie = function() {
-	return {'username': splitCookie('username'), 'token': splitCookie('token')};
+    return {'username': splitCookie('username'), 'token': splitCookie('token')};
 };
 
 var count = 0;
-var XHR = function(address, method, auth, data, handler) {
-	var completed = false;
+var XHR = function(address, method, auth, data, redirect, handler) {
+    var completed = false;
 
-	var request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
 
-	request.onreadystatechange = function() {
-		if (request.readyState == 4) {
-			if (request.status == 401 && window.location.pathname != '/login')
-				window.location.href = '/login';
+    request.onreadystatechange = function() {
+	if (request.readyState === 4) {
+	    if (request.status === 401 && redirect) {
+		window.location.href = '/login';
+		return;
+	    }
 
-			if (handler != null)
-				handler(request);
+	    if (handler !== null)
+		handler(request);
 
-			completed = true;
+	    completed = true;
 
-			count--;
-			working = document.getElementById('working');
-			if (count == 0 && working != null)
-				working.style.display = 'none';
-		}
-	};
-
-	request.open(method, address, true);
-
-	request.setRequestHeader('Authorization', auth);
-
-	if (data != null) {
-		json = JSON.stringify(data);
-		request.setRequestHeader('Content-Type', 'application/json');
-
-		request.send(json);
+	    count--;
+	    working = document.getElementById('working');
+	    if (count === 0 && working !== null)
+		working.style.display = 'none';
 	}
-	else {
-		request.send();
-	}
+    };
 
-	count++;
-	setTimeout(function() {
-		working = document.getElementById('working');
-		if (!completed && working != null)
-			working.style.display = 'inline-block';
-	}, 500);
+    request.open(method, address, true);
+
+    request.setRequestHeader('Authorization', auth);
+
+    if (data !== null) {
+	json = JSON.stringify(data);
+	request.setRequestHeader('Content-Type', 'application/json');
+
+	request.send(json);
+    }
+    else {
+	request.send();
+    }
+
+    count++;
+    setTimeout(function() {
+	working = document.getElementById('working');
+	if (!completed && working !== null)
+	    working.style.display = 'inline-block';
+    }, 500);
 };
 
 var get = function(address, auth, handler) {
-	XHR(address, 'GET', auth, null, handler);
+    XHR(address, 'GET', auth, null, true, handler);
 };
 
 var post = function(address, auth, data, handler) {
-	XHR(address, 'POST', auth, data, handler);
+    XHR(address, 'POST', auth, data, true, handler);
 };
 
 var put = function(address, auth, data, handler) {
-	XHR(address, 'PUT', auth, data, handler);
+    XHR(address, 'PUT', auth, data, true, handler);
 };
 
 var patch = function(address, auth, data, handler) {
-	XHR(address, 'PATCH', auth, data, handler);
+    XHR(address, 'PATCH', auth, data, true, handler);
 };
 
 var del = function(address, auth, handler) {
-	XHR(address, 'DELETE', auth, null, handler);
+    XHR(address, 'DELETE', auth, null, true, handler);
 };

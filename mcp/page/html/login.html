@@ -27,7 +27,7 @@
 
 			<span class="right">
 				<ul>
-					<li><button onclick="goto('/')">Index</button></li>
+					<li><button id="index_button">Index</button></li>
 				</ul>
 			</span>
 
@@ -35,15 +35,15 @@
 		</nav>
 
 		<main>
-			<form onsubmit="login(this.elements['user'].value, this.elements['password'].value, goto.bind(null, '/server')); return false">
+			<form id="login_form">
 				<table>
 					<tr>
 						<td><label for="user">Username: </label></td>
-						<td><input id="user" type="text"/></td>
+						<td><input id="user" name="user" type="text"/></td>
 					</tr>
 					<tr>
 						<td><label for="password">Password: </label></td>
-						<td><input id="password" type="password"/></td>
+						<td><input id="password" name="password" type="password"/></td>
 					</tr>
 					<tr></tr>
 					<tr>

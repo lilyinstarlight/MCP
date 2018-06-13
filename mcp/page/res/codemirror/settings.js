@@ -34,8 +34,7 @@ CodeMirror.defineMode("settings", function() {
         state.position = "quote";
         return null;
       } else if (ch === "\\" && state.position === "quote") {
-        if (stream.next() !== "u") {    // u = Unicode sequence \u1234
-          // Multiline value
+        if (stream.eol()) {
           state.nextMultiline = true;
         }
       }
@@ -45,10 +44,10 @@ CodeMirror.defineMode("settings", function() {
 
     startState: function() {
       return {
-        position : "keyword",       // Current position, "keyword", "quote" or "comment"
-        nextMultiline : false,  // Is the next line multiline value
-        inMultiline : false,    // Is the current line a multiline value
-        afterSection : false    // Did we just open a section
+        position : "keyword",
+        nextMultiline : false,
+        inMultiline : false,
+        afterSection : false
       };
     }
 

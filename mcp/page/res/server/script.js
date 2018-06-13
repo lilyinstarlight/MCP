@@ -1,11 +1,27 @@
 var servers, server;
 
+var status_last;
+
 var settings, settings_text;
 var script, script_text;
 
 var changeServer = function(name) {
+	if (name) {
+		document.getElementById('loading').className = '';
+		document.getElementById('empty').className = 'none';
+	}
+	else {
+		document.getElementById('loading').className = 'none';
+		document.getElementById('empty').className = '';
+	}
+
+	document.getElementById('console').className = 'none';
+	document.getElementById('settings').className = 'none';
+	document.getElementById('script').className = 'none';
+
 	server = name;
-	document.title = name ? name + ' - Server Administration' : 'Server Administration';
+
+	document.title = name ? name + ' - Server - MCP' : 'Server - MCP';
 };
 
 var startServer = function() {
@@ -48,16 +64,10 @@ var refresh = function(force) {
 	getServers(function(response) {
 		servers = response;
 
-		if (servers.length === 0) {
+		if (servers.length === 0)
 			changeServer('');
-			document.getElementById('content').style.display = 'none';
-			document.getElementById('navigation').style.display = 'none';
-		}
-		else if (!server) {
+		else if (!server)
 			changeServer(servers[0]);
-			document.getElementById('content').style.display = 'block';
-			document.getElementById('navigation').style.display = 'inline';
-		}
 
 		var select = document.createElement('select');
 		for (var name in servers) {
@@ -68,48 +78,62 @@ var refresh = function(force) {
 				option.setAttribute('selected', 'selected');
 			select.appendChild(option);
 		}
-		document.getElementById('servers').innerHTML = select.innerHTML;
+		document.getElementById('server_select').innerHTML = select.innerHTML;
 	});
 
 	if (server) {
 		getStatus(server, function(status) {
+			if (status === status_last)
+				return;
+
 			switch (status) {
 				case 'stopped':
-					document.getElementById('started').style.display = 'none';
-					document.getElementById('stopped').style.display = 'inline';
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = '';
 					document.getElementById('command_box').disabled = true;
 					document.getElementById('command_submit').className = 'button disabled';
 					document.getElementById('status').innerHTML = 'Stopped';
+
 					break;
+
 				case 'starting':
-					document.getElementById('started').style.display = 'none';
-					document.getElementById('stopped').style.display = 'inline';
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = '';
 					document.getElementById('command_box').disabled = true;
 					document.getElementById('command_submit').className = 'button disabled';
 					document.getElementById('status').innerHTML = 'Starting...';
+
 					break;
+
 				case 'started':
-					document.getElementById('stopped').style.display = 'none';
-					document.getElementById('started').style.display = 'inline';
+					document.getElementById('started').className = '';
+					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = false;
 					document.getElementById('command_submit').className = 'button';
 					document.getElementById('status').innerHTML = 'Running';
+
 					break;
+
 				case 'stopping':
-					document.getElementById('stopped').style.display = 'none';
-					document.getElementById('started').style.display = 'inline';
+					document.getElementById('started').className = '';
+					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = true;
 					document.getElementById('command_submit').className = 'button disabled';
 					document.getElementById('status').innerHTML = 'Stopping...';
+
 					break;
+
 				case 'nonexistent':
-					document.getElementById('stopped').style.display = 'none';
-					document.getElementById('started').style.display = 'none';
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = true;
 					document.getElementById('command_submit').className = 'button disabled';
 					document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
+
 					break;
 			}
+
+			status_last = status;
 		});
 
 		if (isVisible(document.getElementById('log')) || force) {
@@ -142,12 +166,115 @@ var refresh = function(force) {
 				script.setValue(script_text);
 			});
 		}
+
+		if (isVisible(document.getElementById('loading'))) {
+			document.getElementById('loading').className = 'none';
+			document.getElementById('console').className = '';
+			document.getElementById('settings').className = 'none';
+			document.getElementById('script').className = 'none';
+		}
 	}
 
 	setTimeout(refresh, 500);
 };
 
 var load = function() {
+	document.getElementById('console_button').addEventListener('click', function(ev) {
+		change('console');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('settings_button').addEventListener('click', function(ev) {
+		change('settings');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('script_button').addEventListener('click', function(ev) {
+		change('script');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_select').addEventListener('change', function(ev) {
+		change_server(document.getElementById('server_select').value);
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_button').addEventListener('click', function(ev) {
+		goto('/user');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('admin_button').addEventListener('click', function(ev) {
+		goto('/admin');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('logout_button').addEventListener('click', function(ev) {
+		unsetCookie();
+		goto('/');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('start_button').addEventListener('click', function(ev) {
+		start();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('stop_button').addEventListener('click', function(ev) {
+		stop();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('reload_button').addEventListener('click', function(ev) {
+		reload();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('settings_save_button').addEventListener('click', function(ev) {
+		saveSettings();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('script_save_button').addEventListener('click', function(ev) {
+		saveScript();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('script_editor_button').addEventListener('click', function(ev) {
+		change('script', 'script_editor');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('script_console_button').addEventListener('click', function(ev) {
+		change('script', 'script_console');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('command').addEventListener('submit', function(ev) {
+		submitCommand();
+
+		ev.preventDefault();
+	}, false);
+
+	check(function(admin) {
+		if (admin)
+			document.getElementById('admin_button').className = '';
+	});
+
 	settings = CodeMirror(document.getElementById('settings_editor'), {
 		mode: 'settings',
 		lineNumbers: true,

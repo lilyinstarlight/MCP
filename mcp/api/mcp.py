@@ -18,8 +18,11 @@ class Features(mcp.common.http.AuthHandler):
 class Config(mcp.common.http.AuthHandler):
     def do_get(self):
         # get config
-        with open(mcp.config.config + '/server_info.cfg', 'r') as conf:
-            return 200, conf.read()
+        try:
+            with open(mcp.config.config + '/server_info.cfg', 'r') as conf:
+                return 200, conf.read()
+        except FileNotFoundError:
+            return 200, ''
 
     def do_put(self):
         if not self.auth.admin:

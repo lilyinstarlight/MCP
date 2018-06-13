@@ -1,5 +1,6 @@
 var features = {};
 var users, servers, sources;
+
 var config, config_text;
 var user_selected, server_selected, source_selected;
 
@@ -16,7 +17,7 @@ var userSelect = function() {
 		document.getElementById('user_modify_button').className = 'button';
 		document.getElementById('user_destroy_button').className = 'button';
 
-		document.getElementById('user_modify_name').value = selected[0];
+		document.getElementById('user_modify_username').value = selected[0];
 		document.getElementById('user_modify_password').value = '';
 		document.getElementById('user_modify_key').value = '';
 		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
@@ -29,7 +30,7 @@ var userSelect = function() {
 			option.value = server;
 			option.innerHTML = server;
 			for (var user_server in user_servers) {
-				if (server == user_servers[user_server])
+				if (server === user_servers[user_server])
 					option.setAttribute('selected', 'selected');
 			}
 			select.appendChild(option);
@@ -40,12 +41,12 @@ var userSelect = function() {
 		document.getElementById('user_modify_button').className = 'button disabled';
 		document.getElementById('user_destroy_button').className = 'button disabled';
 
-		document.getElementById('user_modify_name').value = '';
+		document.getElementById('user_modify_username').value = '';
 		document.getElementById('user_modify_password').value = '';
 		document.getElementById('user_modify_key').value = '';
 		document.getElementById('user_modify_admin').checked = false;
+		document.getElementById('user_modify_active').checked = false;
 		document.getElementById('user_modify_servers').innerHTML = '';
-		document.getElementById('user_modify_checked').checked = false;
 	}
 };
 
@@ -83,7 +84,7 @@ var submitModifyUser = function() {
 		if (options[option].selected)
 			servers.push(options[option].value);
 	}
-	modifyUser(document.getElementById('user_modify_name').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
+	modifyUser(document.getElementById('user_modify_username').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
 };
 
 var userDestroy = function() {
@@ -273,7 +274,7 @@ var refresh = function(force) {
 
 	if ((isVisible(document.getElementById('config_editor')) || force) && features.creation) {
 		getConfig(function(response) {
-			if (config_text == response)
+			if (config_text === response)
 				return;
 			config_text = response;
 			config.setValue(response);
@@ -284,6 +285,203 @@ var refresh = function(force) {
 };
 
 var load = function() {
+	document.getElementById('users_button').addEventListener('click', function(ev) {
+		change('users');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('servers_button').addEventListener('click', function(ev) {
+		change('servers');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('sources_button').addEventListener('click', function(ev) {
+		change('sources');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('config_button').addEventListener('click', function(ev) {
+		change('config');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_button').addEventListener('click', function(ev) {
+		goto('/server');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_button').addEventListener('click', function(ev) {
+		goto('/user');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('logout_button').addEventListener('click', function(ev) {
+		unsetCookie();
+		goto('/');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_create_button').addEventListener('click', function(ev) {
+		change('users', 'user_create');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_modify_button').addEventListener('click', function(ev) {
+		change('users', 'user_modify');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_destroy_button').addEventListener('click', function(ev) {
+		userDestroy();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_listing').addEventListener('change', function(ev) {
+		userSelect();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_create_generate').addEventListener('click', function(ev) {
+		document.getElementById('user_create_form').elements['key'].value = generateKey();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_create_cancel').addEventListener('click', function(ev) {
+		change('users', 'user_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_create_submit').addEventListener('click', function(ev) {
+		userCreate();
+		change('users', 'user_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_modify_generate').addEventListener('click', function(ev) {
+		document.getElementById('user_modify_form').elements['key'].value = generateKey();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_modify_cancel').addEventListener('click', function(ev) {
+		change('users', 'user_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('user_modify_submit').addEventListener('click', function(ev) {
+		userCreate();
+		change('users', 'user_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_create_button').addEventListener('click', function(ev) {
+		change('servers', 'server_create');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_upgrade_button').addEventListener('click', function(ev) {
+		serverUpgrade();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_destroy_button').addEventListener('click', function(ev) {
+		serverDestroy();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_upgrade_all_button').addEventListener('click', function(ev) {
+		serverUpgradeAll();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_listing').addEventListener('change', function(ev) {
+		serverSelect();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_cancel').addEventListener('click', function(ev) {
+		change('servers', 'server_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('server_submit').addEventListener('click', function(ev) {
+		serverSubmit();
+		change('servers', 'server_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_add_button').addEventListener('click', function(ev) {
+		change('sources', 'source_add');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_update_button').addEventListener('click', function(ev) {
+		sourceUpdate();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_remove_button').addEventListener('click', function(ev) {
+		sourceRemove();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_update_all_button').addEventListener('click', function(ev) {
+		sourceUpdateAll();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_listing').addEventListener('change', function(ev) {
+		sourceSelect();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_cancel').addEventListener('click', function(ev) {
+		change('sources', 'source_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('source_submit').addEventListener('click', function(ev) {
+		serverSubmit();
+		change('sources', 'source_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('config_submit').addEventListener('click', function(ev) {
+		configSave();
+
+		ev.preventDefault();
+	}, false);
+
 	config = CodeMirror(document.getElementById('config_editor'), {
 		mode: 'settings',
 		lineNumbers: true,

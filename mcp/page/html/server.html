@@ -14,7 +14,22 @@
 		<script src="/res/server/script.js" type="text/javascript"></script>
 
 		<!-- CodeMirror stuff -->
+		<link href="/res/codemirror/codemirror.css" rel="stylesheet" type="text/css"/>
+		<link href="/res/codemirror/dialog.css" rel="stylesheet" type="text/css"/>
+		<link href="/res/codemirror/mcp.css" rel="stylesheet" type="text/css"/>
+		<link href="/res/codemirror/style.css" rel="stylesheet" type="text/css"/>
+
+		<script src="/res/codemirror/codemirror.js" type="text/javascript"></script>
+		<script src="/res/codemirror/dialog.js" type="text/javascript"></script>
+		<script src="/res/codemirror/matchbrackets.js" type="text/javascript"></script>
+		<script src="/res/codemirror/placeholder.js" type="text/javascript"></script>
+		<script src="/res/codemirror/python.js" type="text/javascript"></script>
+		<script src="/res/codemirror/search.js" type="text/javascript"></script>
+		<script src="/res/codemirror/searchcursor.js" type="text/javascript"></script>
+		<script src="/res/codemirror/settings.js" type="text/javascript"></script>
+		<script src="/res/codemirror/trailingspace.js" type="text/javascript"></script>
 	</head>
+
 	<body>
 		<header>
 			<img src="/res/aalogo.png" alt=""/>
@@ -22,20 +37,20 @@
 		</header>
 
 		<nav>
-			<span class="left" style="display: none">
+			<span class="left none">
 				<ul>
-					<li><button onclick="change('console')">Console</button></li>
-					<li><button onclick="change('settings')">Settings</button></li>
-					<li><button onclick="change('script')">Script</button></li>
+					<li><button id="console_button">Console</button></li>
+					<li><button id="settings_button">Settings</button></li>
+					<li><button id="script_button">Script</button></li>
 				</ul>
 			</span>
 
 			<span class="right">
 				<ul>
-					<li><select id="server_select" onchange="change_server(this.value)"></select></li>
-					<li><button onclick="goto('/user')">User</button></li>
-					<li><button id="admin_button" onclick="goto('/admin')" style="display: none">Admin</button></li>
-					<li><button onclick="unsetCookie(); goto('/')">Logout</button></li>
+					<li><select id="server_select"></select></li>
+					<li><button id="user_button">User</button></li>
+					<li><button id="admin_button" class="none">Admin</button></li>
+					<li><button id="logout_button">Logout</button></li>
 				</ul>
 			</span>
 
@@ -47,19 +62,23 @@
 				<p>Loading...</p>
 			</section>
 
-			<section id="console" style="display: none">
+			<section id="empty" class="none">
+				<p>No Server</p>
+			</section>
+
+			<section id="console" class="none">
 				<nav class="action">
 					<span class="left">
 						<section id="stopped">
 							<ul>
-								<li><button id="start_button" onclick="start()">Start</button></li>
+								<li><button id="start_button">Start</button></li>
 							</ul>
 						</section>
 						<section id="started">
 							<ul>
-								<li><button id="stop_button" onclick="stop()">Stop</button></li>
-								<li><button id="restart_button" onclick="restart()">Restart</button></li>
-								<li><button id="reload_button" onclick="reload()">Reload</button></li>
+								<li><button id="stop_button">Stop</button></li>
+								<li><button id="restart_button">Restart</button></li>
+								<li><button id="reload_button">Reload</button></li>
 							</ul>
 						</section>
 					</span>
@@ -68,7 +87,7 @@
 					</span>
 				</nav>
 
-				<form id="command" onsubmit="submitCommand(this.elements['command_input'].value); return false">
+				<form id="command">
 					<table>
 						<tr>
 							<td>
@@ -84,11 +103,11 @@
 				<pre id="log"></pre>
 			</section>
 
-			<section id="settings" style="display: none">
+			<section id="settings" class="none">
 				<nav class="action">
 					<span class="right">
 						<ul>
-							<li><button id="settings_save_button" onclick="saveSettings()">Start</button></li>
+							<li><button id="settings_save_button">Start</button></li>
 						</ul>
 					</span>
 				</nav>
@@ -96,13 +115,13 @@
 				<div id="settings_codemirror"></div>
 			</section>
 
-			<section id="script" style="display: none">
+			<section id="script" class="none">
 				<nav class="action">
 					<span class="right">
 						<ul>
-							<li><button id="script_save_button" onclick="saveScript()">Save</button></li>
-							<li><button id="script_editor_button" onclick="change('script', 'script_editor')">Editor</button></li>
-							<li><button id="script_log_button" onclick="change('script', 'script_console')">Console</button></li>
+							<li><button id="script_save_button">Save</button></li>
+							<li><button id="script_editor_button">Editor</button></li>
+							<li><button id="script_console_button">Console</button></li>
 						</ul>
 					</span>
 				</nav>
@@ -111,7 +130,7 @@
 					<div id="script_codemirror"></div>
 				</section>
 
-				<section id="script_console" style="display: none">
+				<section id="script_console" class="none">
 					<pre id="script_log"></pre>
 				</section>
 			</section>

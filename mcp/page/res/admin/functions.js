@@ -1,4 +1,4 @@
-var auth_token = 'Token ' + get_cookie().split(':')[0];
+var auth_token = 'Token ' + getCookie()['token'];
 
 var getFeatures = function(handler) {
 	get('/api/features', auth_token, function(request) {
