@@ -1,4 +1,5 @@
 var features = {};
+
 var users, servers, sources;
 
 var config, config_text;
@@ -180,6 +181,9 @@ var refresh = function(force) {
 		force = false;
 
 	getFeatures(function(response) {
+		if (response === features)
+			return;
+
 		features = response;
 
 		if (features.creation) {
@@ -195,6 +199,9 @@ var refresh = function(force) {
 	});
 
 	getUsers(function(response) {
+		if (response === users)
+			return;
+
 		users = response;
 
 		if (isVisible(document.getElementById('user_listing')) || force) {
@@ -213,6 +220,9 @@ var refresh = function(force) {
 	});
 
 	getServers(function(response) {
+		if (response === servers)
+			return;
+
 		servers = response;
 
 		if (isVisible(document.getElementById('server_listing')) || force) {
@@ -243,6 +253,9 @@ var refresh = function(force) {
 	});
 
 	getSources(function(response) {
+		if (response === sources)
+			return;
+
 		sources = response;
 
 		if (isVisible(document.getElementById('source_listing')) || force) {
@@ -276,6 +289,7 @@ var refresh = function(force) {
 		getConfig(function(response) {
 			if (config_text === response)
 				return;
+
 			config_text = response;
 			config.setValue(response);
 		});
