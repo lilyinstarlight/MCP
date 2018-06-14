@@ -6,3 +6,11 @@ select[multiple] {
 select[multiple] .mini {
 	height: 10em;
 }
+
+#server_upgrade_all_button {
+	width: 120px;
+}
+
+#source_update_all_button {
+	width: 120px;
+}

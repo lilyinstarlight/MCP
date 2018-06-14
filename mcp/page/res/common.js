@@ -3,7 +3,13 @@ var goto = function(uri) {
 };
 
 var change = function(element, child) {
-    var root = document.getElementById(element);
+    if (typeof child === 'undefined') {
+	var root = document.getElementById(element).parentNode;
+	var child = element;
+    }
+    else {
+	var root = document.getElementById(element);
+    }
 
     for (var node in root.childNodes) {
 	if (root.childNodes[node].nodeType === 1 && root.childNodes[node].tagName.toLowerCase() === 'section')

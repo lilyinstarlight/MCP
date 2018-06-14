@@ -91,7 +91,7 @@ var refresh = function(force) {
 					document.getElementById('started').className = 'none';
 					document.getElementById('stopped').className = '';
 					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('command_submit').disabled = true;
 					document.getElementById('status').innerHTML = 'Stopped';
 
 					break;
@@ -100,7 +100,7 @@ var refresh = function(force) {
 					document.getElementById('started').className = 'none';
 					document.getElementById('stopped').className = '';
 					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('command_submit').disabled = true;
 					document.getElementById('status').innerHTML = 'Starting...';
 
 					break;
@@ -109,7 +109,7 @@ var refresh = function(force) {
 					document.getElementById('started').className = '';
 					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = false;
-					document.getElementById('command_submit').className = 'button';
+					document.getElementById('command_submit').disabled = false;
 					document.getElementById('status').innerHTML = 'Running';
 
 					break;
@@ -118,7 +118,7 @@ var refresh = function(force) {
 					document.getElementById('started').className = '';
 					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('command_submit').disabled = true;
 					document.getElementById('status').innerHTML = 'Stopping...';
 
 					break;
@@ -127,7 +127,7 @@ var refresh = function(force) {
 					document.getElementById('started').className = 'none';
 					document.getElementById('stopped').className = 'none';
 					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').className = 'button disabled';
+					document.getElementById('command_submit').disabled = true;
 					document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
 
 					break;
@@ -152,6 +152,7 @@ var refresh = function(force) {
 			getSettings(server, function(response) {
 				if (settings_text === response)
 					return;
+
 				settings_text = response;
 				settings.setValue(settings_text);
 			});
