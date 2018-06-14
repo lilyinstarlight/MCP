@@ -19,6 +19,8 @@ class Config(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         # get config
         try:
+            self.response.headers['Content-Type'] = 'text/plain'
+
             with open(mcp.config.config + '/server_info.cfg', 'r') as conf:
                 return 200, conf.read()
         except FileNotFoundError:

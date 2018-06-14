@@ -70,7 +70,7 @@ var XHR = function(address, method, auth, data, redirect, handler) {
 
     request.onreadystatechange = function() {
 	if (request.readyState === 4) {
-	    if (request.status === 401 && redirect) {
+	    if ((request.status === 401 || request.status === 403) && redirect) {
 		window.location.href = '/login';
 		return;
 	    }

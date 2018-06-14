@@ -6,36 +6,43 @@ var config, config_text;
 var user_selected, server_selected, source_selected;
 
 var selectUser = function() {
-	var selected = []
+	var selected = [];
 	var options = document.getElementById('user_listing').options;
-	for (var option in options) {
-		if (options[option].selected)
-			selected.push(options[option].value);
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			selected.push(options[idx].value);
 	}
 	user_selected = selected;
 
 	if (selected.length > 0) {
+		var user;
+		users.forEach(function(user_element) {
+			if (user_element.username === user_selected[0]) {
+				user = user_element;
+				return;
+			}
+		});
+
 		document.getElementById('user_modify_button').disabled = false;
 		document.getElementById('user_destroy_button').disabled = false;
 
-		document.getElementById('user_modify_username').value = users[selected[0]].username;
+		document.getElementById('user_modify_username').value = user.username;
 		document.getElementById('user_modify_password').value = '';
 		document.getElementById('user_modify_key').value = '';
-		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
-		document.getElementById('user_modify_active').checked = users[selected[0]].active;
+		document.getElementById('user_modify_admin').checked = user.admin;
+		document.getElementById('user_modify_active').checked = user.active;
 
-		var user_servers = users[selected[0]].servers;
 		var select = document.createElement('select');
-		for (var server in servers) {
+		servers.forEach(function(server) {
 			var option = document.createElement('option');
-			option.value = servers[server].server;
-			option.innerHTML = servers[server].server;
-			for (var user_server in user_servers) {
-				if (server === user_servers[user_server])
+			option.value = server.server;
+			option.innerHTML = server.server;
+			user.servers.forEach(function(user_server) {
+				if (server.server === user_server)
 					option.setAttribute('selected', 'selected');
-			}
+			});
 			select.appendChild(option);
-		}
+		});
 		document.getElementById('user_modify_servers').innerHTML = select.innerHTML;
 	}
 	else {
@@ -64,12 +71,12 @@ var generateKey = function() {
 var submitUser = function() {
 	var servers = [];
 	var options = document.getElementById('user_create_servers').options;
-	for (var option in options) {
-		if (options[option].selected)
-			servers.push(options[option].value);
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			servers.push(options[idx].value);
 	}
-	createUser(document.getElementById('user_create_name').value, document.getElementById('user_create_password').value, document.getElementById('user_create_key').value, servers.join(','), document.getElementById('user_create_admin').checked, document.getElementById('user_create_active').checked, function() {
-		document.getElementById('user_create_name').value = '';
+	createUser(document.getElementById('user_create_username').value, document.getElementById('user_create_password').value, document.getElementById('user_create_key').value, servers, document.getElementById('user_create_admin').checked, document.getElementById('user_create_active').checked, function() {
+		document.getElementById('user_create_username').value = '';
 		document.getElementById('user_create_password').value = '';
 		document.getElementById('user_create_key').value = '';
 		document.getElementById('user_create_admin').checked = false;
@@ -81,24 +88,25 @@ var submitUser = function() {
 var submitModifyUser = function() {
 	var servers = [];
 	var options = document.getElementById('user_modify_servers').options;
-	for (var option in options) {
-		if (options[option].selected)
-			servers.push(options[option].value);
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			servers.push(options[idx].value);
 	}
-	modifyUser(document.getElementById('user_modify_username').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers.join(','), document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
+	modifyUser(document.getElementById('user_modify_username').value, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, servers, document.getElementById('user_modify_admin').checked, document.getElementById('user_modify_active').checked);
 };
 
 var submitDestroyUser = function() {
-	for (var user in user_selected)
-		destroyUser(user_selected[user])
+	user_selected.forEach(function(user) {
+		destroyUser(user);
+	});
 };
 
 var selectServer = function() {
 	var selected = []
 	var options = document.getElementById('server_listing').options;
-	for (var option in options) {
-		if (options[option].selected)
-			selected.push(options[option].value);
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			selected.push(options[idx].value);
 	}
 	server_selected = selected;
 
@@ -120,26 +128,29 @@ var submitServer = function() {
 };
 
 var submitUpgradeServer = function() {
-	for (var server in server_selected)
-		upgradeServer(server_selected[server])
+	server_selected.forEach(function(server) {
+		upgradeServer(server);
+	});
 };
 
 var upgradeAllServers = function() {
-	for (var server in servers)
+	servers.forEach(function(server) {
 		upgradeServer(server.server)
+	});
 };
 
 var submitDestroyServer = function() {
-	for (var server in server_selected)
-		destroyServer(server_selected[server])
+	server_selected.forEach(function(server) {
+		destroyServer(server);
+	});
 };
 
 var selectSource = function() {
-	var selected = []
+	var selected = [];
 	var options = document.getElementById('source_listing').options;
-	for (var option in options) {
-		if (options[option].selected)
-			selected.push(options[option].value);
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			selected.push(options[idx].value);
 	}
 	source_selected = selected;
 
@@ -161,18 +172,21 @@ var submitSource = function() {
 };
 
 var submitUpdateSource = function() {
-	for (var source in source_selected)
-		updateSource(source_selected[source])
+	source_selected.forEach(function(source) {
+		updateSource(source);
+	});
 };
 
 var updateAllSources = function() {
-	for (var source in sources)
+	sources.forEach(function(source) {
 		updateSource(source.source)
+	});
 };
 
 var submitRemoveSource = function() {
-	for (var source in source_selected)
-		removeSource(source_selected[source])
+	source_selected.forEach(function(source) {
+		removeSource(source);
+	});
 };
 
 var saveConfig = function() {
@@ -211,12 +225,12 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('user_listing')) || force) {
 			var select = document.createElement('select');
-			for (var user in users) {
+			users.forEach(function(user) {
 				var option = document.createElement('option');
-				option.value = user;
-				option.innerHTML = users[user].username + (users[user].admin ? ' (Admin)' : '') + (users[user].active ? '' : ' (Inactive)') + (users[user].servers.length > 0 ? ' - ' + users[user].servers.join(', ') : '');
+				option.value = user.username;
+				option.innerHTML = user.username + (user.admin ? ' (Admin)' : '') + (user.active ? '' : ' (Inactive)') + (user.servers.length > 0 ? ' - ' + user.servers.join(', ') : '');
 				select.appendChild(option);
-			}
+			});
 			if (document.getElementById('user_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('user_listing').innerHTML = select.innerHTML;
 				selectUser();
@@ -232,12 +246,12 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('server_listing')) || force) {
 			var select = document.createElement('select');
-			for (var server in servers) {
+			servers.forEach(function(server) {
 				var option = document.createElement('option');
-				option.value = server;
-				option.innerHTML = servers[server].source + ' - ' + servers[server].source + ' (r' + servers[server].revision + ')';
+				option.value = server.server;
+				option.innerHTML = server.server + ' - ' + server.source + ' (r' + server.revision + ')';
 				select.appendChild(option);
-			}
+			});
 			if (document.getElementById('server_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('server_listing').innerHTML = select.innerHTML;
 				selectServer();
@@ -246,12 +260,12 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('user_create_servers')) || force) {
 			var select = document.createElement('select');
-			for (var server in servers) {
+			servers.forEach(function(server) {
 				var option = document.createElement('option');
-				option.value = servers[server].server;
-				option.innerHTML = servers[server].server;
+				option.value = server.server;
+				option.innerHTML = server.server;
 				select.appendChild(option);
-			}
+			});
 			if (document.getElementById('user_create_servers').innerHTML !== select.innerHTML)
 				document.getElementById('user_create_servers').innerHTML = select.innerHTML;
 		}
@@ -265,12 +279,12 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('source_listing')) || force) {
 			var select = document.createElement('select');
-			for (var source in sources) {
+			sources.forEach(function(source) {
 				var option = document.createElement('option');
-				option.value = source;
-				option.innerHTML = sources[source].source + ' - r' + sources[source].revision;
+				option.value = source.source;
+				option.innerHTML = source.source + ' - r' + source.revision;
 				select.appendChild(option);
-			}
+			});
 			if (document.getElementById('source_listing').innerHTML !== select.innerHTML) {
 				document.getElementById('source_listing').innerHTML = select.innerHTML;
 				selectSource();
@@ -279,12 +293,12 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('server_source')) || force) {
 			var select = document.createElement('select');
-			for (var source in sources) {
+			sources.forEach(function(source) {
 				var option = document.createElement('option');
-				option.value = sources[source].source;
-				option.innerHTML = sources[source].source;
+				option.value = source.source;
+				option.innerHTML = source.source;
 				select.appendChild(option);
-			}
+			});
 			if (document.getElementById('server_source').innerHTML !== select.innerHTML)
 				document.getElementById('server_source').innerHTML = select.innerHTML;
 		}
@@ -332,6 +346,7 @@ var load = function() {
 
 	document.getElementById('config_button').addEventListener('click', function(ev) {
 		change('config');
+		config.refresh();
 
 		ev.preventDefault();
 	}, false);
@@ -509,7 +524,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	config = CodeMirror(document.getElementById('config_editor'), {
+	config = CodeMirror(document.getElementById('config_codemirror'), {
 		mode: 'settings',
 		lineNumbers: true,
 		lineWrapping: true,

@@ -47,40 +47,48 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
     return server_db.add(server_name, source_name, revision, port, autostart, users, False, False, '')
 
 def modify(server_name, port=None, autostart=None, users=None):
-    server_obj = server_db[server_name]
+    try:
+        server = server_db[server_name]
+    except KeyError:
+        raise mcp.error.NoServerError()
 
     if port != None:
         mcp.control.server.set_port(server_name, port)
-        server_obj.port = port
+        server.port = port
 
     if autostart != None:
-        server_obj.autostart = autostart
+        server.autostart = autostart
 
     if users:
         import mcp.model.user
 
+        for username in server.users:
+            server = mcp.servers.get(username)
+            if server_name in user.servers and username not in users:
+                user.servers.remove(server_name)
+
         for username in users:
-            user = mcp.model.user.get(username)
+            server = mcp.model.user.get(username)
             if server_name not in user.servers:
                 user.servers.append(server_name)
 
-        server_obj.users = users
+        server.users = users
 
 def upgrade(server_name, source_name=None, revision=None):
-    server_obj = server_db[server_name]
-
-    if not server_obj:
+    try:
+        server = server_db[server_name]
+    except KeyError:
         raise mcp.error.NoServerError()
 
     if not source_name:
-        source_name = server_obj.source
+        source_name = server.source
 
     if not revision:
         revision = mcp.model.source.get(source_name).revision
 
     mcp.control.server.build(server_name, source_name, revision)
 
-    server_obj.revision = revision
+    server.revision = revision
 
 def destroy(server_name):
     if server_name not in server_db:
@@ -88,6 +96,13 @@ def destroy(server_name):
 
     if server_db[server_name].running:
         raise mcp.error.ServerRunningError()
+
+    import mcp.model.user
+
+    for username in server.users:
+        user = mcp.model.user.get(username)
+        if server_name in user.servers:
+            user.servers.remove(server_name)
 
     mcp.control.server.destroy(server_name)
 

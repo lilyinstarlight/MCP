@@ -2,7 +2,12 @@ var username = getCookie()['username']
 var user;
 
 var submitModifyUser = function() {
-	modifyUser(username, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value);
+	modifyUser(username, document.getElementById('user_modify_password').value, document.getElementById('user_modify_key').value, function() {
+		document.getElementById('user_modify_password').value = '';
+		document.getElementById('user_modify_key').value = '';
+
+		alert('User successfully modified');
+	});
 };
 
 var refresh = function(force) {
@@ -51,7 +56,7 @@ var load = function() {
 	}, false);
 
 	document.getElementById('user_modify_form').addEventListener('submit', function(evt) {
-		modifyUser(document.getElementById('user_modify_form').elements['username'].value, document.getElementById('user_modify_form').elements['password'].value, document.getElementById('user_modify_form').elements['key'].value);
+		submitModifyUser();
 
 		evt.preventDefault();
 	}, false);

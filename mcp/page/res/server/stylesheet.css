@@ -8,11 +8,11 @@ pre {
 	font-weight: bold;
 }
 
-.command table {
+#command table {
 	width: 100%;
 }
 
-.command table td {
+#command table td {
 	width: 100%;
 	padding: 5px;
 }

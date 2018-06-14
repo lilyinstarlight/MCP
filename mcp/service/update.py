@@ -6,7 +6,7 @@ scheduler = None
 
 def update():
     for source in mcp.model.source.items():
-        mcp.model.source.update(source.name)
+        mcp.model.source.update(source.source)
 
 def start():
     global scheduler

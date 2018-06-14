@@ -1,4 +1,4 @@
-var servers, server;
+var servers, selected;
 
 var status_last;
 
@@ -19,40 +19,40 @@ var changeServer = function(name) {
 	document.getElementById('settings').className = 'none';
 	document.getElementById('script').className = 'none';
 
-	server = name;
+	selected = name;
 
 	document.title = name ? name + ' - Server - MCP' : 'Server - MCP';
 };
 
 var startServer = function() {
-	start(server);
+	start(selected);
 };
 
 var stopServer = function() {
-	stop(server);
+	stop(selected);
 };
 
 var restartServer = function() {
-	restart(server);
+	restart(selected);
 };
 
 var reloadServer = function() {
-	reload(server);
+	reload(selected);
 };
 
 var submitCommand = function() {
-	sendCommand(server, document.getElementById('command_box').value);
+	sendCommand(selected, document.getElementById('command_box').value);
 	document.getElementById('command_box').value = '';
 };
 
 var saveSettings = function() {
-	updateSettings(server, settings.getValue(), function() {
+	updateSettings(selected, settings.getValue(), function() {
 		alert('Settings successfully saved');
 	});
 };
 
 var saveScript = function() {
-	updateScript(server, script.getValue(), function() {
+	updateScript(selected, script.getValue(), function() {
 		alert('Script successfully saved');
 	});
 };
@@ -62,27 +62,30 @@ var refresh = function(force) {
 		force = false;
 
 	getServers(function(response) {
+		if (response === servers)
+			return;
+
 		servers = response;
 
 		if (servers.length === 0)
 			changeServer('');
-		else if (!server)
-			changeServer(servers[0]);
+		else if (!selected)
+			changeServer(servers[0].server);
 
 		var select = document.createElement('select');
-		for (var name in servers) {
+		servers.forEach(function(server) {
 			var option = document.createElement('option');
-			option.value = servers[name];
-			option.innerHTML = servers[name];
-			if (name === server)
+			option.value = server.server;
+			option.innerHTML = server.server;
+			if (server.server === selected)
 				option.setAttribute('selected', 'selected');
 			select.appendChild(option);
-		}
+		});
 		document.getElementById('server_select').innerHTML = select.innerHTML;
 	});
 
-	if (server) {
-		getStatus(server, function(status) {
+	if (selected) {
+		getStatus(selected, function(status) {
 			if (status === status_last)
 				return;
 
@@ -137,19 +140,19 @@ var refresh = function(force) {
 		});
 
 		if (isVisible(document.getElementById('log')) || force) {
-			getLog(server, function(response) {
+			getLog(selected, function(response) {
 				document.getElementById('log').innerHTML = response;
 			});
 		}
 
 		if (isVisible(document.getElementById('script_log')) || force) {
-			getScriptLog(server, function(response) {
+			getScriptLog(selected, function(response) {
 				document.getElementById('script_log').innerHTML = response;
 			});
 		}
 
 		if (isVisible(document.getElementById('settings_editor')) || force) {
-			getSettings(server, function(response) {
+			getSettings(selected, function(response) {
 				if (settings_text === response)
 					return;
 
@@ -159,7 +162,7 @@ var refresh = function(force) {
 		}
 
 		if (isVisible(document.getElementById('script_editor')) || force) {
-			getScript(server, function(response) {
+			getScript(selected, function(response) {
 				if (script_text === response)
 					return;
 
@@ -188,6 +191,7 @@ var load = function() {
 
 	document.getElementById('settings_button').addEventListener('click', function(ev) {
 		change('settings');
+		settings.refresh();
 
 		ev.preventDefault();
 	}, false);
@@ -255,6 +259,7 @@ var load = function() {
 
 	document.getElementById('script_editor_button').addEventListener('click', function(ev) {
 		change('script', 'script_editor');
+		script.refresh();
 
 		ev.preventDefault();
 	}, false);

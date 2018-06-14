@@ -23,7 +23,7 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.user.add(self.request.body['username'], self.request.body['password'], admin=bool(self.request.body['admin'] if 'admin' in self.request.body else False))
+            mcp.model.user.add(self.request.body['username'], self.request.body['password'], admin=bool(self.request.body['admin']) if 'admin' in self.request.body else False, active=bool(self.request.body['active']) if 'active' in self.request.body else True)
         except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.InvalidUserError:
@@ -53,7 +53,7 @@ class User(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.user.modify(self.groups[0], self.request.body['password'] if 'password' in self.request.body else None, self.request.body['key'] if 'key' in self.request.body else None, self.request.body['admin'] if 'admin' in self.request.body else None, self.request.body['active'] if 'active' in self.request.body else None, self.request.body['servers'] if 'servers' in self.request.body else None)
+            mcp.model.user.modify(self.groups[0], self.request.body['password'] if 'password' in self.request.body else None, self.request.body['key'] if 'key' in self.request.body else None, bool(self.request.body['admin']) if 'admin' in self.request.body else None, bool(self.request.body['active']) if 'active' in self.request.body else None, self.request.body['servers'] if 'servers' in self.request.body else None)
         except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 
@@ -73,7 +73,7 @@ class User(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(404)
 
         try:
-            mcp.model.user.destroy(self.groups[0])
+            mcp.model.user.remove(self.groups[0])
         except mcp.error.NoUserError:
             raise fooster.web.HTTPError(404)
 

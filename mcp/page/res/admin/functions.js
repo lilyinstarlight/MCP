@@ -14,8 +14,8 @@ var getUsers = function(handler) {
 	});
 };
 
-var createUser = function(user, password, key, servers, admin, active, callback) {
-	post('/api/user/', auth_token, {'user': user, 'key': key, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false', 'active': active ? 'true' : 'false'}, function(request) {
+var createUser = function(username, password, key, servers, admin, active, callback) {
+	post('/api/user/', auth_token, {'username': username, 'key': key, 'password': password, 'servers': servers, 'admin': admin, 'active': active}, function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -23,8 +23,8 @@ var createUser = function(user, password, key, servers, admin, active, callback)
 	});
 };
 
-var modifyUser = function(user, password, key, servers, admin, active, callback) {
-	put('/api/user/' + user, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin ? 'true' : 'false', 'active': active ? 'true' : 'false'}, function(request) {
+var modifyUser = function(username, password, key, servers, admin, active, callback) {
+	put('/api/user/' + username, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin, 'active': active}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -32,8 +32,8 @@ var modifyUser = function(user, password, key, servers, admin, active, callback)
 	});
 };
 
-var destroyUser = function(user, callback) {
-	del('/api/user/' + user, auth_token, function(request) {
+var destroyUser = function(username, callback) {
+	del('/api/user/' + username, auth_token, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else

@@ -3,7 +3,7 @@ select[multiple] {
 	height: 50em;
 }
 
-select[multiple] .mini {
+select[multiple].mini {
 	height: 10em;
 }
 
