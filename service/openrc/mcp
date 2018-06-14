@@ -2,7 +2,7 @@
 
 start() {
 	ebegin "Starting MCP"
-	start-stop-daemon --start --quiet --exec /usr/bin/mcp --background --pidfile /var/run/mcp.pid --make-pidfile
+	start-stop-daemon --start --quiet --exec /usr/bin/mcp --background --pidfile /var/run/mcp.pid --make-pidfile --user mcp
 	eend $?
 }
 

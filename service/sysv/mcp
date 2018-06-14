@@ -12,7 +12,7 @@
 case "$1" in
 	start)
 		echo -n "Starting MCP: "
-		start-stop-daemon --start --quiet --exec /usr/bin/mcp --background --pidfile /var/run/mcp.pid --make-pidfile && echo "OK" || echo "Fail"
+		start-stop-daemon --start --quiet --exec /usr/bin/mcp --background --pidfile /var/run/mcp.pid --make-pidfile --user mcp && echo "OK" || echo "Fail"
 		;;
 	stop)
 		echo -n "Stopping MCP: "

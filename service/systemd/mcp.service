@@ -4,6 +4,8 @@ Description=Armagetron Advanced daemon manager
 [Service]
 Type=simple
 ExecStart=/usr/bin/mcp
+User=mcp
+Group=mcp
 Restart=on-abort
 
 [Install]

@@ -55,9 +55,9 @@ Edit `config.py` to match your directory structure and preferences. Below is a l
 - `host` is the address for which the server will accept requests but generally, you do not need to set this.
 - `port` is the port on which the HTTP server will listen. If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
 
-To create the user the daemon will run under (if any), run the `useradd` command:
+To create the user the daemon will run under, run the `useradd` command:
 ```
-# useradd -m <user>
+# useradd -m -d /var/lib/mcp mcp
 ```
 
 After the configuration is complete, run the setup script:
@@ -65,9 +65,12 @@ After the configuration is complete, run the setup script:
 # ./setup.py install
 ```
 
-Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `mcp` as the desired user.
+The first time you run the daemon, it will prompt you for an admin username and password. Run the `mcp` command as the mcp user and fill in the prompts.
+```
+# sudo -u mcp mcp
+```
 
-Open a web browser to `http://localhost/setup` and follow the instructions there to complete installation and initial configuration.
+Start the daemon using the init system specified in the setup script. If no init system was specified, start the daemon by running `mcp` as the mcp user.
 
 ### Downloading sources
 Before you can create your first server, you must download a copy of the Armagetron Advanced source code. To do this, first open a web browser to `http://localhost/` or the address specified in `config.py` and login as the administrator user. Click `Admin` in the upper right and then click the `Sources` tab in the administration interface. Click the `Add Source` button and fill out the form with the appropriate information. The source name is the name by which this source will be referred. For example, you can call one `sty+ct` if you download ct's patched version. The bzr address is the location of the bzr repository for the source code. For example, for `0.2.8-sty+ct`, the source is located at `lp:~armagetronad-ct/armagetronad/0.2.8-armagetronad-sty+ct`. Use the table below for a list of common versions and their bzr addresses.
@@ -157,10 +160,10 @@ Troubleshooting
 Make sure you have the dependencies and try again.
 
 ### The web interface is very buggy!
-Quit using Internet Explorer 8.
+Please open an issue on [GitHub](https://github.com/fkmclane/MCP/issues).
 
 ### The scripting library crashes!
-Make sure it is running with Python 3. If it is, please report the crash and error log at [GitHub](https://github.com/fkmclane/MCP/issues).
+Make sure it is running with Python 3. If it is, please report the crash and error log on [GitHub](https://github.com/fkmclane/MCP/issues).
 
 ### None of it works!
-Make sure you installed the package with Python 3 and started the daemon properly.
+Make sure you installed the package with Python 3 and started the daemon properly. If you did, please report the crash and MCP log on [GitHub](https://github.com/fkmclane/MCP/issues).
