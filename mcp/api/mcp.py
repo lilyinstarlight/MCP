@@ -15,7 +15,7 @@ class Features(mcp.common.http.AuthHandler):
         # return enabled features
         return 200, {'creation': mcp.config.creation}
 
-class Config(mcp.common.http.AuthHandler):
+class Config(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         # get config
         try:

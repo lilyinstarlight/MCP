@@ -13,7 +13,7 @@ import mcp.model.user
 class PageHandler(fooster.web.page.PageHandler):
     directory = os.path.dirname(__file__) + '/html'
 
-class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn, fooster.web.json.JSONHandler):
+class PlainAuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn, fooster.web.HTTPHandler):
     def login(self, username, password):
         try:
             return mcp.model.user.check_user(username, password)
@@ -34,3 +34,6 @@ class AuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn,
 
     def forbidden(self):
         return not self.auth.active
+
+class AuthHandler(fooster.web.json.JSONMixIn, PlainAuthHandler):
+    pass

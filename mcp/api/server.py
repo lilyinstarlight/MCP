@@ -91,7 +91,7 @@ class Server(mcp.common.http.AuthHandler):
 
         return 204, None
 
-class Settings(mcp.common.http.AuthHandler):
+class Settings(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
