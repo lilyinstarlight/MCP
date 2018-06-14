@@ -55,9 +55,13 @@ Edit `config.py` to match your directory structure and preferences. Below is a l
 - `host` is the address for which the server will accept requests but generally, you do not need to set this.
 - `port` is the port on which the HTTP server will listen. If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
 
-To create the user the daemon will run under, run the `useradd` command:
+To create the user the daemon will run under, run the `useradd` command and give it permission to necessary directories:
 ```
 # useradd -m -d /var/lib/mcp mcp
+# mkdir -p /var/db/mcp
+# chmod mcp:mcp /var/db/mcp
+# mkdir -p /var/log/mcp
+# chmod mcp:mcp /var/log/mcp
 ```
 
 After the configuration is complete, run the setup script:
