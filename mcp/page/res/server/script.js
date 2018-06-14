@@ -198,6 +198,7 @@ var load = function() {
 
 	document.getElementById('script_button').addEventListener('click', function(ev) {
 		change('script');
+		script.refresh();
 
 		ev.preventDefault();
 	}, false);
