@@ -295,6 +295,14 @@ var refresh = function(force) {
 		});
 	}
 
+	if (isVisible(document.getElementById('loading'))) {
+		document.getElementById('loading').className = 'none';
+		document.getElementById('users').className = '';
+		document.getElementById('servers').className = 'none';
+		document.getElementById('sources').className = 'none';
+		document.getElementById('config').className = 'none';
+	}
+
 	setTimeout(refresh, 500);
 };
 
