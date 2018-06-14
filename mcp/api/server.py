@@ -20,7 +20,7 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.server.create(self.request.body['name'], self.request.body['source'], self.request.body['revision'] if 'revision' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None)
+            mcp.model.server.create(self.request.body['server'], self.request.body['source'], self.request.body['revision'] if 'revision' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None)
         except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.NoSourceError:
@@ -30,9 +30,9 @@ class Index(mcp.common.http.AuthHandler):
         except mcp.error.ServerExistsError:
             raise fooster.web.HTTPError(409)
 
-        self.response.headers['Location'] = '/api/server/' + self.request.body['name']
+        self.response.headers['Location'] = '/api/server/' + self.request.body['server']
 
-        return 201, dict(mcp.model.server.get(self.request.body['name']))
+        return 201, dict(mcp.model.server.get(self.request.body['server']))
 
 class Server(mcp.common.http.AuthHandler):
     def do_get(self):

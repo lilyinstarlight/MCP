@@ -23,7 +23,7 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.source.add(self.request.body['name'], self.request.body['url'])
+            mcp.model.source.add(self.request.body['source'], self.request.body['url'])
         except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.BzrError:
@@ -33,9 +33,9 @@ class Index(mcp.common.http.AuthHandler):
         except mcp.error.SourceExistsError:
             raise fooster.web.HTTPError(409)
 
-        self.response.headers['Location'] = '/api/source/' + self.request.body['name']
+        self.response.headers['Location'] = '/api/source/' + self.request.body['source']
 
-        return 201, dict(mcp.model.source.get(self.request.body['name']))
+        return 201, dict(mcp.model.source.get(self.request.body['source']))
 
 class Source(mcp.common.http.AuthHandler):
     def do_get(self):

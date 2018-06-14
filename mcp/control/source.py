@@ -45,9 +45,9 @@ def prepare(source_name, dst, revision=None):
     shutil.copytree(prefix, dst)
 
     if revision:
-        mcp.common.cmd.head('Reverting ' + source_name + ' to ' + revision)
+        mcp.common.cmd.head('Reverting ' + source_name + ' to ' + str(revision))
 
-        if subprocess.call(['bzr', 'revert', '-r' + revision], cwd=dst, stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
+        if subprocess.call(['bzr', 'revert', '-r' + str(revision)], cwd=dst, stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
             raise mcp.error.BzrError('Failed to revert bzr tree to revision')
 
 def remove(source_name):

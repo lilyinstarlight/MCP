@@ -16,7 +16,7 @@ var getUsers = function(handler) {
 
 var createUser = function(user, password, key, servers, admin, active, callback) {
 	post('/api/user/', auth_token, {'user': user, 'key': key, 'password': password, 'servers': servers, 'admin': admin ? 'true' : 'false', 'active': active ? 'true' : 'false'}, function(request) {
-		if (request.status === 200)
+		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
 			alert('Error creating user: ' + request.responseText);
@@ -50,7 +50,7 @@ var getServers = function(handler) {
 
 var createServer = function(server, source, callback) {
 	post('/api/server/', auth_token, {'server': server, 'source': source}, function(request) {
-		if (request.status === 200)
+		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
 			alert('Error creating server: ' + request.responseText);
@@ -84,7 +84,7 @@ var getSources = function(handler) {
 
 var addSource = function(source, url, callback) {
 	post('/api/source/', auth_token, {'source': source, 'url': url}, function(request) {
-		if (request.status === 200)
+		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
 			alert('Error adding source: ' + request.responseText);

@@ -18,7 +18,7 @@ var selectUser = function() {
 		document.getElementById('user_modify_button').disabled = false;
 		document.getElementById('user_destroy_button').disabled = false;
 
-		document.getElementById('user_modify_username').value = selected[0];
+		document.getElementById('user_modify_username').value = users[selected[0]].username;
 		document.getElementById('user_modify_password').value = '';
 		document.getElementById('user_modify_key').value = '';
 		document.getElementById('user_modify_admin').checked = users[selected[0]].admin;
@@ -28,8 +28,8 @@ var selectUser = function() {
 		var select = document.createElement('select');
 		for (var server in servers) {
 			var option = document.createElement('option');
-			option.value = server;
-			option.innerHTML = server;
+			option.value = servers[server].server;
+			option.innerHTML = servers[server].server;
 			for (var user_server in user_servers) {
 				if (server === user_servers[user_server])
 					option.setAttribute('selected', 'selected');
@@ -126,7 +126,7 @@ var submitUpgradeServer = function() {
 
 var upgradeAllServers = function() {
 	for (var server in servers)
-		upgradeServer(server['name'])
+		upgradeServer(server.server)
 };
 
 var submitDestroyServer = function() {
@@ -167,7 +167,7 @@ var submitUpdateSource = function() {
 
 var updateAllSources = function() {
 	for (var source in sources)
-		updateSource(source['name'])
+		updateSource(source.source)
 };
 
 var submitRemoveSource = function() {
@@ -235,7 +235,7 @@ var refresh = function(force) {
 			for (var server in servers) {
 				var option = document.createElement('option');
 				option.value = server;
-				option.innerHTML = server + ' - ' + response[server].source + ' (r' + response[server].revision + ')';
+				option.innerHTML = servers[server].source + ' - ' + servers[server].source + ' (r' + servers[server].revision + ')';
 				select.appendChild(option);
 			}
 			if (document.getElementById('server_listing').innerHTML !== select.innerHTML) {
@@ -248,8 +248,8 @@ var refresh = function(force) {
 			var select = document.createElement('select');
 			for (var server in servers) {
 				var option = document.createElement('option');
-				option.value = server;
-				option.innerHTML = server;
+				option.value = servers[server].server;
+				option.innerHTML = servers[server].server;
 				select.appendChild(option);
 			}
 			if (document.getElementById('user_create_servers').innerHTML !== select.innerHTML)
@@ -268,7 +268,7 @@ var refresh = function(force) {
 			for (var source in sources) {
 				var option = document.createElement('option');
 				option.value = source;
-				option.innerHTML = source + ' - r' + response[source].revision;
+				option.innerHTML = sources[source].source + ' - r' + sources[source].revision;
 				select.appendChild(option);
 			}
 			if (document.getElementById('source_listing').innerHTML !== select.innerHTML) {
@@ -281,8 +281,8 @@ var refresh = function(force) {
 			var select = document.createElement('select');
 			for (var source in sources) {
 				var option = document.createElement('option');
-				option.value = source;
-				option.innerHTML = source;
+				option.value = sources[source].source;
+				option.innerHTML = sources[source].source;
 				select.appendChild(option);
 			}
 			if (document.getElementById('server_source').innerHTML !== select.innerHTML)
@@ -296,7 +296,7 @@ var refresh = function(force) {
 				return;
 
 			config_text = response;
-			config.setValue(response);
+			config.setValue(config_text);
 		});
 	}
 
