@@ -44,7 +44,7 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
 
     mcp.control.server.set_port(server_name, port)
 
-    return server_db.add(server_name, source_name, revision, port, autostart, users)
+    return server_db.add(server_name, source_name, revision, port, autostart, users, False, False, '')
 
 def modify(server_name, port=None, autostart=None, users=None):
     server_obj = server_db[server_name]
