@@ -139,7 +139,12 @@ def log_get(server_name, last=None):
                 for _ in range(last):
                     log.readline()
 
-            return log.read()
+            contents = log.read()
+
+            if contents and contents[-1] != '\n':
+                contents += '\n'
+
+            return contents
     except FileNotFoundError:
         return ''
 
@@ -178,7 +183,12 @@ def script_log_get(server_name, last=None):
                 for _ in range(last):
                     log.readline()
 
-            return log.read()
+            contents = log.read()
+
+            if contents and contents[-1] != '\n':
+                contents += '\n'
+
+            return contents
     except FileNotFoundError:
         return ''
 
