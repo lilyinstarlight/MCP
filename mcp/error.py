@@ -74,5 +74,8 @@ class InvalidUserError(Error):
 class UserExistsError(Error):
     pass
 
+class LastLogLine(Error):
+    pass
+
 class NoLogLine(Error):
     pass

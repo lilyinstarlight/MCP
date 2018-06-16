@@ -1,4 +1,5 @@
 import os
+import os.path
 import re
 
 import fooster.db
@@ -120,6 +121,67 @@ def stop(server_name):
 
     server_db[server_name].running = False
 
+def log_get(server_name, last=None):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    try:
+        with open(os.path.join(mcp.config.prefix, server_name, 'server.log'), 'r') as log:
+            if last:
+                lines = len(log.readlines())
+                log.seek(0)
+
+                if lines + 1 == last:
+                    raise mcp.error.LastLogLine()
+                elif lines + 1 < last:
+                    raise mcp.error.NoLogLine()
+
+                for _ in range(last):
+                    log.readline()
+
+            return log.read()
+    except FileNotFoundError:
+        return ''
+
+def settings_get(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    try:
+        with open(os.path.join(mcp.config.prefix, server_name, 'config/settings_custom.cfg'), 'r') as settings_file:
+            return settings_file.read()
+    except FileNotFoundError:
+        return ''
+
+def settings_set(server_name, settings):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    with open(os.path.join(mcp.config.prefix, server_name, 'config/settings_custom.cfg'), 'w') as settings_file:
+        settings_file.write(settings)
+
+def script_log_get(server_name, last=None):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    try:
+        with open(os.path.join(mcp.config.prefix, server_name, 'script-error.log'), 'r') as log:
+            if last:
+                lines = len(log.readlines())
+                log.seek(0)
+
+                if lines + 1 == last:
+                    raise mcp.error.LastLogLine()
+                elif lines + 1 < last:
+                    raise mcp.error.NoLogLine()
+
+                for _ in range(last):
+                    log.readline()
+
+            return log.read()
+    except FileNotFoundError:
+        return ''
+
 def script_start(server_name):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
@@ -131,6 +193,23 @@ def script_stop(server_name):
         raise mcp.error.NoServerError()
 
     server_db[server_name].script_running = False
+
+def script_get(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    try:
+        with open(os.path.join(mcp.config.prefix, server_name, 'scripts/script.py'), 'r') as script_file:
+            return script_file.read()
+    except FileNotFoundError:
+        return ''
+
+def script_set(server_name, script):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    with open(os.path.join(mcp.config.prefix, server_name, 'scripts/script.py'), 'w') as script_file:
+        script_file.write(script)
 
 def send(server_name, command):
     if server_name not in server_db:

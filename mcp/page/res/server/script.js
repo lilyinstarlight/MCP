@@ -2,6 +2,9 @@ var servers, selected;
 
 var status_last;
 
+var log_last = 0;
+var script_log_last = 0;
+
 var settings, settings_text;
 var script, script_text;
 
@@ -140,14 +143,18 @@ var refresh = function(force) {
 		});
 
 		if (isVisible(document.getElementById('log')) || force) {
-			getLog(selected, function(response) {
-				document.getElementById('log').innerHTML = response;
+			getLog(selected, log_last, function(response, last) {
+				log_last = last;
+
+				document.getElementById('log').innerHTML += response;
 			});
 		}
 
 		if (isVisible(document.getElementById('script_log')) || force) {
-			getScriptLog(selected, function(response) {
-				document.getElementById('script_log').innerHTML = response;
+			getScriptLog(selected, script_log_last, function(response, last) {
+				script_log_last = last;
+
+				document.getElementById('script_log').innerHTML += response;
 			});
 		}
 

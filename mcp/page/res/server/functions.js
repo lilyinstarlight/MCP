@@ -67,17 +67,25 @@ var getStatus = function(server, handler) {
 	});
 };
 
-var getLog = function(server, handler) {
-	get('/api/server/' + server + '/log', auth_token, function(request) {
+var getLog = function(server, last, handler) {
+	get('/api/server/' + server + '/log?last=' + last, auth_token, function(request) {
 		if (request.status === 200)
-			handler(request.responseText);
+			handler(request.responseText, last + request.responseText.split('\n').length - 1);
+		else if (request.status === 204)
+			handler(request.responseText, last);
+		else if (request.status === 201)
+			handler(request.responseText, 0);
 	});
 };
 
-var getScriptLog = function(server, handler) {
-	get('/api/server/' + server + '/script/log', auth_token, function(request) {
+var getScriptLog = function(server, last, handler) {
+	get('/api/server/' + server + '/script/log?last=' + last, auth_token, function(request) {
 		if (request.status === 200)
-			handler(request.responseText);
+			handler(request.responseText, last + request.responseText.split('\n').length - 1);
+		else if (request.status === 204)
+			handler(request.responseText, last);
+		else if (request.status === 201)
+			handler(request.responseText, 0);
 	});
 };
 

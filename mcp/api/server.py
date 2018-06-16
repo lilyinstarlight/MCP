@@ -145,7 +145,7 @@ class Settings(mcp.common.http.PlainAuthHandler):
 
         return 204, None
 
-class Log(mcp.common.http.AuthHandler):
+class Log(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -157,13 +157,15 @@ class Log(mcp.common.http.AuthHandler):
 
         try:
             try:
-                return 200, mcp.model.server.log_get(self.groups[0], self.request.query['last'] if 'last' in self.request.query else None)
+                return 200, mcp.model.server.log_get(self.groups[0], int(self.request.query['last']) if 'last' in self.request.query else None)
+            except mcp.error.LastLogLine:
+                return 204, ''
             except mcp.error.NoLogLine:
                 return 201, mcp.model.server.script_log_get(self.groups[0])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
-class Script(mcp.common.http.AuthHandler):
+class Script(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -213,7 +215,7 @@ class Script(mcp.common.http.AuthHandler):
 
         return 204, None
 
-class ScriptLog(mcp.common.http.AuthHandler):
+class ScriptLog(mcp.common.http.PlainAuthHandler):
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -225,7 +227,9 @@ class ScriptLog(mcp.common.http.AuthHandler):
 
         try:
             try:
-                return 200, mcp.model.server.script_log_get(self.groups[0], self.request.query['last'] if 'last' in self.request.query else None)
+                return 200, mcp.model.server.script_log_get(self.groups[0], int(self.request.query['last']) if 'last' in self.request.query else None)
+            except mcp.error.LastLogLine:
+                return 204, ''
             except mcp.error.NoLogLine:
                 return 201, mcp.model.server.script_log_get(self.groups[0])
         except mcp.error.NoServerError:

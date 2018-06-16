@@ -14,6 +14,8 @@ class PageHandler(fooster.web.page.PageHandler):
     directory = os.path.dirname(__file__) + '/html'
 
 class PlainAuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn, fooster.web.HTTPHandler):
+    group = 1
+
     def login(self, username, password):
         try:
             return mcp.model.user.check_user(username, password)
