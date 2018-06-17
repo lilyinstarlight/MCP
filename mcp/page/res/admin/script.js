@@ -1,9 +1,9 @@
 var features = {};
 
-var users, servers, sources;
+var users, servers, sources, libraries;
 
 var config, config_text;
-var user_selected, server_selected, source_selected;
+var user_selected, server_selected, source_selected, library_selected;
 
 var selectUser = function() {
 	var selected = [];
@@ -121,9 +121,10 @@ var selectServer = function() {
 };
 
 var submitServer = function() {
-	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value, function() {
+	createServer(document.getElementById('server_name').value, document.getElementById('server_source').value, document.getElementById('server_library').value, function() {
 		document.getElementById('server_name').value = '';
-		document.getElementById('server_source').innerHTML = '';
+		document.getElementById('server_source').value = '';
+		document.getElementById('server_library').value = '';
 	});
 };
 
@@ -135,7 +136,7 @@ var submitUpgradeServer = function() {
 
 var upgradeAllServers = function() {
 	servers.forEach(function(server) {
-		upgradeServer(server.server)
+		upgradeServer(server.server);
 	});
 };
 
@@ -189,6 +190,50 @@ var submitRemoveSource = function() {
 	});
 };
 
+var selectLibrary = function() {
+	var selected = [];
+	var options = document.getElementById('library_listing').options;
+	for (var idx = 0; idx < options.length; idx++) {
+		if (options[idx].selected)
+			selected.push(options[idx].value);
+	}
+	library_selected = selected;
+
+	if (selected.length > 0) {
+		document.getElementById('library_update_button').disabled = false;
+		document.getElementById('library_remove_button').disabled = false;
+	}
+	else {
+		document.getElementById('library_update_button').disabled = true;
+		document.getElementById('library_remove_button').disabled = true;
+	}
+};
+
+var submitLibrary = function() {
+	addLibrary(document.getElementById('library_name').value, document.getElementById('library_bzr').value, function() {
+		document.getElementById('library_name').value = '';
+		document.getElementById('library_bzr').value = '';
+	});
+};
+
+var submitUpdateLibrary = function() {
+	library_selected.forEach(function(library) {
+		updateLibrary(library);
+	});
+};
+
+var updateAllLibraries = function() {
+	libraries.forEach(function(library) {
+		updateLibrary(library.library)
+	});
+};
+
+var submitRemoveLibrary = function() {
+	library_selected.forEach(function(library) {
+		removeLibrary(library);
+	});
+};
+
 var saveConfig = function() {
 	updateConfig(config.getValue(), function() {
 		alert('Config successfully saved');
@@ -207,13 +252,13 @@ var refresh = function(force) {
 
 		if (features.creation) {
 			document.getElementById('config_button').disabled = false;
-			if (isVisible(document.getElementById('server_create_button')) || force)
-				document.getElementById('server_create_button').disabled = false;
+			if (isVisible(document.getElementById('server_button')) || force)
+				document.getElementById('server_button').disabled = false;
 		}
 		else {
 			document.getElementById('config_button').disabled = true;
-			if (isVisible(document.getElementById('server_create_button')) || force)
-				document.getElementById('server_create_button').disabled = true;
+			if (isVisible(document.getElementById('server_button')) || force)
+				document.getElementById('server_button').disabled = true;
 		}
 	});
 
@@ -304,6 +349,39 @@ var refresh = function(force) {
 		}
 	});
 
+	getLibraries(function(response) {
+		if (response === libraries)
+			return;
+
+		libraries = response;
+
+		if (isVisible(document.getElementById('library_listing')) || force) {
+			var select = document.createElement('select');
+			libraries.forEach(function(library) {
+				var option = document.createElement('option');
+				option.value = library.library;
+				option.innerHTML = library.library + ' - r' + library.revision;
+				select.appendChild(option);
+			});
+			if (document.getElementById('library_listing').innerHTML !== select.innerHTML) {
+				document.getElementById('library_listing').innerHTML = select.innerHTML;
+				selectLibrary();
+			}
+		}
+
+		if (isVisible(document.getElementById('server_library')) || force) {
+			var select = document.createElement('select');
+			libraries.forEach(function(library) {
+				var option = document.createElement('option');
+				option.value = library.library;
+				option.innerHTML = library.library;
+				select.appendChild(option);
+			});
+			if (document.getElementById('server_library').innerHTML !== select.innerHTML)
+				document.getElementById('server_library').innerHTML = select.innerHTML;
+		}
+	});
+
 	if ((isVisible(document.getElementById('config_editor')) || force) && features.creation) {
 		getConfig(function(response) {
 			if (config_text === response)
@@ -340,6 +418,12 @@ var load = function() {
 
 	document.getElementById('sources_button').addEventListener('click', function(ev) {
 		change('sources');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('libraries_button').addEventListener('click', function(ev) {
+		change('libraries');
 
 		ev.preventDefault();
 	}, false);
@@ -514,6 +598,49 @@ var load = function() {
 	document.getElementById('source_submit').addEventListener('click', function(ev) {
 		submitSource();
 		change('sources', 'source_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_add_button').addEventListener('click', function(ev) {
+		change('libraries', 'library_add');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_update_button').addEventListener('click', function(ev) {
+		submitUpdateLibrary();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_remove_button').addEventListener('click', function(ev) {
+		submitRemoveLibrary();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_update_all_button').addEventListener('click', function(ev) {
+		updateAllLibraries();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_listing').addEventListener('change', function(ev) {
+		selectLibrary();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_cancel').addEventListener('click', function(ev) {
+		change('libraries', 'library_list');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('library_submit').addEventListener('click', function(ev) {
+		submitLibrary();
+		change('libraries', 'library_list');
 
 		ev.preventDefault();
 	}, false);

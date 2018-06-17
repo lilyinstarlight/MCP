@@ -48,8 +48,8 @@ var getServers = function(handler) {
 	});
 };
 
-var createServer = function(server, source, callback) {
-	post('/api/server/', auth_token, {'server': server, 'source': source}, function(request) {
+var createServer = function(server, source, library, callback) {
+	post('/api/server/', auth_token, {'server': server, 'source': source, 'library': library}, function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -106,6 +106,40 @@ var removeSource = function(source, callback) {
 			typeof callback === 'function' && callback();
 		else
 			alert('Error removing source: ' + request.responseText);
+	});
+};
+
+var getLibraries = function(handler) {
+	get('/api/script/', auth_token, function(request) {
+		if (request.status === 200)
+			handler(JSON.parse(request.responseText));
+	});
+};
+
+var addLibrary = function(library, url, callback) {
+	post('/api/script/', auth_token, {'library': library, 'url': url}, function(request) {
+		if (request.status === 201)
+			typeof callback === 'function' && callback();
+		else
+			alert('Error adding library: ' + request.responseText);
+	});
+};
+
+var updateLibrary = function(library, callback) {
+	put('/api/script/' + library, auth_token, {}, function(request) {
+		if (request.status === 200)
+			typeof callback === 'function' && callback();
+		else
+			alert('Error updating library: ' + request.responseText);
+	});
+};
+
+var removeLibrary = function(library, callback) {
+	del('/api/script/' + library, auth_token, {}, function(request) {
+		if (request.status === 204)
+			typeof callback === 'function' && callback();
+		else
+			alert('Error removing library: ' + request.responseText);
 	});
 };
 

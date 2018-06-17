@@ -19,7 +19,7 @@ def items():
 def get(server_name):
     return server_db.get(server_name)
 
-def create(server_name, source_name, revision=None, port=None, autostart=True, users=[]):
+def create(server_name, source_name, library=None, revision=None, port=None, autostart=True, users=[]):
     if not re.match('^' + servers_allowed + '$', server_name):
         raise mcp.error.InvalidServerError()
 
@@ -28,6 +28,9 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
 
     if not mcp.model.source.get(source_name):
         raise mcp.error.NoSourceError()
+
+    if library and not mcp.model.script.get(library):
+        raise mcp.error.NoScriptError()
 
     if not revision:
         revision = mcp.model.source.get(source_name).revision
@@ -45,19 +48,23 @@ def create(server_name, source_name, revision=None, port=None, autostart=True, u
 
     mcp.control.server.set_port(server_name, port)
 
-    return server_db.add(server_name, source_name, revision, port, autostart, users, False, False, '')
+    return server_db.add(server_name, source_name, library, revision, port, autostart, users, False, False, '')
 
-def modify(server_name, port=None, autostart=None, users=None):
+def modify(server_name, library=None, port=None, autostart=None, users=None):
     try:
         server = server_db[server_name]
     except KeyError:
         raise mcp.error.NoServerError()
 
-    if port != None:
+    if library:
+        server.script = library
+        server.reload = True
+
+    if port is not None:
         mcp.control.server.set_port(server_name, port)
         server.port = port
 
-    if autostart != None:
+    if autostart is not None:
         server.autostart = autostart
 
     if users:
@@ -244,4 +251,4 @@ def port_get_next():
 
     return None
 
-server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'command'])
+server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'library', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'reload', 'command'])

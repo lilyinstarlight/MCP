@@ -41,6 +41,7 @@
 					<li><button id="users_button">Users</button></li>
 					<li><button id="servers_button">Servers</button></li>
 					<li><button id="sources_button">Sources</button></li>
+					<li><button id="libraries_button">Scripts</button></li>
 					<li><button id="config_button">Config</button></li>
 				</ul>
 			</span>
@@ -181,6 +182,10 @@
 								<td><label for="server_source">Source: </label></td>
 								<td><select id="server_source" name="source"></select></td>
 							</tr>
+							<tr>
+								<td><label for="server_library">Library: </label></td>
+								<td><select id="server_library" name="library"></select></td>
+							</tr>
 							<tr></tr>
 							<tr>
 								<td><button id="server_cancel">Cancel</button></td>
@@ -227,6 +232,48 @@
 							<tr>
 								<td><button id="source_cancel">Cancel</button></td>
 								<td><button id="source_submit">Add</button></td>
+							</tr>
+						</table>
+					</form>
+				</section>
+			</section>
+
+			<section id="libraries" class="none">
+				<section id="library_list">
+					<nav class="action">
+						<span class="left">
+							<ul>
+								<li><button id="library_add_button">Add</button></li>
+								<li><button id="library_update_button" disabled>Update</button></li>
+								<li><button id="library_remove_button" disabled>Remove</button></li>
+							</ul>
+						</span>
+
+						<span class="right">
+							<ul>
+								<li><button id="library_update_all_button" disabled>Update All</button></li>
+							</ul>
+						</span>
+					</nav>
+
+					<select id="library_listing" multiple></select>
+				</section>
+
+				<section id="library_add" class="none">
+					<form>
+						<table>
+							<tr>
+								<td><label for="library_name">Name: </label></td>
+								<td><input id="library_name" type="text"/></td>
+							</tr>
+							<tr>
+								<td><label for="library_bzr">Bzr Address: </label></td>
+								<td><input id="library_bzr" type="text"/></td>
+							</tr>
+							<tr></tr>
+							<tr>
+								<td><button id="library_cancel">Cancel</button></td>
+								<td><button id="library_submit">Add</button></td>
 							</tr>
 						</table>
 					</form>

@@ -29,7 +29,7 @@ class Script(object):
         if not self.exists():
             raise mcp.error.ScriptNonExistentError()
 
-        self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), env=mcp.common.env.get_script(), cwd=self.server.prefix + '/var')
+        self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), env=mcp.common.env.get_script(self.server.library), cwd=self.server.prefix + '/var')
 
     def stop(self):
         if self.is_running():
@@ -56,6 +56,8 @@ class Server(object):
         self.name = metadata.server
         self.prefix = mcp.config.prefix + '/' + self.name
         self.exe = self.prefix + '/bin/armagetronad-dedicated'
+
+        self.library = metadata.library
 
         self.proc = None
 
@@ -181,6 +183,13 @@ def run(poll_interval=0.5):
                             process.script.stop()
                         if process.is_running():
                             process.stop()
+
+                        # unload and reload server if necessary
+                        if entry.reload:
+                            del server_processes[entry.server]
+
+                            entry.reload = False
+
 
                 for name in server_processes.keys():
                     if not mcp.model.server.get(name):

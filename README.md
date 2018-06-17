@@ -148,7 +148,7 @@ Questions
 There is a live demo at https://mcp.fooster.io/. It shows off the web interface and the simplicity of the [armagetron.py](https://github.com/fkmclane/armagetron.py) scripting library. The sample script shows how to reset the server settings when everyone leaves the server. Login with user: `demo` and password: `demo`.
 
 ### What if I want to use my own scripting library?
-Place it in a directory in the `script` directory of the `mcp.control` package, create a `script.json` file, and reinstall. You can also (optionally) create your own `api.html` so that the documentation is available in the web interface.
+Place it in a directory configured by the `scripting` option. You can also (optionally) create your own `doc.html` so that the documentation is available in the web interface.
 
 ### I want to use this on Windows but it isn't working!
 Well that isn't a question and I'm afraid I can't help you there. I don't mess with Windows often and don't have time to fiddle with an unsupported operating system for a single person. This could work on Windows if you had custom compiled servers (a lot of work to get the right flags) but honestly, it would take less time to install [Ubuntu](http://www.ubuntu.com/) then install this software.

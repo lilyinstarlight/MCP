@@ -81,5 +81,11 @@ class Library(mcp.common.http.AuthHandler):
 
         return 204, None
 
+class Documentation(mcp.common.http.PlainAuthHandler):
+    def do_get(self):
+        try:
+            return 200, mcp.model.script.doc_get(self.groups[0])
+        except mcp.error.NoLibraryError:
+            raise fooster.web.HTTPError(404)
 
-routes = {'/api/script/' + fooster.web.query.regex: Index, '/api/script/(' + mcp.model.script.libraries_allowed + ')' + fooster.web.query.regex: Library}
+routes = {'/api/script/' + fooster.web.query.regex: Index, '/api/script/(' + mcp.model.script.libraries_allowed + ')' + fooster.web.query.regex: Library, '/api/script/(' + mcp.model.script.libraries_allowed + ')/doc' + fooster.web.query.regex: Documentation}

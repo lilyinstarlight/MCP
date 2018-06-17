@@ -1,5 +1,8 @@
-var goto = function(uri) {
-    location.href = uri;
+var goto = function(uri, open) {
+    if (open)
+	window.open(uri, '_blank');
+    else
+	window.location.href = uri;
 };
 
 var change = function(element, child) {

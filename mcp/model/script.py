@@ -53,4 +53,14 @@ def remove(library_name):
 
     del library_db[library_name]
 
+def doc_get(library_name):
+    if library_name not in library_db:
+        raise mcp.error.NoLibraryError()
+
+    try:
+        with open(os.path.join(mcp.config.scripting, library_name, 'doc.html'), 'r') as doc:
+            return doc.read()
+    except FileNotFoundError:
+        return ''
+
 library_db = fooster.db.Database(mcp.config.database + '/libraries.db', ['library', 'url', 'revision'])

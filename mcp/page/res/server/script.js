@@ -1,12 +1,13 @@
 var servers, selected;
 
-var status_last;
+var server_last;
 
 var log_last = 0;
 var script_log_last = 0;
 
 var settings, settings_text;
 var script, script_text;
+var library;
 
 var changeServer = function(name) {
 	if (name) {
@@ -88,11 +89,11 @@ var refresh = function(force) {
 	});
 
 	if (selected) {
-		getStatus(selected, function(status) {
-			if (status === status_last)
+		getStatus(selected, function(server) {
+			if (server === server_last)
 				return;
 
-			switch (status) {
+			switch (server.status) {
 				case 'stopped':
 					document.getElementById('started').className = 'none';
 					document.getElementById('stopped').className = '';
@@ -274,6 +275,12 @@ var load = function() {
 
 	document.getElementById('script_console_button').addEventListener('click', function(ev) {
 		change('script', 'script_console');
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('script_doc_button').addEventListener('click', function(ev) {
+		goto('/api/script/' + library + '/doc', true);
 
 		ev.preventDefault();
 	}, false);

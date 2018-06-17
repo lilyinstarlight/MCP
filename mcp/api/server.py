@@ -20,10 +20,12 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.server.create(self.request.body['server'], self.request.body['source'], self.request.body['revision'] if 'revision' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None)
+            mcp.model.server.create(self.request.body['server'], self.request.body['source'], self.request.body['library'], self.request.body['revision'] if 'revision' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None)
         except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.NoSourceError:
+            raise fooster.web.HTTPError(400)
+        except mcp.error.NoScriptError:
             raise fooster.web.HTTPError(400)
         except mcp.error.InvalidServerError:
             raise fooster.web.HTTPError(403)
@@ -65,11 +67,11 @@ class Server(mcp.common.http.AuthHandler):
         except AttributeError:
             raise fooster.web.HTTPError(404)
 
-        if not self.auth.admin and ('port' in self.request.body or 'source' in self.request.body or 'revision' in self.request.body):
+        if not self.auth.admin and ('port' in self.request.body or 'source' in self.request.body or 'library' in self.request.body or 'revision' in self.request.body):
             raise fooster.web.HTTPError(403)
 
         try:
-            mcp.model.server.modify(self.groups[0], self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None, self.request.body['users'] if 'users' in self.request.body else None)
+            mcp.model.server.modify(self.groups[0], self.request.body['library'] if 'library' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None, self.request.body['users'] if 'users' in self.request.body else None)
 
             if 'source' in self.request.body or 'revision' in self.request.body:
                 mcp.model.server.upgrade(self.groups[0], self.request.body['source'] if 'source' in self.request.body else None, self.request.body['revision'] if 'revision' in self.request.body else None)
