@@ -47,7 +47,7 @@
 
 			<span class="right">
 				<ul>
-					<li><select id="server_select"></select></li>
+					<li class="select"><select id="server_select"></select></li>
 					<li><button id="user_button">User</button></li>
 					<li><button id="admin_button" class="none">Admin</button></li>
 					<li><button id="logout_button">Logout</button></li>
@@ -74,16 +74,16 @@
 								<li><button id="start_button">Start</button></li>
 							</ul>
 						</section>
-						<section id="started">
+						<section id="started" class="none">
 							<ul>
-								<li><button id="stop_button" class="none">Stop</button></li>
-								<li><button id="restart_button" class="none">Restart</button></li>
-								<li><button id="reload_button" class="none">Reload</button></li>
+								<li><button id="stop_button">Stop</button></li>
+								<li><button id="restart_button">Restart</button></li>
+								<li><button id="reload_button">Reload</button></li>
 							</ul>
 						</section>
 					</span>
-					<span class="right">
-						<span class="status">Status: <span id="status">Contacting server...</span></span>
+					<span class="right status">
+						<span>Status: <span id="status">Contacting server...</span></span>
 					</span>
 				</nav>
 

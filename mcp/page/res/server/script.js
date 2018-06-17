@@ -45,8 +45,8 @@ var reloadServer = function() {
 };
 
 var submitCommand = function() {
-	sendCommand(selected, document.getElementById('command_box').value);
-	document.getElementById('command_box').value = '';
+	sendCommand(selected, document.getElementById('command_input').value);
+	document.getElementById('command_input').value = '';
 };
 
 var saveSettings = function() {
@@ -93,51 +93,19 @@ var refresh = function(force) {
 			if (server === server_last)
 				return;
 
-			switch (server.status) {
-				case 'stopped':
-					document.getElementById('started').className = 'none';
-					document.getElementById('stopped').className = '';
-					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').disabled = true;
-					document.getElementById('status').innerHTML = 'Stopped';
-
-					break;
-
-				case 'starting':
-					document.getElementById('started').className = 'none';
-					document.getElementById('stopped').className = '';
-					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').disabled = true;
-					document.getElementById('status').innerHTML = 'Starting...';
-
-					break;
-
-				case 'started':
-					document.getElementById('started').className = '';
-					document.getElementById('stopped').className = 'none';
-					document.getElementById('command_box').disabled = false;
-					document.getElementById('command_submit').disabled = false;
-					document.getElementById('status').innerHTML = 'Running';
-
-					break;
-
-				case 'stopping':
-					document.getElementById('started').className = '';
-					document.getElementById('stopped').className = 'none';
-					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').disabled = true;
-					document.getElementById('status').innerHTML = 'Stopping...';
-
-					break;
-
-				case 'nonexistent':
-					document.getElementById('started').className = 'none';
-					document.getElementById('stopped').className = 'none';
-					document.getElementById('command_box').disabled = true;
-					document.getElementById('command_submit').disabled = true;
-					document.getElementById('status').innerHTML = 'Server is nonexistent.  Contact the administrator to fix this problem.';
-
-					break;
+			if (server.running) {
+				document.getElementById('started').className = '';
+				document.getElementById('stopped').className = 'none';
+				document.getElementById('command_input').disabled = false;
+				document.getElementById('command_submit').disabled = false;
+				document.getElementById('status').innerHTML = 'Running';
+			}
+			else {
+				document.getElementById('started').className = 'none';
+				document.getElementById('stopped').className = '';
+				document.getElementById('command_input').disabled = true;
+				document.getElementById('command_submit').disabled = true;
+				document.getElementById('status').innerHTML = 'Stopped';
 			}
 
 			status_last = status;
@@ -237,19 +205,19 @@ var load = function() {
 	}, false);
 
 	document.getElementById('start_button').addEventListener('click', function(ev) {
-		start();
+		startServer();
 
 		ev.preventDefault();
 	}, false);
 
 	document.getElementById('stop_button').addEventListener('click', function(ev) {
-		stop();
+		stopServer();
 
 		ev.preventDefault();
 	}, false);
 
 	document.getElementById('reload_button').addEventListener('click', function(ev) {
-		reload();
+		reloadServer();
 
 		ev.preventDefault();
 	}, false);

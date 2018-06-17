@@ -68,8 +68,6 @@ def modify(server_name, library=None, port=None, autostart=None, users=None):
         server.autostart = autostart
 
     if users:
-        import mcp.model.user
-
         for username in server.users:
             server = mcp.servers.get(username)
             if server_name in user.servers and username not in users:
@@ -104,8 +102,6 @@ def destroy(server_name):
 
     if server_db[server_name].running:
         raise mcp.error.ServerRunningError()
-
-    import mcp.model.user
 
     for username in server.users:
         user = mcp.model.user.get(username)
@@ -252,3 +248,5 @@ def port_get_next():
     return None
 
 server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'library', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'reload', 'command'])
+
+import mcp.model.user

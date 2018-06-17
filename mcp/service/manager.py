@@ -112,7 +112,7 @@ class Server(object):
         if not self.is_running():
             raise mcp.error.ServerStoppedError()
 
-        self.proc.stdin.write(command + '\n')
+        self.proc.stdin.write(command.encode('latin1') + b'\n')
 
 running = multiprocessing.Value('b', False)
 process = None
@@ -144,12 +144,13 @@ def run(poll_interval=0.5):
 
                     # check if each server is supposed to be running and poll for problems
                     if entry.running:
+                        if not process.proc:
+                            process.start()
+
                         for command in entry.command.split('\n'):
                             process.send_command(command)
 
-                        if not process.proc:
-                            process.start()
-                        elif process.is_quit():
+                        if process.is_quit():
                             process.script.stop()
                             entry.script_running = False
                             process.stop()

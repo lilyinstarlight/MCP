@@ -54,7 +54,7 @@ class Server(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(404)
 
         try:
-            mcp.model.server.send(self.groups[0], self.request.body)
+            mcp.model.server.send(self.groups[0], self.request.body['command'])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 

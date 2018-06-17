@@ -118,8 +118,6 @@ def modify(username, password=None, key=None, admin=None, active=None, servers=N
         user.active = active
 
     if servers is not None:
-        import mcp.model.server
-
         for server_name in user.servers:
             server = mcp.model.server.get(server_name)
             if username in server.users and server_name not in servers:
@@ -138,8 +136,6 @@ def remove(username):
     except KeyError:
         raise mcp.error.NoUserError()
 
-    import mcp.model.server
-
     for server_name in user.servers:
         server = mcp.model.server.get(server_name)
         if username in server.users:
@@ -148,3 +144,5 @@ def remove(username):
     del user_db[username]
 
 user_db = fooster.db.Database(mcp.config.database + '/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])
+
+import mcp.model.server

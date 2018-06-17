@@ -43,7 +43,7 @@ var restart = function(server, callback) {
 
 var sendCommand = function(server, command, callback) {
 	post('/api/server/' + server, auth_token, {'command': command}, function(request) {
-		if (request.status === 200)
+		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else
 			alert('Error sending command "' + command + '": ' + request.responseText);

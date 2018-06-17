@@ -4,8 +4,16 @@ pre {
 	height: 50em;
 }
 
+.select {
+	padding-right: 8px;
+	line-height: 24px;
+}
+
 .status {
 	font-weight: bold;
+
+	padding-right: 8px;
+	line-height: 25px;
 }
 
 #command table {
