@@ -190,8 +190,7 @@ def run(poll_interval=0.5):
 
                             entry.reload = False
 
-
-                for name in server_processes.keys():
+                for name in list(server_processes.keys()):
                     if not mcp.model.server.get(name):
                         del server_processes[name]
 
