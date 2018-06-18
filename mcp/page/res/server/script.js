@@ -160,8 +160,14 @@ var refresh = function(force) {
 
 				document.getElementById('log').innerHTML += response;
 
-				if (scroll)
+				if (force) {
+					setTimeout(function() {
+						document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight - document.getElementById('log').clientHeight;
+					}, 500);
+				}
+				else {
 					document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight - document.getElementById('log').clientHeight;
+				}
 			});
 		}
 
@@ -173,8 +179,14 @@ var refresh = function(force) {
 
 				document.getElementById('script_log').innerHTML += response;
 
-				if (scroll)
+				if (force) {
+					setTimeout(function() {
+						document.getElementById('script_log').scrollTop = document.getElementById('script_log').scrollHeight - document.getElementById('script_log').clientHeight;
+					}, 500);
+				}
+				else {
 					document.getElementById('script_log').scrollTop = document.getElementById('script_log').scrollHeight - document.getElementById('script_log').clientHeight;
+				}
 			});
 		}
 

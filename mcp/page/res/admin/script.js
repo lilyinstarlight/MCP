@@ -240,6 +240,12 @@ var saveConfig = function() {
 	});
 };
 
+var restartDaemon = function() {
+	restart(function() {
+		alert('Daemon successfully restarted');
+	});
+};
+
 var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
@@ -436,6 +442,12 @@ var load = function() {
 	document.getElementById('config_button').addEventListener('click', function(ev) {
 		change('config');
 		config.refresh();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('restart_button').addEventListener('click', function(ev) {
+		restartDaemon();
 
 		ev.preventDefault();
 	}, false);

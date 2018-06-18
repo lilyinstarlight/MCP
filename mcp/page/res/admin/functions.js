@@ -158,3 +158,12 @@ var updateConfig = function(config, callback) {
 			alert('Error updating config: ' + request.responseText);
 	});
 };
+
+var restart = function(callback) {
+	post('/api/restart', auth_token, {}, function(request) {
+		if (request.status === 204)
+			typeof callback === 'function' && callback();
+		else
+			alert('Error restarting daemon: ' + request.responseText);
+	});
+};
