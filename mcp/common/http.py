@@ -1,3 +1,4 @@
+import base64
 import os.path
 
 import fooster.web.auth
@@ -11,7 +12,7 @@ import mcp.model.user
 
 
 class PageHandler(fooster.web.page.PageHandler):
-    directory = os.path.dirname(__file__) + '/html'
+    directory = os.path.join(os.path.dirname(__file__), 'html')
 
 class PlainAuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryMixIn, fooster.web.HTTPHandler):
     group = 1
@@ -21,6 +22,14 @@ class PlainAuthHandler(fooster.web.auth.BasicAuthMixIn, fooster.web.query.QueryM
             return mcp.model.user.check_user(username, password)
         except mcp.error.NoUserError:
             raise fooster.web.auth.AuthError('Basic', 'MCP')
+
+    def auth_login(self, userpass):
+        try:
+            username, password = base64.b64decode(userpass).decode().split(':', 1)
+
+            return mcp.model.user.check_user(username, password)
+        except mcp.error.NoUserError:
+            raise fooster.web.auth.AuthError('Login', 'MCP')
 
     def auth_key(self, key):
         try:

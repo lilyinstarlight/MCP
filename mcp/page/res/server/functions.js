@@ -69,8 +69,10 @@ var getStatus = function(server, handler) {
 
 var getLog = function(server, last, handler) {
 	get('/api/server/' + server + '/log?last=' + last, auth_token, function(request) {
-		if (request.status === 200)
-			handler(request.responseText, last + request.responseText.split('\n').length - 1);
+		if (request.status === 200) {
+			var log = request.responseText.split('\n');
+			handler(log.slice(-300).join('\n'), last + log.length - 1);
+		}
 		else if (request.status === 204)
 			handler(request.responseText, last);
 		else if (request.status === 201)

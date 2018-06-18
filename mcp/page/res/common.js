@@ -26,7 +26,7 @@ var isVisible = function(element) {
     if (element === document)
 	return true;
 
-    if (element.style.display === 'none')
+    if (window.getComputedStyle(element, null).getPropertyValue('display') === 'none')
 	return false;
     else
 	return isVisible(element.parentNode);
@@ -74,7 +74,7 @@ var XHR = function(address, method, auth, data, redirect, handler) {
     request.onreadystatechange = function() {
 	if (request.readyState === 4) {
 	    if ((request.status === 401 || request.status === 403) && redirect) {
-		window.location.href = '/login';
+		goto('/login');
 		return;
 	    }
 

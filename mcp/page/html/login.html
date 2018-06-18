@@ -35,23 +35,29 @@
 		</nav>
 
 		<main>
-			<form id="login_form">
-				<table>
-					<tr>
-						<td><label for="user">Username: </label></td>
-						<td><input id="user" name="user" type="text"/></td>
-					</tr>
-					<tr>
-						<td><label for="password">Password: </label></td>
-						<td><input id="password" name="password" type="password"/></td>
-					</tr>
-					<tr></tr>
-					<tr>
-						<td></td>
-						<td><button type="submit">Submit</button></td>
-					</tr>
-				</table>
-			</form>
+			<section id="loading">
+				<p>Loading...</p>
+			</section>
+
+			<section id="login" class="none">
+				<form id="login_form">
+					<table>
+						<tr>
+							<td><label for="user">Username: </label></td>
+							<td><input id="user" name="user" type="text"/></td>
+						</tr>
+						<tr>
+							<td><label for="password">Password: </label></td>
+							<td><input id="password" name="password" type="password"/></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td></td>
+							<td><button type="submit">Submit</button></td>
+						</tr>
+					</table>
+				</form>
+			</section>
 		</main>
 	</body>
 </html>

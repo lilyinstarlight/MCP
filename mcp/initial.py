@@ -25,7 +25,7 @@ def check():
     # create config directory and copy initial files if necessary
     try:
         os.makedirs(mcp.config.config)
-        mcp.common.util.copy_contents(os.path.join(os.path.dirname(__file__), 'control/server/config'), mcp.config.config)
+        mcp.common.util.copy_contents(os.path.join(os.path.dirname(__file__), 'control', 'server', 'config'), mcp.config.config)
     except FileExistsError:
         pass
 

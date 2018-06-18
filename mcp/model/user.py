@@ -10,7 +10,7 @@ import fooster.db
 import mcp.config
 import mcp.error
 
-users_allowed = '[0-9a-zA-Z-_+]+'
+users_allowed = '[0-9a-zA-Z-_+][0-9a-zA-Z-_+.]*'
 
 key_length = 24
 salt_length = 8
@@ -143,6 +143,6 @@ def remove(username):
 
     del user_db[username]
 
-user_db = fooster.db.Database(mcp.config.database + '/users.db', ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])
+user_db = fooster.db.Database(os.path.join(mcp.config.database, 'users.db'), ['username', 'hash', 'salt', 'key', 'admin', 'active', 'servers', 'token', 'expiry'])
 
 import mcp.model.server

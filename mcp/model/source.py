@@ -10,7 +10,7 @@ import mcp.error
 
 import mcp.control.source
 
-sources_allowed = '[0-9a-zA-Z-_+.]+'
+sources_allowed = '[0-9a-zA-Z-_+][0-9a-zA-Z-_+.]*'
 
 def items():
     return iter(source_db)
@@ -51,4 +51,4 @@ def remove(source_name):
 
     del source_db[source_name]
 
-source_db = fooster.db.Database(mcp.config.database + '/sources.db', ['source', 'url', 'revision'])
+source_db = fooster.db.Database(os.path.join(mcp.config.database, 'sources.db'), ['source', 'url', 'revision'])

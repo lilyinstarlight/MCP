@@ -39,8 +39,8 @@ accesslog = '/var/log/mcp/access.log'
 
 # template directory to use
 import os.path
-template = os.path.dirname(__file__) + '/page/html'
-resource = os.path.dirname(__file__) + '/page/res'
+template = os.path.join(os.path.dirname(__file__), 'page', 'html')
+resource = os.path.join(os.path.dirname(__file__), 'page', 'res')
 
 # address of the web interface (leave blank unless you know what you are doing)
 addr = ''
@@ -51,3 +51,6 @@ port = 8000
 # path to TLS/SSL key and certificate files; None to disable TLS encryption
 tlskey = None
 tlscert = None
+
+# how long to wait between server polls
+poll_interval = 0.5

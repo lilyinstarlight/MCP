@@ -1,4 +1,5 @@
 import os
+import os.path
 import signal
 
 import fooster.web
@@ -21,7 +22,7 @@ class Config(mcp.common.http.PlainAuthHandler):
         try:
             self.response.headers['Content-Type'] = 'text/plain'
 
-            with open(mcp.config.config + '/server_info.cfg', 'r') as conf:
+            with open(os.path.join(mcp.config.config, 'server_info.cfg'), 'r') as conf:
                 return 200, conf.read()
         except FileNotFoundError:
             return 200, ''
@@ -31,7 +32,7 @@ class Config(mcp.common.http.PlainAuthHandler):
             raise fooster.web.HTTPError(401)
 
         # update config
-        with open(mcp.config.config + '/server_info.cfg', 'w') as conf:
+        with open(os.path.join(mcp.config.config, 'server_info.cfg'), 'w') as conf:
             conf.write(config)
 
         return 204, None

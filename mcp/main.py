@@ -41,10 +41,9 @@ if args.log:
         mcp.config.httpdlog = None
         mcp.config.accesslog = None
     else:
-        mcp.config.log = args.log + '/manager.log'
-        mcp.config.cmdlog = args.log + '/command.log'
-        mcp.config.httpdlog = args.log + '/httpd.log'
-        mcp.config.accesslog = args.log + '/access.log'
+        mcp.config.log = os.path.join(args.log, 'manager.log')
+        mcp.config.cmdlog = os.path.join(args.log, 'httpd.log')
+        mcp.config.httplog = os.path.join(args.log, 'access.log')
 
 if args.database:
     mcp.config.database = os.path.abspath(args.database)

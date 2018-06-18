@@ -1,5 +1,5 @@
 var login = function(username, password, callback) {
-	auth = 'Basic ' + btoa(username + ':' + password);
+	auth = 'Login ' + btoa(username + ':' + password);
 
 	XHR('/api/user/' + username, 'POST', auth, {}, false, function(request) {
 		if (request.status === 200) {

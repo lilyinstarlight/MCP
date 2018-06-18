@@ -83,6 +83,8 @@ class Library(mcp.common.http.AuthHandler):
 
 class Documentation(mcp.common.http.PlainAuthHandler):
     def do_get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+
         try:
             return 200, mcp.model.script.doc_get(self.groups[0])
         except mcp.error.NoLibraryError:

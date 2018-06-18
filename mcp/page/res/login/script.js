@@ -17,6 +17,9 @@ var load = function(ev) {
 
 		ev.preventDefault();
 	}, false);
+
+	document.getElementById('loading').className = 'none';
+	document.getElementById('login').className = '';
 };
 
 window.addEventListener('load', load, false);

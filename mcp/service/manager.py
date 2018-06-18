@@ -27,7 +27,7 @@ class Script(object):
 
     def start(self):
         if not self.exists():
-            raise mcp.error.ScriptNonExistentError()
+            raise mcp.error.ScriptNonexistentError()
 
         self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), env=mcp.common.env.get_script(self.server.library), cwd=self.server.prefix + '/var')
 
@@ -62,12 +62,6 @@ class Server(object):
         self.proc = None
 
         self.script = Script(self)
-
-        if metadata.autostart:
-            self.start()
-        else:
-            metadata.running = False
-            metadata.script_running = False
 
     def exists(self):
         return os.path.isfile(self.exe)
@@ -113,18 +107,19 @@ class Server(object):
             raise mcp.error.ServerStoppedError()
 
         self.proc.stdin.write(command.encode('latin1') + b'\n')
+        self.proc.stdin.flush()
 
 running = multiprocessing.Value('b', False)
 process = None
 
-def run(poll_interval=0.5):
+def run():
     server_processes = {}
 
     for entry in mcp.model.server.items():
         server_processes[entry.server] = Server(entry)
 
-        entry.running = False
-        entry.script_running = False
+        entry.running = entry.autostart
+        entry.script_running = entry.autostart
         entry.command = ''
 
     try:
@@ -135,8 +130,8 @@ def run(poll_interval=0.5):
                     if entry.server not in server_processes:
                         server_processes[entry.server] = Server(entry)
 
-                        entry.running = False
-                        entry.script_running = False
+                        entry.running = entry.autostart
+                        entry.script_running = entry.autostart
                         entry.command = ''
 
                     # get process
@@ -148,7 +143,10 @@ def run(poll_interval=0.5):
                             process.start()
 
                         for command in entry.command.split('\n'):
-                            process.send_command(command)
+                            if command:
+                                process.send_command(command)
+
+                        entry.command = ''
 
                         if process.is_quit():
                             process.script.stop()
@@ -167,16 +165,19 @@ def run(poll_interval=0.5):
                             log.warning(process.name + ' restarted.')
 
                         if entry.script_running:
-                            if not process.script.proc:
-                                process.script.start()
-                            elif process.script.is_quit():
-                                process.script.stop()
-                                entry.script_running = False
-                                log.warning(process.name + ' script stopped by itself.')
-                            elif process.script.is_dead():
-                                process.script.stop()
-                                entry.script_running = False
-                                log.warning(process.name + ' script did not gracefully quit.')
+                            try:
+                                if not process.script.proc:
+                                    process.script.start()
+                                elif process.script.is_quit():
+                                    process.script.stop()
+                                    entry.script_running = False
+                                    log.warning(process.name + ' script stopped by itself.')
+                                elif process.script.is_dead():
+                                    process.script.stop()
+                                    entry.script_running = False
+                                    log.warning(process.name + ' script did not gracefully quit.')
+                            except mcp.error.ScriptNonexistentError:
+                                pass
                     else:
                         entry.script_running = False
 
@@ -195,7 +196,9 @@ def run(poll_interval=0.5):
                     if not mcp.model.server.get(name):
                         del server_processes[name]
 
-                time.sleep(poll_interval)
+                entry.waiting = False
+
+                time.sleep(mcp.config.poll_interval)
             except:
                 traceback.print_exc()
     finally:

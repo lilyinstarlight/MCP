@@ -21,6 +21,7 @@ class Index(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.server.create(self.request.body['server'], self.request.body['source'], self.request.body['library'], self.request.body['revision'] if 'revision' in self.request.body else None, self.request.body['port'] if 'port' in self.request.body else None, self.request.body['autostart'] if 'autostart' in self.request.body else None)
+            mcp.model.server.wait(self.request.body['server'])
         except (KeyError, TypeError):
             raise fooster.web.HTTPError(400)
         except mcp.error.NoSourceError:
@@ -55,6 +56,7 @@ class Server(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.server.send(self.groups[0], self.request.body['command'])
+            mcp.model.server.wait(self.groups[0])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
@@ -77,8 +79,10 @@ class Server(mcp.common.http.AuthHandler):
                 mcp.model.server.upgrade(self.groups[0], self.request.body['source'] if 'source' in self.request.body else None, self.request.body['revision'] if 'revision' in self.request.body else None)
 
             mcp.model.server.stop(self.groups[0])
+            mcp.model.server.wait(self.groups[0])
             if 'running' in self.request.body and self.request.body['running']:
                 mcp.model.server.start(self.groups[0])
+                mcp.model.server.wait(self.groups[0])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
@@ -96,6 +100,8 @@ class Server(mcp.common.http.AuthHandler):
 
         try:
             mcp.model.server.stop(self.groups[0])
+            mcp.model.server.wait(self.groups[0])
+
             mcp.model.server.destroy(self.groups[0])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
@@ -193,9 +199,11 @@ class Script(mcp.common.http.PlainAuthHandler):
 
         try:
             mcp.model.server.script_stop(self.groups[0])
+            mcp.model.server.wait(self.groups[0])
             if self.request.body:
                 mcp.model.server.script_set(self.groups[0], self.request.body)
             mcp.model.server.script_start(self.groups[0])
+            mcp.model.server.wait(self.groups[0])
 
             return 200, mcp.model.server.script_get(self.groups[0])
         except mcp.error.NoServerError:
@@ -210,6 +218,7 @@ class Script(mcp.common.http.PlainAuthHandler):
 
         try:
             mcp.model.server.script_stop(self.groups[0])
+            mcp.model.server.wait(self.groups[0])
 
             mcp.model.server.script_remove(self.groups[0])
         except mcp.error.NoServerError:

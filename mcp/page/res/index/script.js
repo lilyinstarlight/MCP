@@ -42,6 +42,8 @@ var load = function(ev) {
 		else {
 			document.getElementById('login_button').className = '';
 		}
+
+		document.getElementById('loading').className = 'none';
 	});
 };
 

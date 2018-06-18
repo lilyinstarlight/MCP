@@ -1,6 +1,7 @@
 import os
 import os.path
 import re
+import time
 
 import fooster.db
 
@@ -11,7 +12,7 @@ import mcp.model.source
 
 import mcp.control.server
 
-servers_allowed = '[0-9a-zA-Z-_+]+'
+servers_allowed = '[0-9a-zA-Z-_+][0-9a-zA-Z-_+.]*'
 
 def items():
     return iter(server_db)
@@ -116,13 +117,24 @@ def start(server_name):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
+    server_db[server_name].waiting = True
     server_db[server_name].running = True
+    server_db[server_name].script_running = True
 
 def stop(server_name):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
+    server_db[server_name].waiting = True
+    server_db[server_name].script_running = False
     server_db[server_name].running = False
+
+def wait(server_name):
+    if server_name not in server_db:
+        raise mcp.error.NoServerError()
+
+    while server_db[server_name].waiting:
+        time.sleep(mcp.config.poll_interval)
 
 def log_get(server_name, last=None):
     if server_name not in server_db:
@@ -156,7 +168,7 @@ def settings_get(server_name):
         raise mcp.error.NoServerError()
 
     try:
-        with open(os.path.join(mcp.config.prefix, server_name, 'config/settings_custom.cfg'), 'r') as settings_file:
+        with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'r') as settings_file:
             return settings_file.read()
     except FileNotFoundError:
         return ''
@@ -165,7 +177,7 @@ def settings_set(server_name, settings):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
-    with open(os.path.join(mcp.config.prefix, server_name, 'config/settings_custom.cfg'), 'w') as settings_file:
+    with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'w') as settings_file:
         settings_file.write(settings)
 
 def script_log_get(server_name, last=None):
@@ -199,12 +211,14 @@ def script_start(server_name):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
+    server_db[server_name].waiting = True
     server_db[server_name].script_running = True
 
 def script_stop(server_name):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
+    server_db[server_name].waiting = True
     server_db[server_name].script_running = False
 
 def script_get(server_name):
@@ -228,6 +242,7 @@ def send(server_name, command):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
+    server_db[server_name].waiting = True
     server_db[server_name].command = '\n'.join(server_db[server_name].command.split('\n') + [command])
 
 def port_check(port):
@@ -247,6 +262,6 @@ def port_get_next():
 
     return None
 
-server_db = fooster.db.Database(mcp.config.database + '/servers.db', ['server', 'source', 'library', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'reload', 'command'])
+server_db = fooster.db.Database(os.path.join(mcp.config.database, 'servers.db'), ['server', 'source', 'library', 'revision', 'port', 'autostart', 'users', 'running', 'script_running', 'reload', 'command', 'waiting'])
 
 import mcp.model.user

@@ -29,14 +29,32 @@ var changeServer = function(name) {
 };
 
 var startServer = function() {
+	document.getElementById('started').className = 'none';
+	document.getElementById('stopped').className = 'none';
+	document.getElementById('command_input').disabled = true;
+	document.getElementById('command_submit').disabled = true;
+	document.getElementById('status').innerHTML = 'Starting';
+
 	start(selected);
 };
 
 var stopServer = function() {
+	document.getElementById('started').className = 'none';
+	document.getElementById('stopped').className = 'none';
+	document.getElementById('command_input').disabled = true;
+	document.getElementById('command_submit').disabled = true;
+	document.getElementById('status').innerHTML = 'Stopping';
+
 	stop(selected);
 };
 
 var restartServer = function() {
+	document.getElementById('started').className = 'none';
+	document.getElementById('stopped').className = 'none';
+	document.getElementById('command_input').disabled = true;
+	document.getElementById('command_submit').disabled = true;
+	document.getElementById('status').innerHTML = 'Restarting';
+
 	restart(selected);
 };
 
@@ -94,18 +112,36 @@ var refresh = function(force) {
 				return;
 
 			if (server.running) {
-				document.getElementById('started').className = '';
-				document.getElementById('stopped').className = 'none';
-				document.getElementById('command_input').disabled = false;
-				document.getElementById('command_submit').disabled = false;
-				document.getElementById('status').innerHTML = 'Running';
+				if (server.waiting) {
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = 'none';
+					document.getElementById('command_input').disabled = true;
+					document.getElementById('command_submit').disabled = true;
+					document.getElementById('status').innerHTML = 'Starting';
+				}
+				else {
+					document.getElementById('started').className = '';
+					document.getElementById('stopped').className = 'none';
+					document.getElementById('command_input').disabled = false;
+					document.getElementById('command_submit').disabled = false;
+					document.getElementById('status').innerHTML = 'Running';
+				}
 			}
 			else {
-				document.getElementById('started').className = 'none';
-				document.getElementById('stopped').className = '';
-				document.getElementById('command_input').disabled = true;
-				document.getElementById('command_submit').disabled = true;
-				document.getElementById('status').innerHTML = 'Stopped';
+				if (server.waiting) {
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = 'none';
+					document.getElementById('command_input').disabled = true;
+					document.getElementById('command_submit').disabled = true;
+					document.getElementById('status').innerHTML = 'Stopping';
+				}
+				else {
+					document.getElementById('started').className = 'none';
+					document.getElementById('stopped').className = '';
+					document.getElementById('command_input').disabled = true;
+					document.getElementById('command_submit').disabled = true;
+					document.getElementById('status').innerHTML = 'Stopped';
+				}
 			}
 
 			status_last = status;
@@ -115,7 +151,12 @@ var refresh = function(force) {
 			getLog(selected, log_last, function(response, last) {
 				log_last = last;
 
+				var scroll =  Math.floor(document.getElementById('log').scrollTop + document.getElementById('log').clientHeight) == document.getElementById('log').scrollHeight || force;
+
 				document.getElementById('log').innerHTML += response;
+
+				if (scroll)
+					document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight - document.getElementById('log').clientHeight;
 			});
 		}
 
@@ -123,7 +164,12 @@ var refresh = function(force) {
 			getScriptLog(selected, script_log_last, function(response, last) {
 				script_log_last = last;
 
+				var scroll =  Math.floor(document.getElementById('script_log').scrollTop + document.getElementById('script_log').clientHeight) == document.getElementById('script_log').scrollHeight || force;
+
 				document.getElementById('script_log').innerHTML += response;
+
+				if (scroll)
+					document.getElementById('script_log').scrollTop = document.getElementById('script_log').scrollHeight - document.getElementById('script_log').clientHeight;
 			});
 		}
 
@@ -212,6 +258,12 @@ var load = function() {
 
 	document.getElementById('stop_button').addEventListener('click', function(ev) {
 		stopServer();
+
+		ev.preventDefault();
+	}, false);
+
+	document.getElementById('restart_button').addEventListener('click', function(ev) {
+		restartServer();
 
 		ev.preventDefault();
 	}, false);

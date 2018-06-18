@@ -1,4 +1,5 @@
 import os
+import os.path
 import re
 import shutil
 import subprocess
@@ -11,7 +12,7 @@ import mcp.error
 import mcp.control.script
 
 
-libraries_allowed = '[0-9a-zA-Z-_+.]+'
+libraries_allowed = '[0-9a-zA-Z-_+][0-9a-zA-Z-_+.]*'
 
 
 def items():
@@ -63,4 +64,4 @@ def doc_get(library_name):
     except FileNotFoundError:
         return ''
 
-library_db = fooster.db.Database(mcp.config.database + '/libraries.db', ['library', 'url', 'revision'])
+library_db = fooster.db.Database(os.path.join(mcp.config.database, 'libraries.db'), ['library', 'url', 'revision'])
