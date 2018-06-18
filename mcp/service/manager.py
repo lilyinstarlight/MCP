@@ -1,6 +1,7 @@
 import logging
 import multiprocessing
 import os
+import os.path
 import subprocess
 import sys
 import time
@@ -18,7 +19,7 @@ log = logging.getLogger('mcp')
 class Script(object):
     def __init__(self, server):
         self.server = server
-        self.exe = self.server.prefix + '/scripts/script.py'
+        self.exe = os.path.join(self.server.prefix, 'scripts', 'script.py')
 
         self.proc = None
 
@@ -29,7 +30,7 @@ class Script(object):
         if not self.exists():
             raise mcp.error.ScriptNonexistentError()
 
-        self.proc = subprocess.Popen([sys.executable, self.server.prefix + '/scripts/script.py'], stdin=open(self.server.prefix + '/var/ladderlog.txt', 'r'), stdout=self.server.proc.stdin, stderr=open(self.server.prefix + '/script-error.log', 'w'), env=mcp.common.env.get_script(self.server.library), cwd=self.server.prefix + '/var')
+        self.proc = subprocess.Popen([sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(self.server.library), cwd=os.path.join(self.server.prefix, 'var'))
 
     def stop(self):
         if self.is_running():
@@ -54,8 +55,8 @@ class Script(object):
 class Server(object):
     def __init__(self, metadata):
         self.name = metadata.server
-        self.prefix = mcp.config.prefix + '/' + self.name
-        self.exe = self.prefix + '/bin/armagetronad-dedicated'
+        self.prefix = os.path.join(mcp.config.prefix, self.name)
+        self.exe = os.path.join(self.prefix, 'bin', 'armagetronad-dedicated')
 
         self.library = metadata.library
 
@@ -70,7 +71,7 @@ class Server(object):
         if not self.exists():
             raise mcp.error.ServerNonexistentError()
 
-        self.proc = subprocess.Popen([self.exe, '--vardir', self.prefix + '/var', '--userdatadir', self.prefix + '/user', '--configdir', self.prefix + '/config', '--datadir', self.prefix + '/data'], stdin=subprocess.PIPE, stdout=open(self.prefix + '/server.log', 'a'), stderr=open(self.prefix + '/error.log', 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
+        self.proc = subprocess.Popen([self.exe, '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
 
         if self.script.exists():
             self.script.start()
@@ -155,9 +156,9 @@ def run():
                             entry.running = False
                             log.warning(process.name + ' stopped by itself.')
                         elif process.is_dead():
-                            with open(process.prefix + '/server.log', 'a') as server_log:
+                            with open(os.path.join(process.prefix, 'server.log'), 'a') as server_log:
                                 server_log.write('WARNING: The server did not gracefully quit: now restarting.\n')
-                            with open(process.prefix + '/error.log', 'a') as error_log:
+                            with open(os.path.join(process.prefix, 'error.log'), 'a') as error_log:
                                 error_log.write('WARNING: The server did not gracefully quit: now restarting.\n')
                             log.warning(process.name + ' did not gracefully quit.')
                             process.stop()

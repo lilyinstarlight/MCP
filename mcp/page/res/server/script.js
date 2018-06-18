@@ -83,6 +83,11 @@ var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
 
+	if (count > 0) {
+		setTimeout(refresh, 200);
+		return;
+	}
+
 	getServers(function(response) {
 		if (response === servers)
 			return;

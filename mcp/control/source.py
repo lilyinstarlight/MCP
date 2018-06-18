@@ -8,13 +8,13 @@ import mcp.error
 import mcp.common.cmd
 
 def get_revision(source_name):
-    prefix = mcp.config.sources + '/' + source_name
+    prefix = os.path.join(mcp.config.sources, source_name)
 
-    with open(prefix + '/.bzr/branch/last-revision', 'r') as file:
+    with open(os.path.join(prefix, '.bzr', 'branch', 'last-revision'), 'r') as file:
         return int(file.read().split(' ', 1)[0])
 
 def branch(source_name, url):
-    prefix = mcp.config.sources + '/' + source_name
+    prefix = os.path.join(mcp.config.sources, source_name)
 
     mcp.common.cmd.head('Branching ' + source_name)
 
@@ -27,7 +27,7 @@ def branch(source_name, url):
         raise mcp.error.BzrError('Failed to clone bzr tree')
 
 def pull(source_name):
-    prefix = mcp.config.sources + '/' + source_name
+    prefix = os.path.join(mcp.config.sources, source_name)
 
     mcp.common.cmd.head('Pulling ' + source_name)
 
@@ -35,7 +35,7 @@ def pull(source_name):
         raise mcp.error.BzrError('Failed to pull bzr tree')
 
 def prepare(source_name, dst, revision=None):
-    prefix = mcp.config.sources + '/' + source_name
+    prefix = os.path.join(mcp.config.sources, source_name)
 
     try:
         shutil.rmtree(dst)
@@ -51,7 +51,7 @@ def prepare(source_name, dst, revision=None):
             raise mcp.error.BzrError('Failed to revert bzr tree to revision')
 
 def remove(source_name):
-    prefix = mcp.config.sources + '/' + source_name
+    prefix = os.path.join(mcp.config.sources, source_name)
 
     try:
         shutil.rmtree(prefix)

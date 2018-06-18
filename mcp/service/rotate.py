@@ -1,5 +1,6 @@
 import datetime
 import os
+import os.path
 import shutil
 
 import fooster.cron
@@ -11,16 +12,16 @@ import mcp.model.server
 scheduler = None
 
 def rotate_log(prefix, filename):
-    if os.path.getsize(prefix + '/' + filename) > mcp.config.maxlogsize*1024:
-        shutil.copy(prefix + '/' + filename, prefix + '/log/' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M') + '.' + filename)
-        with open(prefix + '/' + filename, 'w') as file:
+    if os.path.getsize(os.path.join(prefix, filename)) > mcp.config.maxlogsize*1024:
+        shutil.copy(os.path.join(prefix, filename), os.path.join(prefix, 'log', datetime.datetime.now().strftime('%Y-%m-%d_%H-%M') + '.' + filename))
+        with open(os.path.join(prefix, filename), 'w') as file:
             pass
 
 def rotate():
     for entry in mcp.model.server.items():
-        rotate_log(mcp.config.prefix + '/' + entry.server, 'server.log')
-        rotate_log(mcp.config.prefix + '/' + entry.server, 'error.log')
-        rotate_log(mcp.config.prefix + '/' + entry.server, 'script-error.log')
+        rotate_log(os.path.join(mcp.config.prefix, entry.server), 'server.log')
+        rotate_log(os.path.join(mcp.config.prefix, entry.server), 'error.log')
+        rotate_log(os.path.join(mcp.config.prefix, entry.server), 'script-error.log')
 
 def start():
     global scheduler
