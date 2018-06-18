@@ -10,9 +10,9 @@ var load = function(ev) {
 			if (request.status === 200)
 				goto('/server');
 			else if (request.status === 401)
-				alert('Incorrect username/password')
+				alert('Incorrect username/password');
 			else
-				alert('Error logging in')
+				alert('Error logging in');
 		});
 
 		ev.preventDefault();

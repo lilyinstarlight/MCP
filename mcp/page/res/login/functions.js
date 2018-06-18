@@ -9,6 +9,6 @@ var login = function(username, password, callback) {
 			typeof callback === 'function' && callback(request);
 		}
 		else
-		    typeof failure === 'function' && callback(request);
+		    typeof callback === 'function' && callback(request);
 	});
 };
