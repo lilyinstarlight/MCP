@@ -7,6 +7,8 @@ import shutil
 import signal
 import sys
 
+import fooster.web
+
 
 import mcp.config
 
