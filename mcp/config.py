@@ -42,11 +42,8 @@ import os.path
 template = os.path.join(os.path.dirname(__file__), 'page', 'html')
 resource = os.path.join(os.path.dirname(__file__), 'page', 'res')
 
-# address of the web interface (leave blank unless you know what you are doing)
-addr = ''
-
-# port to listen on for the web interface
-port = 8000
+# address and port of the web interface
+addr = ('', 8000)
 
 # path to TLS/SSL key and certificate files; None to disable TLS encryption
 tlskey = None
