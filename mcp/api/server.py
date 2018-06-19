@@ -12,6 +12,8 @@ import mcp.model.server
 
 
 class Index(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_get(self):
         return 200, [dict(server) for server in mcp.model.server.items() if self.auth.username in server.users or self.auth.admin]
 
@@ -38,6 +40,8 @@ class Index(mcp.common.http.AuthHandler):
         return 201, dict(mcp.model.server.get(self.request.body['server']))
 
 class Server(mcp.common.http.AuthHandler):
+    group = 1
+
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -109,6 +113,8 @@ class Server(mcp.common.http.AuthHandler):
         return 204, None
 
 class Settings(mcp.common.http.PlainAuthHandler):
+    group = 1
+
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -154,6 +160,8 @@ class Settings(mcp.common.http.PlainAuthHandler):
         return 204, None
 
 class Log(mcp.common.http.PlainAuthHandler):
+    group = 1
+
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -174,6 +182,8 @@ class Log(mcp.common.http.PlainAuthHandler):
             raise fooster.web.HTTPError(404)
 
 class Script(mcp.common.http.PlainAuthHandler):
+    group = 1
+
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:
@@ -227,6 +237,8 @@ class Script(mcp.common.http.PlainAuthHandler):
         return 204, None
 
 class ScriptLog(mcp.common.http.PlainAuthHandler):
+    group = 1
+
     def do_get(self):
         try:
             if not self.auth.admin and self.auth.username not in mcp.model.server.get(self.groups[0]).users:

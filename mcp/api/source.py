@@ -12,6 +12,8 @@ import mcp.model.source
 
 
 class Index(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_get(self):
         if not self.auth.admin:
             raise fooster.web.HTTPError(403)
@@ -38,6 +40,8 @@ class Index(mcp.common.http.AuthHandler):
         return 201, dict(mcp.model.source.get(self.request.body['source']))
 
 class Source(mcp.common.http.AuthHandler):
+    group = 1
+
     def do_get(self):
         if not self.auth.admin:
             raise fooster.web.HTTPError(404)

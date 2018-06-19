@@ -12,6 +12,8 @@ import mcp.model.script
 
 
 class Index(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_get(self):
         # block if not an admin
         if not self.auth.admin:
@@ -47,6 +49,8 @@ class Index(mcp.common.http.AuthHandler):
         return 201, dict(mcp.model.script.get(self.request.body['name']))
 
 class Library(mcp.common.http.AuthHandler):
+    group = 1
+
     def do_get(self):
         # ignore if not admin
         if not self.auth.admin:
@@ -81,7 +85,9 @@ class Library(mcp.common.http.AuthHandler):
 
         return 204, None
 
-class Documentation(mcp.common.http.PlainAuthHandler):
+class Documentation(mcp.common.http.PlainHandler):
+    group = 1
+
     def do_get(self):
         self.response.headers['Content-Type'] = 'text/html'
 

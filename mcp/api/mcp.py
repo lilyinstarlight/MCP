@@ -12,11 +12,15 @@ import mcp.common.http
 
 
 class Features(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_get(self):
         # return enabled features
         return 200, {'creation': mcp.config.creation}
 
 class Config(mcp.common.http.PlainAuthHandler):
+    group = 0
+
     def do_get(self):
         # get config
         try:
@@ -38,6 +42,8 @@ class Config(mcp.common.http.PlainAuthHandler):
         return 204, None
 
 class Restart(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_post(self):
         if not self.auth.admin:
             raise fooster.web.HTTPError(401)

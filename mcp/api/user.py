@@ -12,6 +12,8 @@ import mcp.model.user
 
 
 class Index(mcp.common.http.AuthHandler):
+    group = 0
+
     def do_get(self):
         if not self.auth.admin:
             raise fooster.web.HTTPError(403)
@@ -36,6 +38,8 @@ class Index(mcp.common.http.AuthHandler):
         return 201, dict(mcp.model.user.get(self.request.body['username']))
 
 class User(mcp.common.http.AuthHandler):
+    group = 1
+
     def do_get(self):
         if not self.auth.admin and self.groups[0] != self.auth.username:
             raise fooster.web.HTTPError(404)
