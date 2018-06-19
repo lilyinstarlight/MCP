@@ -24,7 +24,7 @@ def start():
     if httpd:
         return
 
-    httpd = fooster.web.HTTPServer((mcp.config.addr, mcp.config.port), routes, error_routes, keyfile=mcp.config.tlskey, certfile=mcp.config.tlscert, sync=mcp.common.daemon.sync)
+    httpd = fooster.web.HTTPServer(mcp.config.addr, routes, error_routes, keyfile=mcp.config.tlskey, certfile=mcp.config.tlscert, sync=mcp.common.daemon.sync)
     httpd.start()
 
 
