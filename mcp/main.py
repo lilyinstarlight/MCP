@@ -74,7 +74,7 @@ if mcp.config.cmdlog:
 
 if mcp.config.httpdlog:
     httpdlog_handler = logging.FileHandler(mcp.config.httpdlog)
-    httpdlog_handler.setFormatter(web.HTTPLogFormatter())
+    httpdlog_handler.setFormatter(fooster.web.HTTPLogFormatter())
 
     logging.getLogger('http').addHandler(httpdlog_handler)
 
