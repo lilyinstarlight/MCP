@@ -44,8 +44,9 @@ if args.log:
         mcp.config.accesslog = None
     else:
         mcp.config.log = os.path.join(args.log, 'manager.log')
-        mcp.config.cmdlog = os.path.join(args.log, 'httpd.log')
-        mcp.config.httplog = os.path.join(args.log, 'access.log')
+        mcp.config.cmdlog = os.path.join(args.log, 'command.log')
+        mcp.config.httplog = os.path.join(args.log, 'httpd.log')
+        mcp.config.accesslog = os.path.join(args.log, 'access.log')
 
 if args.database:
     mcp.config.database = os.path.abspath(args.database)
@@ -78,11 +79,11 @@ if mcp.config.httpdlog:
     httpdlog_handler = logging.FileHandler(mcp.config.httpdlog)
     httpdlog_handler.setFormatter(fooster.web.HTTPLogFormatter())
 
-    logging.getLogger('http').addHandler(httpdlog_handler)
+    logging.getLogger('web').addHandler(httpdlog_handler)
 
 
 if mcp.config.accesslog:
-    logging.getLogger('web').addHandler(logging.FileHandler(mcp.config.accesslog))
+    logging.getLogger('http').addHandler(logging.FileHandler(mcp.config.accesslog))
 
 
 from mcp import name, version
