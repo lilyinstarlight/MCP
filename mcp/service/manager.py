@@ -193,11 +193,11 @@ def run():
 
                             entry.reload = False
 
+                    entry.waiting = False
+
                 for name in list(server_processes.keys()):
                     if not mcp.model.server.get(name):
                         del server_processes[name]
-
-                entry.waiting = False
 
                 time.sleep(mcp.config.poll_interval)
             except:
