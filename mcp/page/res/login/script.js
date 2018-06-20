@@ -1,5 +1,5 @@
 var load = function(ev) {
-	document.getElementById('index_button', function(ev) {
+	document.getElementById('index_button').addEventListener('click', function(ev) {
 		goto('/');
 
 		ev.preventDefault();

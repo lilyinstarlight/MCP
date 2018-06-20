@@ -13,15 +13,27 @@ var changeServer = function(name) {
 	if (name) {
 		document.getElementById('loading').className = '';
 		document.getElementById('empty').className = 'none';
+
+		document.getElementById('console_button').disabled = false;
+		document.getElementById('settings_button').disabled = false;
+		document.getElementById('script_button').disabled = false;
+
+		document.getElementById('console').className = '';
+		document.getElementById('settings').className = 'none';
+		document.getElementById('script').className = 'none';
 	}
 	else {
 		document.getElementById('loading').className = 'none';
 		document.getElementById('empty').className = '';
-	}
 
-	document.getElementById('console').className = 'none';
-	document.getElementById('settings').className = 'none';
-	document.getElementById('script').className = 'none';
+		document.getElementById('console_button').disabled = true;
+		document.getElementById('settings_button').disabled = true;
+		document.getElementById('script_button').disabled = true;
+
+		document.getElementById('console').className = 'none';
+		document.getElementById('settings').className = 'none';
+		document.getElementById('script').className = 'none';
+	}
 
 	selected = name;
 

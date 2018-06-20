@@ -18,6 +18,7 @@ nav li {
 }
 
 nav button {
+	height: 28px;
 	width: 80px;
 	padding: 5px 0px 5px 0px;
 	border-style: solid;

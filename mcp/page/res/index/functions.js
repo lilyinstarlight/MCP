@@ -1,5 +1,5 @@
 var username = getCookie()['username'];
-var auth_token = 'Token ' + getCookie()['token'];
+var auth_token = getCookie()['token'] ? 'Token ' + getCookie()['token'] : 'Token invalid';
 
 var check = function(handler) {
 	XHR('/api/user/' + username, 'GET', auth_token, null, false, function(request) {

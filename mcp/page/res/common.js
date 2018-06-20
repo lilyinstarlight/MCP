@@ -92,7 +92,8 @@ var XHR = function(address, method, auth, data, redirect, handler) {
 
     request.open(method, address, true);
 
-    request.setRequestHeader('Authorization', auth);
+    if (auth)
+	request.setRequestHeader('Authorization', auth);
 
     if (data !== null) {
 	json = JSON.stringify(data);
