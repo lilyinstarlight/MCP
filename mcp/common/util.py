@@ -27,7 +27,7 @@ def copy_libs(exe, dst):
 
     libraries = {}
     for line in subprocess.check_output(['ldd', exe]).splitlines():
-        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line)
+        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line.decode())
         if match:
             if match.group(1) and match.group(2):
                 libraries[match.group(1)] = match.group(2)
