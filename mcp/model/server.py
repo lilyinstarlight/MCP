@@ -49,7 +49,7 @@ def create(server_name, source_name, library_name=None, revision=None, port=None
 
     mcp.control.server.set_port(server_name, port)
 
-    return server_db.add(server_name, source_name, library_name, revision, port, autostart, users, False, False, '')
+    return server_db.add(server_name, source_name, library_name, revision, port, autostart, users, False, False, False, '', False)
 
 def modify(server_name, library=None, port=None, autostart=None, users=None):
     try:
