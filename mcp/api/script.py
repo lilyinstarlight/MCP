@@ -28,7 +28,7 @@ class Index(mcp.common.http.AuthHandler):
 
         try:
             # add requested source from URL
-            mcp.model.script.add(self.request.body['name'], self.request.body['url'])
+            mcp.model.script.add(self.request.body['library'], self.request.body['url'])
         except (KeyError, TypeError):
             # url parameters not found
             raise fooster.web.HTTPError(400)
@@ -43,10 +43,10 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(409)
 
         # tell client where to find new script
-        self.response.headers['Location'] = '/api/script/' + self.request.body['name']
+        self.response.headers['Location'] = '/api/script/' + self.request.body['library']
 
         # return a copy of the new script
-        return 201, dict(mcp.model.script.get(self.request.body['name']))
+        return 201, dict(mcp.model.script.get(self.request.body['library']))
 
 class Library(mcp.common.http.AuthHandler):
     group = 1
@@ -71,7 +71,7 @@ class Library(mcp.common.http.AuthHandler):
         except mcp.error.NoLibraryError:
             raise fooster.web.HTTPError(404)
 
-        return 200, dict(mcp.model.script.get(self.request.body['name']))
+        return 200, dict(mcp.model.script.get(self.groups[0]))
 
     def do_delete(self):
         # ignore if not admin
