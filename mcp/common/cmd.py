@@ -15,3 +15,4 @@ def head(header):
     log.write('\n')
     log.write('-'*len(header))
     log.write('\n')
+    log.flush()
