@@ -382,6 +382,10 @@ var refresh = function(force) {
 
 		if (isVisible(document.getElementById('server_library')) || force) {
 			var select = document.createElement('select');
+			var option = document.createElement('option');
+			option.value = '';
+			option.innerHTML = 'None';
+			select.appendChild(option);
 			libraries.forEach(function(library) {
 				var option = document.createElement('option');
 				option.value = library.library;
