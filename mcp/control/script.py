@@ -58,7 +58,8 @@ def prepare(library_name, tmp, dst, revision=None):
         if subprocess.call(['bzr', 'revert', '-r' + str(revision)], cwd=os.path.join(tmp, 'build'), stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
             raise mcp.error.BzrError('Failed to revert bzr tree to revision')
 
-    subprocess.call([os.path.join(tmp, 'install', 'bin', 'python'), os.path.join(tmp, 'build', 'setup.py'), 'install'], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT)
+    if subprocess.call([os.path.join(tmp, 'install', 'bin', 'python'), os.path.join(tmp, 'build', 'setup.py'), 'install'], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT)
+        raise mcp.error.ConfigError('Failed to install scripting library')
 
     shutil.copytree(os.path.join(tmp, 'install'), dst)
 

@@ -1,6 +1,8 @@
 import os
 import os.path
+import re
 import shutil
+import subprocess
 
 def copy_contents(src, dst):
     os.makedirs(dst, exist_ok=True)
@@ -19,3 +21,16 @@ def chown_contents(path, uid, gid):
             chown_contents(full, uid, gid)
         else:
             os.chown(full, uid, gid)
+
+def copy_libs(exe, dst):
+    libraries = {}
+    for line in subprocess.check_output(['ldd', exe]).splitlines():
+        match = re.match('\t(.+) => (.+) \(0x|\t(.+) \(0x', line)
+        if match:
+            if len(match.groups()) == 2:
+                libraries[match.group(1)] = match.group(2)
+            else:
+                libraries[os.path.basename(match.group(1))] = match.group(1)
+
+    for library, path in libraries.items():
+        shutil.copy2(path, os.path.join(dst, library))
