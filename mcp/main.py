@@ -24,7 +24,7 @@ parser.add_argument('--sources', dest='sources', help='sources directory to use'
 parser.add_argument('--config', dest='config', help='config directory to use')
 parser.add_argument('--scripting', dest='scripting', help='scripting directory to use')
 parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
-parser.add_argument('--chroot', type=bool, dest='chroot', help='tmp directory to use')
+parser.add_argument('--chroot', action='store_true', dest='chroot', help='whether to chroot scripts')
 
 args = parser.parse_args()
 
