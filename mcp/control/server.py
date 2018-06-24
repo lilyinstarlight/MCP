@@ -104,6 +104,11 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
         raise mcp.error.MergeError('Failed to copy server')
 
     try:
+        os.link(os.path.join(prefix, 'var'), os.path.join(prefix, 'scripts', 'var'))
+    except:
+        raise mcp.error.MergeError('Failed to link directories')
+
+    try:
         shutil.rmtree(tmp)
     except:
         raise mcp.error.MergeError('Failed to remove build directory')
