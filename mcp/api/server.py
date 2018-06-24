@@ -234,7 +234,7 @@ class Script(mcp.common.http.PlainAuthHandler):
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
-        return 204, None
+        return 204, ''
 
 class ScriptLog(mcp.common.http.PlainAuthHandler):
     group = 1
