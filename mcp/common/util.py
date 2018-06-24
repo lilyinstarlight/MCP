@@ -23,6 +23,8 @@ def chown_contents(path, uid, gid):
             os.chown(full, uid, gid)
 
 def copy_libs(exe, dst):
+    os.makedirs(dst, exist_ok=True)
+
     libraries = {}
     for line in subprocess.check_output(['ldd', exe]).splitlines():
         match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line)
