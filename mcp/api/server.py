@@ -28,7 +28,7 @@ class Index(mcp.common.http.AuthHandler):
             raise fooster.web.HTTPError(400)
         except mcp.error.NoSourceError:
             raise fooster.web.HTTPError(400)
-        except mcp.error.NoScriptError:
+        except mcp.error.NoLibraryError:
             raise fooster.web.HTTPError(400)
         except mcp.error.InvalidServerError:
             raise fooster.web.HTTPError(403)
