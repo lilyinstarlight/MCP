@@ -99,7 +99,7 @@ var getSettings = function(server, handler) {
 };
 
 var updateSettings = function(server, settings, callback) {
-	post('/api/server/' + server + '/settings', auth_token, {'settings': settings}, function(request) {
+	put('/api/server/' + server + '/settings', auth_token, {'settings': settings}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -115,7 +115,7 @@ var getScript = function(server, handler) {
 };
 
 function updateScript(server, script, callback) {
-	post('/api/server/' + server + '/script', auth_token, {'script': script}, function(request) {
+	put('/api/server/' + server + '/script', auth_token, {'script': script}, function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
