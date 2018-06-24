@@ -24,6 +24,12 @@ def create(server_name, source_name, library_name=None, revision=None, port=None
     if not re.match('^' + servers_allowed + '$', server_name):
         raise mcp.error.InvalidServerError()
 
+    if not re.match('^' + servers_allowed + '$', source_name):
+        raise mcp.error.InvalidSourceError()
+
+    if library_name and not re.match('^' + servers_allowed + '$', library_name):
+        raise mcp.error.InvalidLibraryError()
+
     if server_name in server_db:
         raise mcp.error.ServerExistsError()
 
