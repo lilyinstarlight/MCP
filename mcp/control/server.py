@@ -18,6 +18,7 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
 
     prefix = os.path.join(mcp.config.prefix, server_name)
     tmp = os.path.join(mcp.config.tmp, server_name)
+    tmp_prefix = os.path.join(tmp, './' + prefix)
     tmp_source = os.path.join(tmp, 'source')
     tmp_library = os.path.join(tmp, 'library')
     tmp_build = os.path.join(tmp, 'build')
@@ -44,50 +45,50 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     mcp.common.cmd.head('Configuring ' + server_name)
 
     try:
-        mcp.common.util.copy_contents(os.path.join(tmp_install, prefix, 'etc', 'armagetronad-dedicated'), os.path.join(tmp_install, prefix, 'config'))
-        mcp.common.util.copy_contents(os.path.join(tmp_install, prefix, 'share', 'armagetronad-dedicated'), os.path.join(tmp_install, prefix, 'data'))
+        mcp.common.util.copy_contents(os.path.join(tmp_prefix, 'etc', 'armagetronad-dedicated'), os.path.join(tmp_prefix, 'config'))
+        mcp.common.util.copy_contents(os.path.join(tmp_prefix, 'share', 'armagetronad-dedicated'), os.path.join(tmp_prefix, 'data'))
     except:
         raise mcp.error.ConfigError('Failed to move data files')
 
     try:
-        shutil.rmtree(os.path.join(tmp_install, prefix, 'etc'))
-        shutil.rmtree(os.path.join(tmp_install, prefix, 'share'))
+        shutil.rmtree(os.path.join(tmp_prefix, 'etc'))
+        shutil.rmtree(os.path.join(tmp_prefix, 'share'))
     except:
         raise mcp.error.ConfigError('Failed to remove unnecessary directories')
 
     try:
-        os.makedirs(os.path.join(tmp_install, prefix, 'var'), exist_ok=True)
-        os.makedirs(os.path.join(tmp_install, prefix, 'user'), exist_ok=True)
-        os.makedirs(os.path.join(tmp_install, prefix, 'log'), exist_ok=True)
+        os.makedirs(os.path.join(tmp_prefix, 'var'), exist_ok=True)
+        os.makedirs(os.path.join(tmp_prefix, 'user'), exist_ok=True)
+        os.makedirs(os.path.join(tmp_prefix, 'log'), exist_ok=True)
     except:
         raise mcp.error.ConfigError('Failed to create necessary directories')
 
     try:
         if library_name:
-            mcp.control.script.prepare(library_name, tmp_library, os.path.join(tmp_install, prefix, 'scripts'), library_revision)
+            mcp.control.script.prepare(library_name, tmp_library, os.path.join(tmp_prefix, 'scripts'), library_revision)
         else:
-            os.makedirs(os.path.join(tmp_install, prefix, 'scripts'), exist_ok=True)
+            os.makedirs(os.path.join(tmp_prefix, 'scripts'), exist_ok=True)
     except:
         raise mcp.error.ConfigError('Failed to create script directory')
 
     try:
-        with open(os.path.join(tmp_install, prefix, 'config', 'settings_custom.cfg'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'config', 'settings_custom.cfg'), 'a') as file:
             pass
-        with open(os.path.join(tmp_install, prefix, 'config', 'server_port.cfg'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'config', 'server_port.cfg'), 'a') as file:
             pass
-        with open(os.path.join(tmp_install, prefix, 'var', 'ladderlog.txt'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'var', 'ladderlog.txt'), 'a') as file:
             pass
-        with open(os.path.join(tmp_install, prefix, 'server.log'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'server.log'), 'a') as file:
             pass
-        with open(os.path.join(tmp_install, prefix, 'error.log'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'error.log'), 'a') as file:
             pass
-        with open(os.path.join(tmp_install, prefix, 'script-error.log'), 'a') as file:
+        with open(os.path.join(tmp_prefix, 'script-error.log'), 'a') as file:
             pass
     except:
         raise mcp.error.ConfigError('Failed to create necessary files')
 
     try:
-        mcp.common.util.copy_contents(mcp.config.config, os.path.join(tmp_install, prefix, 'config'))
+        mcp.common.util.copy_contents(mcp.config.config, os.path.join(tmp_prefix, 'config'))
     except:
         raise mcp.error.ConfigError('Failed to copy custom configuration files')
 
@@ -95,7 +96,7 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     mcp.common.cmd.head('Merging ' + server_name)
 
     try:
-        mcp.common.util.copy_contents(os.path.join(tmp_install, prefix), prefix)
+        mcp.common.util.copy_contents(tmp_prefix, prefix)
     except:
         raise mcp.error.MergeError('Failed to copy server')
 

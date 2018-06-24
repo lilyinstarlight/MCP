@@ -80,14 +80,14 @@ if mcp.config.cmdlog:
 
 
 if mcp.config.httpdlog:
-    httpdlog_handler = logging.FileHandler(mcp.config.httpdlog)
-    httpdlog_handler.setFormatter(fooster.web.HTTPLogFormatter())
-
-    logging.getLogger('web').addHandler(httpdlog_handler)
+    logging.getLogger('web').addHandler(logging.FileHandler(mcp.config.httpdlog))
 
 
 if mcp.config.accesslog:
-    logging.getLogger('http').addHandler(logging.FileHandler(mcp.config.accesslog))
+    accesslog_handler = logging.FileHandler(mcp.config.accesslog)
+    accesslog_handler.setFormatter(fooster.web.HTTPLogFormatter())
+
+    logging.getLogger('http').addHandler(accesslog_handler)
 
 
 from mcp import name, version
