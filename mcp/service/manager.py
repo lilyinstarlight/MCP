@@ -31,7 +31,7 @@ class Script(object):
         if not self.exists():
             raise mcp.error.ScriptNonexistentError()
 
-        if mcp.config.script_chroot:
+        if mcp.config.chroot:
             self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'var'))
         else:
             self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'var'))
