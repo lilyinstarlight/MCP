@@ -18,11 +18,14 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
 
     prefix = os.path.join(mcp.config.prefix, server_name)
     tmp = os.path.join(mcp.config.tmp, server_name)
-    tmp_prefix = os.path.join(tmp, './' + prefix)
     tmp_source = os.path.join(tmp, 'source')
     tmp_library = os.path.join(tmp, 'library')
     tmp_build = os.path.join(tmp, 'build')
     tmp_install = os.path.join(tmp, 'install')
+    if prefix[0] == '/':
+        tmp_prefix = os.path.join(tmp, 'install', prefix[1:])
+    else:
+        tmp_prefix = os.path.join(tmp, 'install', prefix)
 
     mcp.control.source.prepare(source_name, tmp_source, tmp_build, source_revision)
 
