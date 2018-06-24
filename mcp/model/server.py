@@ -20,7 +20,7 @@ def items():
 def get(server_name):
     return server_db.get(server_name)
 
-def create(server_name, source_name, library=None, revision=None, port=None, autostart=True, users=[]):
+def create(server_name, source_name, library_name=None, revision=None, port=None, autostart=True, users=[]):
     if not re.match('^' + servers_allowed + '$', server_name):
         raise mcp.error.InvalidServerError()
 
@@ -30,8 +30,8 @@ def create(server_name, source_name, library=None, revision=None, port=None, aut
     if not mcp.model.source.get(source_name):
         raise mcp.error.NoSourceError()
 
-    if library and not mcp.model.script.get(library):
-        raise mcp.error.NoScriptError()
+    if library_name and not mcp.model.script.get(library_name):
+        raise mcp.error.NoLibraryError()
 
     if not revision:
         revision = mcp.model.source.get(source_name).revision
@@ -45,11 +45,11 @@ def create(server_name, source_name, library=None, revision=None, port=None, aut
     if not port_is_available(port):
         raise mcp.error.PortExistsError()
 
-    mcp.control.server.build(server_name, source_name, revision)
+    mcp.control.server.build(server_name, source_name, library_name, revision)
 
     mcp.control.server.set_port(server_name, port)
 
-    return server_db.add(server_name, source_name, library, revision, port, autostart, users, False, False, '')
+    return server_db.add(server_name, source_name, library_name, revision, port, autostart, users, False, False, '')
 
 def modify(server_name, library=None, port=None, autostart=None, users=None):
     try:

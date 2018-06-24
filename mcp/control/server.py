@@ -12,7 +12,7 @@ import mcp.common.util
 
 import mcp.control.source
 
-def build(server_name, source_name, revision=None):
+def build(server_name, source_name, library_name=None, source_revision=None, library_revision=None):
     if not mcp.config.creation:
         raise mcp.error.NoServerCreationError()
 
@@ -21,7 +21,7 @@ def build(server_name, source_name, revision=None):
     tmp_build = os.path.join(tmp, 'build')
     tmp_install = os.path.join(tmp, 'install')
 
-    mcp.control.source.prepare(source_name, tmp_build, revision)
+    mcp.control.source.prepare(source_name, tmp_build, source_revision)
 
     # build
     mcp.common.cmd.head('Building ' + server_name)
@@ -55,11 +55,18 @@ def build(server_name, source_name, revision=None):
 
     try:
         os.makedirs(os.path.join(tmp_install, prefix, 'var'), exist_ok=True)
-        os.makedirs(os.path.join(tmp_install, prefix, 'scripts'), exist_ok=True)
         os.makedirs(os.path.join(tmp_install, prefix, 'user'), exist_ok=True)
         os.makedirs(os.path.join(tmp_install, prefix, 'log'), exist_ok=True)
     except:
         raise mcp.error.ConfigError('Failed to create necessary directories')
+
+    try:
+        if library_name:
+            mcp.control.script.prepare(library_name, os.path.join(tmp_install, prefix, 'scripts'), library_revision)
+        else:
+            os.makedirs(os.path.join(tmp_install, prefix, 'scripts'), exist_ok=True)
+    except:
+        raise mcp.error.ConfigError('Failed to create script directory')
 
     try:
         with open(os.path.join(tmp_install, prefix, 'config', 'settings_custom.cfg'), 'a') as file:

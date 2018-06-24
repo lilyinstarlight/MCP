@@ -7,6 +7,7 @@ import sys
 import time
 import traceback
 
+import mcp.config
 import mcp.error
 
 import mcp.common.env
@@ -30,7 +31,10 @@ class Script(object):
         if not self.exists():
             raise mcp.error.ScriptNonexistentError()
 
-        self.proc = subprocess.Popen([sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(self.server.library), cwd=os.path.join(self.server.prefix, 'var'))
+        if mcp.config.script_chroot:
+            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'var'))
+        else:
+            self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'var'))
 
     def stop(self):
         if self.is_running():

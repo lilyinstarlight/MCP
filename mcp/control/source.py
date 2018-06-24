@@ -34,7 +34,7 @@ def pull(source_name):
     if subprocess.call(['bzr', 'pull'], cwd=prefix, stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
         raise mcp.error.BzrError('Failed to pull bzr tree')
 
-def prepare(source_name, dst, revision=None):
+def prepare(source_name, tmp, dst, revision=None):
     prefix = os.path.join(mcp.config.sources, source_name)
 
     try:
@@ -42,13 +42,17 @@ def prepare(source_name, dst, revision=None):
     except:
         pass
 
-    shutil.copytree(prefix, dst)
+    shutil.copytree(prefix, tmp)
 
     if revision:
         mcp.common.cmd.head('Reverting ' + source_name + ' to ' + str(revision))
 
-        if subprocess.call(['bzr', 'revert', '-r' + str(revision)], cwd=dst, stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
+        if subprocess.call(['bzr', 'revert', '-r' + str(revision)], cwd=tmp, stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT):
             raise mcp.error.BzrError('Failed to revert bzr tree to revision')
+
+    shutil.copytree(tmp, dst)
+
+    shutil.rmtree(tmp)
 
 def remove(source_name):
     prefix = os.path.join(mcp.config.sources, source_name)

@@ -51,3 +51,6 @@ tlscert = None
 
 # how long to wait between server polls
 poll_interval = 0.5
+
+# whether to chroot scripts
+script_chroot = False

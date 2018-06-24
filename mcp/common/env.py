@@ -17,10 +17,8 @@ def get_server():
     return server_env
 
 
-def get_script(library):
+def get_script():
     script_env = get_env().copy()
-
-    script_env['PYTHONPATH'] = os.path.join(mcp.config.scripting, library)
 
     return script_env
 
