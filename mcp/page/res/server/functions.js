@@ -15,7 +15,7 @@ var getServers = function(handler) {
 };
 
 var start = function(server, callback) {
-	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': true}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -24,7 +24,7 @@ var start = function(server, callback) {
 };
 
 var stop = function(server, callback) {
-	put('/api/server/' + server, auth_token, {'running': false}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': false}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -33,7 +33,7 @@ var stop = function(server, callback) {
 };
 
 var restart = function(server, callback) {
-	put('/api/server/' + server, auth_token, {'running': true}, function(request) {
+	put('/api/server/' + server, auth_token, {'running': true}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -42,7 +42,7 @@ var restart = function(server, callback) {
 };
 
 var sendCommand = function(server, command, callback) {
-	post('/api/server/' + server, auth_token, {'command': command}, function(request) {
+	post('/api/server/' + server, auth_token, {'command': command}, 'application/json', function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else
@@ -99,7 +99,7 @@ var getSettings = function(server, handler) {
 };
 
 var updateSettings = function(server, settings, callback) {
-	put('/api/server/' + server + '/settings', auth_token, settings, function(request) {
+	put('/api/server/' + server + '/settings', auth_token, settings, 'text/plain', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -115,7 +115,7 @@ var getScript = function(server, handler) {
 };
 
 var updateScript = function(server, script, callback) {
-	put('/api/server/' + server + '/script', auth_token, script, function(request) {
+	put('/api/server/' + server + '/script', auth_token, script, 'application/x-python-code', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else

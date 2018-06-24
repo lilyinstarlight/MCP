@@ -15,7 +15,7 @@ var getUsers = function(handler) {
 };
 
 var createUser = function(username, password, key, servers, admin, active, callback) {
-	post('/api/user/', auth_token, {'username': username, 'key': key, 'password': password, 'servers': servers, 'admin': admin, 'active': active}, function(request) {
+	post('/api/user/', auth_token, {'username': username, 'key': key, 'password': password, 'servers': servers, 'admin': admin, 'active': active}, 'application/json', function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -24,7 +24,7 @@ var createUser = function(username, password, key, servers, admin, active, callb
 };
 
 var modifyUser = function(username, password, key, servers, admin, active, callback) {
-	put('/api/user/' + username, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin, 'active': active}, function(request) {
+	put('/api/user/' + username, auth_token, {'password': password, 'key': key, 'servers': servers, 'admin': admin, 'active': active}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -49,7 +49,7 @@ var getServers = function(handler) {
 };
 
 var createServer = function(server, source, library, callback) {
-	post('/api/server/', auth_token, {'server': server, 'source': source, 'library': library}, function(request) {
+	post('/api/server/', auth_token, {'server': server, 'source': source, 'library': library}, 'application/json', function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -58,7 +58,7 @@ var createServer = function(server, source, library, callback) {
 };
 
 var upgradeServer = function(server, callback) {
-	put('/api/server/' + server, auth_token, {'revision': null}, function(request) {
+	put('/api/server/' + server, auth_token, {'revision': null}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -67,7 +67,7 @@ var upgradeServer = function(server, callback) {
 };
 
 var destroyServer = function(server, callback) {
-	del('/api/server/' + server, auth_token, {}, function(request) {
+	del('/api/server/' + server, auth_token, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else
@@ -83,7 +83,7 @@ var getSources = function(handler) {
 };
 
 var addSource = function(source, url, callback) {
-	post('/api/source/', auth_token, {'source': source, 'url': url}, function(request) {
+	post('/api/source/', auth_token, {'source': source, 'url': url}, 'application/json', function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -92,7 +92,7 @@ var addSource = function(source, url, callback) {
 };
 
 var updateSource = function(source, callback) {
-	put('/api/source/' + source, auth_token, {}, function(request) {
+	put('/api/source/' + source, auth_token, {}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -101,7 +101,7 @@ var updateSource = function(source, callback) {
 };
 
 var removeSource = function(source, callback) {
-	del('/api/source/' + source, auth_token, {}, function(request) {
+	del('/api/source/' + source, auth_token, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else
@@ -117,7 +117,7 @@ var getLibraries = function(handler) {
 };
 
 var addLibrary = function(library, url, callback) {
-	post('/api/script/', auth_token, {'library': library, 'url': url}, function(request) {
+	post('/api/script/', auth_token, {'library': library, 'url': url}, 'application/json', function(request) {
 		if (request.status === 201)
 			typeof callback === 'function' && callback();
 		else
@@ -126,7 +126,7 @@ var addLibrary = function(library, url, callback) {
 };
 
 var updateLibrary = function(library, callback) {
-	put('/api/script/' + library, auth_token, {}, function(request) {
+	put('/api/script/' + library, auth_token, {}, 'application/json', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -135,7 +135,7 @@ var updateLibrary = function(library, callback) {
 };
 
 var removeLibrary = function(library, callback) {
-	del('/api/script/' + library, auth_token, {}, function(request) {
+	del('/api/script/' + library, auth_token, function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else
@@ -151,7 +151,7 @@ var getConfig = function(handler) {
 };
 
 var updateConfig = function(config, callback) {
-	put('/api/config', auth_token, config, function(request) {
+	put('/api/config', auth_token, config, 'text/plain', function(request) {
 		if (request.status === 200)
 			typeof callback === 'function' && callback();
 		else
@@ -160,7 +160,7 @@ var updateConfig = function(config, callback) {
 };
 
 var restart = function(callback) {
-	post('/api/restart', auth_token, {}, function(request) {
+	post('/api/restart', auth_token, {}, 'application/json', function(request) {
 		if (request.status === 204)
 			typeof callback === 'function' && callback();
 		else

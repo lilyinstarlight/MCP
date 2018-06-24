@@ -66,7 +66,7 @@ var getCookie = function() {
 };
 
 var count = 0;
-var XHR = function(address, method, auth, data, redirect, handler) {
+var XHR = function(address, method, auth, data, type, redirect, handler) {
     var completed = false;
 
     var request = new XMLHttpRequest();
@@ -96,15 +96,12 @@ var XHR = function(address, method, auth, data, redirect, handler) {
 	request.setRequestHeader('Authorization', auth);
 
     if (data !== null) {
-	if (typeof data === 'object') {
-	    json = JSON.stringify(data);
-	    request.setRequestHeader('Content-Type', 'application/json');
-	    request.send(json);
-	}
-	else {
-	    request.setRequestHeader('Content-Type', 'text/plain');
+	request.setRequestHeader('Content-Type', type);
+
+	if (type === 'application/json')
+	    request.send(JSON.stringify(data));
+	else
 	    request.send(data);
-	}
     }
     else {
 	request.send();
@@ -119,21 +116,21 @@ var XHR = function(address, method, auth, data, redirect, handler) {
 };
 
 var get = function(address, auth, handler) {
-    XHR(address, 'GET', auth, null, true, handler);
+    XHR(address, 'GET', auth, null, null, true, handler);
 };
 
-var post = function(address, auth, data, handler) {
-    XHR(address, 'POST', auth, data, true, handler);
+var post = function(address, auth, data, type, handler) {
+    XHR(address, 'POST', auth, data, type, true, handler);
 };
 
-var put = function(address, auth, data, handler) {
-    XHR(address, 'PUT', auth, data, true, handler);
+var put = function(address, auth, data, type, handler) {
+    XHR(address, 'PUT', auth, data, type, true, handler);
 };
 
-var patch = function(address, auth, data, handler) {
-    XHR(address, 'PATCH', auth, data, true, handler);
+var patch = function(address, auth, data, type, handler) {
+    XHR(address, 'PATCH', auth, data, type, true, handler);
 };
 
 var del = function(address, auth, handler) {
-    XHR(address, 'DELETE', auth, null, true, handler);
+    XHR(address, 'DELETE', auth, null, null, true, handler);
 };

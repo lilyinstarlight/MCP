@@ -1,7 +1,7 @@
 var login = function(username, password, callback) {
 	auth = 'Login ' + btoa(username + ':' + password);
 
-	XHR('/api/user/' + username, 'POST', auth, {}, false, function(request) {
+	XHR('/api/user/' + username, 'POST', auth, {}, 'application/json', false, function(request) {
 		if (request.status === 200) {
 			user = JSON.parse(request.responseText);
 			setCookie(username, user['token']);
