@@ -32,9 +32,9 @@ class Script(object):
             raise mcp.error.ScriptNonexistentError()
 
         if mcp.config.chroot:
-            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', os.path.join(self.server.prefix, 'scripts'), os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'scripts'))
+            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', self.server.prefix, os.path.join('/', 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=self.server.prefix)
         else:
-            self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'scripts'))
+            self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'scripts', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'scripts', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=self.server.prefix)
 
     def stop(self):
         if self.is_running():
@@ -75,7 +75,10 @@ class Server(object):
         if not self.exists():
             raise mcp.error.ServerNonexistentError()
 
-        self.proc = subprocess.Popen([self.exe, '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
+        if mcp.config.chroot:
+            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', os.path.join('/', 'bin', 'armagetronad-dedicated'), '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
+        else:
+            self.proc = subprocess.Popen([os.path.join(self.prefix, 'bin', 'armagetronad-dedicated'), '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
 
         if self.script.exists():
             self.script.start()
