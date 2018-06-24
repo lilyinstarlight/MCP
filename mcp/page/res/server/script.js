@@ -161,7 +161,9 @@ var refresh = function(force) {
 				}
 			}
 
-			status_last = status;
+			library = server.library;
+
+			server_last = server;
 		});
 
 		if (isVisible(document.getElementById('log')) || force) {
@@ -255,7 +257,7 @@ var load = function() {
 	}, false);
 
 	document.getElementById('server_select').addEventListener('change', function(ev) {
-		change_server(document.getElementById('server_select').value);
+		changeServer(document.getElementById('server_select').value);
 
 		ev.preventDefault();
 	}, false);
