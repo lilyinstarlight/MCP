@@ -147,7 +147,7 @@ def log_get(server_name, last=None):
         raise mcp.error.NoServerError()
 
     try:
-        with open(os.path.join(mcp.config.prefix, server_name, 'server.log'), 'r') as log:
+        with open(os.path.join(mcp.config.prefix, server_name, 'server.log'), 'rb') as log:
             if last:
                 lines = len(log.readlines())
                 log.seek(0)
@@ -174,7 +174,7 @@ def settings_get(server_name):
         raise mcp.error.NoServerError()
 
     try:
-        with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'r') as settings_file:
+        with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'rb') as settings_file:
             return settings_file.read()
     except FileNotFoundError:
         return ''
@@ -183,7 +183,7 @@ def settings_set(server_name, settings):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
-    with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'w') as settings_file:
+    with open(os.path.join(mcp.config.prefix, server_name, 'config', 'settings_custom.cfg'), 'wb') as settings_file:
         settings_file.write(settings)
 
 def script_log_get(server_name, last=None):
@@ -191,7 +191,7 @@ def script_log_get(server_name, last=None):
         raise mcp.error.NoServerError()
 
     try:
-        with open(os.path.join(mcp.config.prefix, server_name, 'script-error.log'), 'r') as log:
+        with open(os.path.join(mcp.config.prefix, server_name, 'script-error.log'), 'rb') as log:
             if last:
                 lines = len(log.readlines())
                 log.seek(0)
@@ -232,7 +232,7 @@ def script_get(server_name):
         raise mcp.error.NoServerError()
 
     try:
-        with open(os.path.join(mcp.config.prefix, server_name, 'scripts', 'script.py'), 'r') as script_file:
+        with open(os.path.join(mcp.config.prefix, server_name, 'scripts', 'script.py'), 'rb') as script_file:
             return script_file.read()
     except FileNotFoundError:
         return ''
@@ -241,7 +241,7 @@ def script_set(server_name, script):
     if server_name not in server_db:
         raise mcp.error.NoServerError()
 
-    with open(os.path.join(mcp.config.prefix, server_name, 'scripts', 'script.py'), 'w') as script_file:
+    with open(os.path.join(mcp.config.prefix, server_name, 'scripts', 'script.py'), 'wb') as script_file:
         script_file.write(script)
 
 def send(server_name, command):
