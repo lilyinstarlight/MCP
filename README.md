@@ -106,6 +106,7 @@ To create servers, you must be on a unix-like system with a modern C++ compiler.
 - libboost-thread-dev (optional, 0.4 only)
 - libzthread-dev (optional, 0.2.8 only)
 - bzr
+- pax-utils (optional, for chroot only)
 - virtualenv (optional, for scripting only)
 
 #### Red Hat/Fedora
@@ -119,6 +120,7 @@ To create servers, you must be on a unix-like system with a modern C++ compiler.
 - boost-devel (optional, 0.4 only)
 - libZThread-devel (optional, 0.2.8 only)
 - bzr
+- pax-utils (optional, for chroot only)
 - python34-virtualenv (optional, for scripting only)
 
 #### Arch
@@ -128,6 +130,7 @@ To create servers, you must be on a unix-like system with a modern C++ compiler.
 - boost (optional, 0.4 only)
 - zthread (optional, 0.2.8 only)
 - bzr
+- pax-utils (optional, for chroot only)
 - python-virtualenv (optional, for scripting only)
 
 #### Gentoo
@@ -136,6 +139,7 @@ To create servers, you must be on a unix-like system with a modern C++ compiler.
 - dev-libs/boost\[threads\] (optional, 0.4 only)
 - dev-libs/zthread (optional, 0.2.8 only)
 - dev-vcs/bzr
+- app-misc/pax-utils[python] (optional, for chroot only)
 - dev-python/virtualenv (optional, for scripting only)
 
 

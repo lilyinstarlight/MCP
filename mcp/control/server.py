@@ -95,6 +95,13 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     except:
         raise mcp.error.ConfigError('Failed to copy custom configuration files')
 
+    if mcp.config.chroot:
+        # merge
+        mcp.common.cmd.head('Chrooting ' + server_name)
+
+        if subprocess.call(['lddtree', '--copy-to-tree', tmp_prefix, os.path.join(tmp_prefix, 'bin', 'armagetronad-dedicated')], stdout=mcp.common.cmd.log, stderr=subprocess.STDOUT, cwd=tmp_build):
+            raise mcp.error.ConfigError('Failed to copy custom configuration files')
+
     # merge
     mcp.common.cmd.head('Merging ' + server_name)
 
