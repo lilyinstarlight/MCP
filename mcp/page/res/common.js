@@ -96,10 +96,15 @@ var XHR = function(address, method, auth, data, redirect, handler) {
 	request.setRequestHeader('Authorization', auth);
 
     if (data !== null) {
-	json = JSON.stringify(data);
-	request.setRequestHeader('Content-Type', 'application/json');
-
-	request.send(json);
+	if (typeof data === 'object') {
+	    json = JSON.stringify(data);
+	    request.setRequestHeader('Content-Type', 'application/json');
+	    request.send(json);
+	}
+	else {
+	    request.setRequestHeader('Content-Type', 'text/plain');
+	    request.send(data);
+	}
     }
     else {
 	request.send();
