@@ -30,7 +30,7 @@ def add(library_name, url):
 
     mcp.control.script.branch(library_name, url)
 
-    return library_db.add(library_name, url, get_revision(library_name))
+    return library_db.add(library_name, url, mcp.control.script.get_revision(library_name))
 
 def update(library_name):
     if library_name not in library_db:
