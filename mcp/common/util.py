@@ -25,12 +25,12 @@ def chown_contents(path, uid, gid):
 def copy_libs(exe, dst):
     libraries = {}
     for line in subprocess.check_output(['ldd', exe]).splitlines():
-        match = re.match('\t(.+) => (.+) \(0x|\t(.+) \(0x', line)
+        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line)
         if match:
-            if len(match.groups()) == 2:
+            if match.group(1) and match.group(2):
                 libraries[match.group(1)] = match.group(2)
-            else:
-                libraries[os.path.basename(match.group(1))] = match.group(1)
+            elif match.group(3):
+                libraries[os.path.basename(match.group(3))] = match.group(3)
 
     for library, path in libraries.items():
         shutil.copy2(path, os.path.join(dst, library))
