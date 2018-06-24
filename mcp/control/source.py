@@ -40,6 +40,10 @@ def prepare(source_name, tmp, dst, revision=None):
 
     try:
         shutil.rmtree(tmp)
+    except:
+        pass
+
+    try:
         shutil.rmtree(dst)
     except:
         pass
