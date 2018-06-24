@@ -39,6 +39,7 @@ def prepare(library_name, tmp, dst, revision=None):
     prefix = os.path.join(mcp.config.scripting, library_name)
 
     try:
+        shutil.rmtree(tmp)
         shutil.rmtree(dst)
     except:
         pass

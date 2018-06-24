@@ -39,6 +39,7 @@ def prepare(source_name, tmp, dst, revision=None):
     prefix = os.path.join(mcp.config.sources, source_name)
 
     try:
+        shutil.rmtree(tmp)
         shutil.rmtree(dst)
     except:
         pass
