@@ -12,7 +12,7 @@ def get_revision(library_name):
     prefix = os.path.join(mcp.config.scripting, library_name)
 
     with open(os.path.join(prefix, '.bzr', 'branch', 'last-revision'), 'r') as file:
-        return int(file.read.split(' ', 1)[0])
+        return int(file.read().split(' ', 1)[0])
 
 def branch(library_name, url):
     prefix = os.path.join(mcp.config.scripting, library_name)
