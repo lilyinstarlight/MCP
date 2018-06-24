@@ -95,7 +95,7 @@ var refresh = function(force) {
 	if (typeof force !== 'boolean')
 		force = false;
 
-	if (count > 0) {
+	if (count > 0 && !force) {
 		setTimeout(refresh, 200);
 		return;
 	}
