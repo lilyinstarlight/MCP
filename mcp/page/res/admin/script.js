@@ -616,7 +616,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('source_form').addEventListener('click', function(ev) {
+	document.getElementById('source_add_form').addEventListener('click', function(ev) {
 		submitSource();
 		change('sources', 'source_list');
 
