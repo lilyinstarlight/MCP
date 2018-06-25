@@ -38,4 +38,4 @@ with tempfile.TemporaryDirectory() as tmp:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    subprocess.call(['systemd-nspawn', '-UD', tmp, '--chdir', os.path.join('/', 'srv', 'var'), '--bind', sys.argv[1] + ':' + os.path.join('/', 'srv'), os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+    subprocess.call(['systemd-nspawn', '-qUD', tmp, '--chdir', os.path.join('/', 'srv', 'var'), '--bind', sys.argv[1] + ':' + os.path.join('/', 'srv'), os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
