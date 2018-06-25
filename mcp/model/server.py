@@ -165,8 +165,8 @@ def log_get(server_name, last=None):
 
             contents = log.read()
 
-            if contents and contents[-1] != '\n':
-                contents += '\n'
+            if contents and contents[-1] != b'\n':
+                contents += b'\n'
 
             return contents
     except FileNotFoundError:
@@ -209,8 +209,8 @@ def script_log_get(server_name, last=None):
 
             contents = log.read()
 
-            if contents and contents[-1] != '\n':
-                contents += '\n'
+            if contents and contents[-1] != b'\n':
+                contents += b'\n'
 
             return contents
     except FileNotFoundError:
