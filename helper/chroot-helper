@@ -6,6 +6,11 @@ import subprocess
 import sys
 import tempfile
 
+
+if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/'):
+    sys.exit(1)
+
+
 with tempfile.TemporaryDirectory() as tmp:
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
     os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
@@ -24,4 +29,4 @@ with tempfile.TemporaryDirectory() as tmp:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    subprocess.call(['systemd-nspawn', '-UD', '--bind', sys.argv[1] + ':/srv', tmp)
+    subprocess.call(['systemd-nspawn', '-UD', '--bind', sys.argv[1] + ':' + os.path.join('/', 'srv'), tmp] + sys.argv[2:])
