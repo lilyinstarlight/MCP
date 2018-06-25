@@ -80,10 +80,14 @@ if mcp.config.cmdlog:
 
 
 if mcp.config.httpdlog:
+    logging.getLogger('web').handlers = []
+
     logging.getLogger('web').addHandler(logging.FileHandler(mcp.config.httpdlog))
 
 
 if mcp.config.accesslog:
+    logging.getLogger('http').handlers = []
+
     accesslog_handler = logging.FileHandler(mcp.config.accesslog)
     accesslog_handler.setFormatter(fooster.web.HTTPLogFormatter())
 
