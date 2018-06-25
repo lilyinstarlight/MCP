@@ -1,16 +1,43 @@
 #!/usr/bin/env python3
 import os
+import os.path
+import shutil
+import subprocess
 import sys
+import tempfile
 
 dir = sys.argv[1]
 uid = int(sys.argv[2])
 gid = int(sys.argv[3])
-prog = sys.argv[4]
 args = sys.argv[4:]
 
-os.chroot(dir)
-os.chdir('/')
-os.setresgid(gid, gid, gid)
-os.setresuid(uid, uid, uid)
-os.execv(prog, args)
-os.exit(1)
+
+def demote(dir, uid, gid):
+    os.chroot(dir)
+    os.chdir('/')
+    os.setresgid(gid, gid, gid)
+    os.setresuid(uid, uid, uid)
+
+
+with tempfile.TemporaryDirectory() as tmp:
+    subprocess.call(['mount', '--bind', dir, os.path.join(tmp, 'srv')])
+    subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
+
+    libraries = {}
+    for line in subprocess.check_output(['ldd', os.path.join(tmp, 'srv', args[0])]).splitlines():
+        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line.decode())
+        if match:
+            if match.group(1) and match.group(2):
+                libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
+            elif match.group(3):
+                libraries[match.group(3)[1:]] = match.group(3)
+
+    for library, path in libraries.items():
+        os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
+
+        shutil.copy2(path, os.path.join(tmp, library))
+
+    subprocess.call(args, preexec_fn=demote(dir, uid, gid))
+
+    subprocess.call(['umount', os.path.join(tmp, 'proc')])
+    subprocess.call(['umount', os.path.join(tmp, 'srv')])

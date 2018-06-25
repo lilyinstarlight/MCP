@@ -95,16 +95,6 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     except:
         raise mcp.error.ConfigError('Failed to copy custom configuration files')
 
-    if mcp.config.chroot:
-        # merge
-        mcp.common.cmd.head('Chrooting ' + server_name)
-
-        try:
-            mcp.common.util.copy_libs(os.path.join(tmp_prefix, 'bin', 'armagetronad-dedicated'), tmp_prefix)
-            mcp.common.util.copy_libs(os.path.join(tmp_prefix, 'scripts', 'bin', 'python'), tmp_prefix)
-        except subprocess.CalledProcessError:
-            raise mcp.error.ConfigError('Failed to copy necessary libraries')
-
     # merge
     mcp.common.cmd.head('Merging ' + server_name)
 

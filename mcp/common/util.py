@@ -21,18 +21,3 @@ def chown_contents(path, uid, gid):
             chown_contents(full, uid, gid)
         else:
             os.chown(full, uid, gid)
-
-def copy_libs(exe, dst):
-    libraries = {}
-    for line in subprocess.check_output(['ldd', exe]).splitlines():
-        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line.decode())
-        if match:
-            if match.group(1) and match.group(2):
-                libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
-            elif match.group(3):
-                libraries[match.group(3)[1:]] = match.group(3)
-
-    for library, path in libraries.items():
-        os.makedirs(os.path.join(dst, os.path.dirname(library)), exist_ok=True)
-
-        shutil.copy2(path, os.path.join(dst, library))
