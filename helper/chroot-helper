@@ -6,25 +6,9 @@ import subprocess
 import sys
 import tempfile
 
-dir = sys.argv[1]
-uid = int(sys.argv[2])
-gid = int(sys.argv[3])
-args = sys.argv[4:]
-
-
-def demote(dir, uid, gid):
-    os.chroot(dir)
-    os.chdir('/')
-    os.setresgid(gid, gid, gid)
-    os.setresuid(uid, uid, uid)
-
-
 with tempfile.TemporaryDirectory() as tmp:
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
     os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
-
-    subprocess.call(['mount', '--bind', dir, os.path.join(tmp, 'srv')])
-    subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
 
     libraries = {}
     for line in subprocess.check_output(['ldd', os.path.join(tmp, 'srv', args[0])]).splitlines():
@@ -40,7 +24,4 @@ with tempfile.TemporaryDirectory() as tmp:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    subprocess.call(args, preexec_fn=demote(dir, uid, gid))
-
-    subprocess.call(['umount', os.path.join(tmp, 'proc')])
-    subprocess.call(['umount', os.path.join(tmp, 'srv')])
+    subprocess.call(['systemd-nspawn', '-UD', '--bind', sys.argv[1] + ':/srv', tmp)
