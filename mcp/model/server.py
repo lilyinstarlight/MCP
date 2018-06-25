@@ -102,7 +102,7 @@ def upgrade(server_name, source_name=None, library_name=None, revision=None):
     if not revision:
         revision = mcp.model.source.get(source_name).revision
 
-    mcp.control.server.build(server_name, source_name, revision)
+    mcp.control.server.build(server_name, source_name, library_name, revision)
 
     server.revision = revision
 
