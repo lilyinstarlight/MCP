@@ -80,8 +80,6 @@ if mcp.config.cmdlog:
 
 
 if mcp.config.httpdlog:
-    logging.getLogger('web').handlers = []
-
     logging.getLogger('web').addHandler(logging.FileHandler(mcp.config.httpdlog))
 
 
