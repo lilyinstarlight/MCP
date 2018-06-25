@@ -24,7 +24,7 @@ parser.add_argument('--sources', dest='sources', help='sources directory to use'
 parser.add_argument('--config', dest='config', help='config directory to use')
 parser.add_argument('--scripting', dest='scripting', help='scripting directory to use')
 parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
-parser.add_argument('--chroot', action='store_true', dest='chroot', help='whether to chroot scripts')
+parser.add_argument('--container', action='store_true', dest='container', help='whether to put servers and scripts in containers')
 
 args = parser.parse_args()
 
@@ -67,8 +67,8 @@ if args.scripting:
 if args.tmp:
     mcp.config.tmp = os.path.abspath(args.tmp)
 
-if args.chroot:
-    mcp.config.chroot = args.chroot
+if args.container:
+    mcp.config.container = args.container
 
 
 if mcp.config.log:

@@ -4,6 +4,9 @@ prefix = '/var/lib/mcp/servers'
 # whether or not to allow server creation
 creation = True
 
+# whether to put servers and scripts in containers
+container = False
+
 # directory where the sources are kept; ignored if creation is disabled
 sources = '/var/lib/mcp/sources'
 
@@ -51,6 +54,3 @@ tlscert = None
 
 # how long to wait between server polls
 poll_interval = 0.5
-
-# whether to chroot servers and scripts
-chroot = False

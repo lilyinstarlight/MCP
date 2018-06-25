@@ -40,7 +40,8 @@ Installing
 ### Setup
 Edit `config.py` to match your directory structure and preferences. Below is a list of the preferences and what they mean.
 - `prefix` directory is mandatory and should be the directory set aside for Armagetron servers.
-- `creation` indicated whether or not servers can be created.
+- `creation` indicates whether or not servers can be created.
+- `container` indicates whether servers should run inside of a container
 - `sources` directory is optional and contains the source code to the server software from which the servers are created.
 - `tmp` directory is optional and contains the located where servers will be built before being merged.
 - `config` directory is optional and contains the default set of configuration copied to every server when created.
@@ -52,16 +53,17 @@ Edit `config.py` to match your directory structure and preferences. Below is a l
 - `cmdlog` is the path of the external command log.
 - `httpdlog` is the path of the HTTP daemon log.
 - `accesslog` is the path of the HTTP access log.
-- `host` is the address for which the server will accept requests but generally, you do not need to set this.
-- `port` is the port on which the HTTP server will listen. If there is another web server running on the computer, you can change this port to something other than `80` then have the web server proxy an address to that port.
+- `addr` is the address and port for which the server will accept requests
+- `tlskey` is the HTTPS key
+- `tlscert` is the HTTPS certificate
 
 To create the user the daemon will run under, run the `useradd` command and give it permission to necessary directories:
 ```
 # useradd -m -d /var/lib/mcp mcp
 # mkdir -p /var/db/mcp
-# chmod mcp:mcp /var/db/mcp
+# chown mcp:mcp /var/db/mcp
 # mkdir -p /var/log/mcp
-# chmod mcp:mcp /var/log/mcp
+# chown mcp:mcp /var/log/mcp
 ```
 
 After the configuration is complete, run the setup script:
