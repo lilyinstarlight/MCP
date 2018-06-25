@@ -20,6 +20,9 @@ def demote(dir, uid, gid):
 
 
 with tempfile.TemporaryDirectory() as tmp:
+    os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
+    os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
+
     subprocess.call(['mount', '--bind', dir, os.path.join(tmp, 'srv')])
     subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
 
