@@ -34,7 +34,7 @@ class Script(object):
         if mcp.config.container:
             self.proc = subprocess.Popen(['/usr/local/bin/container-helper', self.server.prefix, os.path.join('/', 'srv', 'script', 'bin', 'python'), os.path.join('/', 'srv', 'script', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=self.server.prefix)
         else:
-            self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'script', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'script', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=self.server.prefix)
+            self.proc = subprocess.Popen([os.path.join(self.server.prefix, 'script', 'bin', 'python'), sys.executable, os.path.join(self.server.prefix, 'script', 'script.py')], stdin=open(os.path.join(self.server.prefix, 'var', 'ladderlog.txt'), 'r'), stdout=self.server.proc.stdin, stderr=open(os.path.join(self.server.prefix, 'script-error.log'), 'w'), env=mcp.common.env.get_script(), cwd=os.path.join(self.server.prefix, 'var'))
 
     def stop(self):
         if self.is_running():
