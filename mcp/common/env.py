@@ -7,10 +7,6 @@ import mcp.config
 base_env = os.environ.copy()
 
 
-def get_user():
-    return os.getuid(), os.getgid()
-
-
 def get_env():
     return base_env
 

@@ -1,2 +1,6 @@
-#!/bin/sh
-exec chroot "$@"
+#!/usr/bin/env python3
+import os
+import sys
+os.chroot(sys.argv[1])
+os.execve(sys.argv[2], sys.argv[2:])
+os.exit(1)
