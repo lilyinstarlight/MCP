@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 import os
 import sys
-os.chroot(sys.argv[1])
-os.execve(sys.argv[2], sys.argv[2:])
+
+dir = sys.argv[1]
+uid = int(sys.argv[2])
+gid = int(sys.argv[3])
+prog = sys.argv[4]
+args = sys.argv[4:]
+
+os.chroot(dir)
+os.chdir('/')
+os.setresgid(gid, gid, gid)
+os.setresuid(uid, uid, uid)
+os.execv(prog, args)
 os.exit(1)
