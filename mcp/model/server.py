@@ -87,7 +87,7 @@ def modify(server_name, library=None, port=None, autostart=None, users=None):
 
         server.users = users
 
-def upgrade(server_name, source_name=None, revision=None):
+def upgrade(server_name, source_name=None, library_name=None, revision=None):
     try:
         server = server_db[server_name]
     except KeyError:
@@ -95,6 +95,9 @@ def upgrade(server_name, source_name=None, revision=None):
 
     if not source_name:
         source_name = server.source
+
+    if not library_name:
+        library_name = server.library
 
     if not revision:
         revision = mcp.model.source.get(source_name).revision
