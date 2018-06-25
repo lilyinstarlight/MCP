@@ -511,7 +511,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('user_create_submit').addEventListener('click', function(ev) {
+	document.getElementById('user_create_form').addEventListener('submit', function(ev) {
 		submitUser();
 		change('users', 'user_list');
 
@@ -530,7 +530,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('user_modify_submit').addEventListener('click', function(ev) {
+	document.getElementById('user_modify_form').addEventListener('submit', function(ev) {
 		submitModifyUser();
 		change('users', 'user_list');
 
@@ -573,7 +573,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('server_submit').addEventListener('click', function(ev) {
+	document.getElementById('server_create_form').addEventListener('submit', function(ev) {
 		submitServer();
 		change('servers', 'server_list');
 
@@ -616,7 +616,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('source_submit').addEventListener('click', function(ev) {
+	document.getElementById('source_form').addEventListener('click', function(ev) {
 		submitSource();
 		change('sources', 'source_list');
 
@@ -659,7 +659,7 @@ var load = function() {
 		ev.preventDefault();
 	}, false);
 
-	document.getElementById('library_submit').addEventListener('click', function(ev) {
+	document.getElementById('library_add_form').addEventListener('submit', function(ev) {
 		submitLibrary();
 		change('libraries', 'library_list');
 
