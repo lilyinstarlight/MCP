@@ -76,7 +76,7 @@ def modify(server_name, library=None, port=None, autostart=None, users=None):
 
     if users:
         for username in server.users:
-            server = mcp.servers.get(username)
+            server = mcp.model.user.get(username)
             if server_name in user.servers and username not in users:
                 user.servers.remove(server_name)
 
@@ -107,10 +107,12 @@ def upgrade(server_name, source_name=None, library_name=None, revision=None):
     server.revision = revision
 
 def destroy(server_name):
-    if server_name not in server_db:
+    try:
+        server = server_db[server_name]
+    except KeyError:
         raise mcp.error.NoServerError()
 
-    if server_db[server_name].running:
+    if server.running:
         raise mcp.error.ServerRunningError()
 
     for username in server.users:
