@@ -16,7 +16,11 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     if not mcp.config.creation:
         raise mcp.error.NoServerCreationError()
 
-    prefix = os.path.join(mcp.config.prefix, server_name)
+    if mcp.config.container:
+        prefix = os.path.join('/', 'srv', server_name)
+    else:
+        prefix = os.path.join(mcp.config.prefix, server_name)
+
     tmp = os.path.join(mcp.config.tmp, server_name)
     tmp_source = os.path.join(tmp, 'source')
     tmp_library = os.path.join(tmp, 'library')
@@ -99,7 +103,7 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     mcp.common.cmd.head('Merging ' + server_name)
 
     try:
-        mcp.common.util.copy_contents(tmp_prefix, prefix)
+        mcp.common.util.copy_contents(tmp_prefix, os.path.join(mcp.config.prefix, server_name))
     except:
         raise mcp.error.MergeError('Failed to copy server')
 

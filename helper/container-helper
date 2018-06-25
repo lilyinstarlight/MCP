@@ -14,11 +14,19 @@ if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/'):
 
 with tempfile.TemporaryDirectory() as tmp:
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
+
     os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
+    os.makedirs(os.path.join(tmp, 'sys'), exist_ok=True)
+    os.makedirs(os.path.join(tmp, 'tmp'), exist_ok=True)
+    os.makedirs(os.path.join(tmp, 'dev'), exist_ok=True)
+    os.makedirs(os.path.join(tmp, 'run'), exist_ok=True)
+
+    os.makedirs(os.path.join(tmp, 'usr', 'lib'), exist_ok=True)
+    shutil.copy2(os.path.join('/', 'usr', 'lib', 'os-release'), os.path.join(tmp, 'usr', 'lib', 'os-release'))
 
     libraries = {}
     for line in subprocess.check_output(['ldd', os.path.join(sys.argv[1], sys.argv[2])]).splitlines():
-        match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line.decode())
+        match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
         if match:
             if match.group(1) and match.group(2):
                 libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
