@@ -76,7 +76,7 @@ class Server(object):
             raise mcp.error.ServerNonexistentError()
 
         if mcp.config.chroot:
-            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', os.path.join('/', 'bin', 'armagetronad-dedicated'), '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
+            self.proc = subprocess.Popen(['/usr/local/bin/chroot-helper', self.prefix, os.path.join('/', 'bin', 'armagetronad-dedicated'), '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
         else:
             self.proc = subprocess.Popen([os.path.join(self.prefix, 'bin', 'armagetronad-dedicated'), '--vardir', os.path.join(self.prefix, 'var'), '--userdatadir', os.path.join(self.prefix, 'user'), '--configdir', os.path.join(self.prefix, 'config'), '--datadir', os.path.join(self.prefix, 'data')], stdin=subprocess.PIPE, stdout=open(os.path.join(self.prefix, 'server.log'), 'a'), stderr=open(os.path.join(self.prefix, 'error.log'), 'w'), env=mcp.common.env.get_server(), cwd=self.prefix)
 
