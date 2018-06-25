@@ -16,7 +16,7 @@ with tempfile.TemporaryDirectory() as tmp:
     os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
 
     libraries = {}
-    for line in subprocess.check_output(['ldd', os.path.join(tmp, 'srv', args[0])]).splitlines():
+    for line in subprocess.check_output(['ldd', os.path.join(sys.argv[1], sys.argv[2])]).splitlines():
         match = re.match('\t(.*) => (.*) \(0x|\t(.*) \(0x', line.decode())
         if match:
             if match.group(1) and match.group(2):
@@ -29,4 +29,4 @@ with tempfile.TemporaryDirectory() as tmp:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    subprocess.call(['systemd-nspawn', '-UD', '--bind', sys.argv[1] + ':' + os.path.join('/', 'srv'), tmp] + sys.argv[2:])
+    subprocess.call(['systemd-nspawn', '-UD', '--bind', sys.argv[1] + ':' + os.path.join('/', 'srv'), tmp] + os.path.join('/', 'srv', sys.argv[2:]))
