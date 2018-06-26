@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+import os
+import os.path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+
+if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/'):
+    sys.exit(1)
+
+
+with tempfile.TemporaryDirectory() as tmp:
+    try:
+        os.chmod(tmp, 0o755)
+
+        os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
+        subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
+        os.makedirs(os.path.join(tmp, 'sys'), exist_ok=True)
+        subprocess.call(['mount', '--rbind', '/sys', os.path.join(tmp, 'sys')])
+        subprocess.call(['mount', '--make-rslave', os.path.join(tmp, 'sys')])
+        os.makedirs(os.path.join(tmp, 'dev'), exist_ok=True)
+        subprocess.call(['mount', '--rbind', '/dev', os.path.join(tmp, 'dev')])
+        subprocess.call(['mount', '--make-rslave', os.path.join(tmp, 'dev')])
+
+        os.makedirs(os.path.join(tmp, 'etc'), exist_ok=True)
+        shutil.copy2('/etc/resolv.conf', os.path.join(tmp, 'etc', 'resolv.conf'))
+
+        os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
+        subprocess.call(['mount', '--bind', sys.argv[1], os.path.join(tmp, 'srv')])
+
+        libraries = {}
+
+        try:
+            for line in subprocess.check_output(['ldd', os.path.join(sys.argv[1], sys.argv[2])]).splitlines():
+                match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
+                if match:
+                    if match.group(1) and match.group(2):
+                        libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
+                    elif match.group(3):
+                        libraries[match.group(3)[1:]] = match.group(3)
+        except subprocess.CalledProcessError:
+            pass
+
+        for library, path in libraries.items():
+            os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
+
+            shutil.copy2(path, os.path.join(tmp, library))
+
+        subprocess.call(['chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+    finally:
+        subprocess.call(['umount', os.path.join(tmp, 'srv')])
+
+        subprocess.call(['umount', '-R', os.path.join(tmp, 'dev')])
+        subprocess.call(['umount', '-R', os.path.join(tmp, 'sys')])
+        subprocess.call(['umount', '-R', os.path.join(tmp, 'proc')])

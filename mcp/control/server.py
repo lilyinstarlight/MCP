@@ -16,7 +16,7 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
     if not mcp.config.creation:
         raise mcp.error.NoServerCreationError()
 
-    if mcp.config.container:
+    if mcp.config.chroot:
         prefix = os.path.join('/', 'srv')
     else:
         prefix = os.path.join(mcp.config.prefix, server_name)

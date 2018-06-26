@@ -25,7 +25,7 @@ parser.add_argument('--config', dest='config', help='config directory to use')
 parser.add_argument('--scripting', dest='scripting', help='scripting directory to use')
 parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
 parser.add_argument('--sftpkey', dest='sftpkey', help='sftp key to use')
-parser.add_argument('--container', action='store_true', dest='container', help='whether to put servers and scripts in containers')
+parser.add_argument('--chroot', action='store_true', dest='chroot', help='whether to put servers and scripts in a chroot')
 
 args = parser.parse_args()
 
@@ -71,8 +71,8 @@ if args.tmp:
 if args.sftpkey:
     mcp.config.sftpkey = os.path.abspath(args.sftpkey)
 
-if args.container:
-    mcp.config.container = args.container
+if args.chroot:
+    mcp.config.chroot = args.chroot
 
 
 if mcp.config.log:
