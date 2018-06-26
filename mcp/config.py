@@ -48,6 +48,12 @@ resource = os.path.join(os.path.dirname(__file__), 'page', 'res')
 # address and port of the web interface
 addr = ('', 8000)
 
+# address and port of the sftp server
+sftpaddr = ('', 2222)
+
+# sftp host key
+sftpkey = '/var/lib/mcp/sftp/ssh_host_rsa_key'
+
 # path to TLS/SSL key and certificate files; None to disable TLS encryption
 tlskey = None
 tlscert = None

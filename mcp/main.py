@@ -24,6 +24,7 @@ parser.add_argument('--sources', dest='sources', help='sources directory to use'
 parser.add_argument('--config', dest='config', help='config directory to use')
 parser.add_argument('--scripting', dest='scripting', help='scripting directory to use')
 parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
+parser.add_argument('--sftpkey', dest='sftpkey', help='sftp key to use')
 parser.add_argument('--container', action='store_true', dest='container', help='whether to put servers and scripts in containers')
 
 args = parser.parse_args()
@@ -67,6 +68,9 @@ if args.scripting:
 if args.tmp:
     mcp.config.tmp = os.path.abspath(args.tmp)
 
+if args.sftpkey:
+    mcp.config.sftpkey = os.path.abspath(args.sftpkey)
+
 if args.container:
     mcp.config.container = args.container
 
@@ -102,6 +106,7 @@ import mcp.service.http
 import mcp.service.manager
 import mcp.service.rotate
 import mcp.service.update
+import mcp.service.sftp
 
 log = logging.getLogger('mcp')
 
@@ -121,6 +126,10 @@ mcp.common.daemon.sync = multiprocessing.Manager()
 mcp.service.manager.start()
 mcp.service.rotate.start()
 mcp.service.update.start()
+
+if os.path.exists(mcp.config.sftpkey):
+    mcp.service.sftp.start()
+
 mcp.service.http.start()
 
 # cleanup function
@@ -143,6 +152,9 @@ signal.signal(signal.SIGUSR1, restart)
 mcp.service.http.join()
 
 # stop background services
+if os.path.exists(mcp.config.sftpkey):
+    mcp.service.sftp.stop()
+
 mcp.service.update.stop()
 mcp.service.rotate.stop()
 mcp.service.manager.stop()

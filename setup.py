@@ -30,6 +30,9 @@ def find(haystack, *needles):
 with open(os.path.join(os.path.dirname(__file__), 'mcp', '__init__.py'), 'r') as mcp:
     name, version = find(mcp, 'name', 'version')
 
+with open(os.path.join(os.path.dirname(__file__), 'mcp', 'config.py'), 'r') as mcp:
+    sftpkey = find(mcp, 'sftpkey')
+
 
 setup(
     name=name,
@@ -39,7 +42,7 @@ setup(
     license='MIT',
     author='Foster McLane',
     author_email='fkmclane@gmail.com',
-    install_requires=['fooster-web', 'fooster-db', 'fooster-cron'],
+    install_requires=['fooster-web', 'fooster-db', 'fooster-cron', 'paramiko'],
     packages=find_packages(),
     package_data={'mcp.control': ['server/*.*', 'server/config/*.*'], 'mcp.lib': ['**/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/index/*.*', 'res/codemirror/*.*']},
     entry_points = {'console_scripts': ['mcp = mcp.main']},
