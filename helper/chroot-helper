@@ -10,7 +10,7 @@ import tempfile
 import time
 
 
-if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/'):
+if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/servers/'):
     sys.exit(1)
 
 
@@ -23,16 +23,16 @@ try:
     os.chmod(tmp, 0o755)
 
     os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
-    subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
+    subprocess.call(['sudo', '/bin/mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
     os.makedirs(os.path.join(tmp, 'dev'), exist_ok=True)
-    subprocess.call(['mount', '--rbind', '/dev', os.path.join(tmp, 'dev')])
-    subprocess.call(['mount', '--make-rslave', os.path.join(tmp, 'dev')])
+    subprocess.call(['sudo', '/bin/mount', '--rbind', '/dev', os.path.join(tmp, 'dev')])
+    subprocess.call(['sudo', '/bin/mount', '--make-rslave', os.path.join(tmp, 'dev')])
 
     os.makedirs(os.path.join(tmp, 'etc'), exist_ok=True)
     shutil.copy2('/etc/resolv.conf', os.path.join(tmp, 'etc', 'resolv.conf'))
 
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
-    subprocess.call(['mount', '--bind', sys.argv[1], os.path.join(tmp, 'srv')])
+    subprocess.call(['sudo', '/bin/mount', '--bind', sys.argv[1], os.path.join(tmp, 'srv')])
 
     libraries = {}
 
@@ -52,21 +52,22 @@ try:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    proc = subprocess.Popen(['chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+    chroot = subprocess.Popen(['sudo', '/sbin/chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+    proc = int(subprocess.check_output(['ps', '-o', 'pid', '--ppid', str(chroot.pid), '--noheaders']))
 
     def terminate(signum=None, frame=None):
-        if proc.poll() is None:
-            proc.terminate()
+        if chroot.poll() is None:
+            os.kill(proc, signal.SIGTERM)
             try:
-                proc.wait(5)
+                chroot.wait(5)
             except subprocess.TimeoutExpired:
-                proc.kill()
-                proc.wait()
+                os.kill(proc, signal.SIGKILL)
+                chroot.wait()
 
     signal.signal(signal.SIGTERM, terminate)
     signal.signal(signal.SIGINT, terminate)
 
-    while proc.poll() is None:
+    while chroot.poll() is None:
         time.sleep(0.1)
 except:
     sys.exit(1)
@@ -74,10 +75,10 @@ finally:
     try:
         terminate()
 
-        subprocess.call(['umount', os.path.join(tmp, 'srv')])
+        subprocess.call(['sudo', '/bin/umount', os.path.join(tmp, 'srv')])
 
-        subprocess.call(['umount', '-R', os.path.join(tmp, 'dev')])
-        subprocess.call(['umount', '-R', os.path.join(tmp, 'proc')])
+        subprocess.call(['sudo', '/bin/umount', '-R', os.path.join(tmp, 'dev')])
+        subprocess.call(['sudo', '/bin/umount', '-R', os.path.join(tmp, 'proc')])
 
         shutil.rmtree(tmp)
     except:

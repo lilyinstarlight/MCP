@@ -1,0 +1,8 @@
+mcp ALL=(root) /bin/mount -t proc none */proc
+mcp ALL=(root) /bin/umount -R */proc
+mcp ALL=(root) /bin/mount --rbind /dev */dev
+mcp ALL=(root) /bin/mount --make-rslave */dev
+mcp ALL=(root) /bin/umount -R */dev
+mcp ALL=(root) /bin/mount --bind /var/lib/mcp/servers/* */srv
+mcp ALL=(root) /bin/umount */srv
+mcp ALL=(root) /sbin/chroot --userspec=mcp:mcp /tmp/mcp/* /srv/*
