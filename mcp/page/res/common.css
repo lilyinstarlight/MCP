@@ -73,7 +73,7 @@ input[type=text], input[type=password] {
 	background: rgba(60, 110, 80, 0.6);
 	color: #DDD;
 	border: 1px solid #000;
-	padding: 0px 2px 0px 2px;
+	padding: 2px;
 }
 
 textarea, pre, select[multiple] {
