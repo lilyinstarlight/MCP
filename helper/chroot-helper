@@ -18,9 +18,6 @@ with tempfile.TemporaryDirectory() as tmp:
 
         os.makedirs(os.path.join(tmp, 'proc'), exist_ok=True)
         subprocess.call(['mount', '-t', 'proc', 'none', os.path.join(tmp, 'proc')])
-        os.makedirs(os.path.join(tmp, 'sys'), exist_ok=True)
-        subprocess.call(['mount', '--rbind', '/sys', os.path.join(tmp, 'sys')])
-        subprocess.call(['mount', '--make-rslave', os.path.join(tmp, 'sys')])
         os.makedirs(os.path.join(tmp, 'dev'), exist_ok=True)
         subprocess.call(['mount', '--rbind', '/dev', os.path.join(tmp, 'dev')])
         subprocess.call(['mount', '--make-rslave', os.path.join(tmp, 'dev')])
@@ -49,10 +46,24 @@ with tempfile.TemporaryDirectory() as tmp:
 
             shutil.copy2(path, os.path.join(tmp, library))
 
-        subprocess.call(['chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+        proc = subprocess.Popen(['chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
     finally:
-        subprocess.call(['umount', os.path.join(tmp, 'srv')])
+        try:
+            proc.terminate()
+            try:
+                proc.wait(5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        except:
+            pass
 
-        subprocess.call(['umount', '-R', os.path.join(tmp, 'dev')])
-        subprocess.call(['umount', '-R', os.path.join(tmp, 'sys')])
-        subprocess.call(['umount', '-R', os.path.join(tmp, 'proc')])
+        try:
+            subprocess.call(['umount', os.path.join(tmp, 'srv')])
+        except:
+            pass
+
+        try:
+            subprocess.call(['umount', '-R', os.path.join(tmp, 'dev')])
+            subprocess.call(['umount', '-R', os.path.join(tmp, 'proc')])
+        except:
+            pass
