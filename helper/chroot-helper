@@ -47,6 +47,7 @@ with tempfile.TemporaryDirectory() as tmp:
             shutil.copy2(path, os.path.join(tmp, library))
 
         proc = subprocess.Popen(['chroot', '--userspec=mcp:mcp', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+        proc.wait()
     finally:
         try:
             proc.terminate()
