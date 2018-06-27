@@ -39,16 +39,19 @@ class Script(object):
     def stop(self):
         if self.is_running():
             self.proc.terminate()
-            try:
-                self.proc.wait(5)
-            except subprocess.TimeoutExpired:
-                self.proc.kill()
+            if mcp.config.chroot:
                 self.proc.wait()
+            else:
+                try:
+                    self.proc.wait(5)
+                except subprocess.TimeoutExpired:
+                    self.proc.kill()
+                    self.proc.wait()
 
         self.proc = None
 
     def is_running(self):
-        return bool(self.proc and self.proc.poll() == None)
+        return bool(self.proc and self.proc.poll() is None)
 
     def is_dead(self):
         return bool(self.proc and self.proc.poll())
@@ -88,11 +91,14 @@ class Server(object):
 
         if self.is_running():
             self.proc.terminate()
-            try:
-                self.proc.wait(5)
-            except subprocess.TimeoutExpired:
-                self.proc.kill()
+            if mcp.config.chroot:
                 self.proc.wait()
+            else:
+                try:
+                    self.proc.wait(5)
+                except subprocess.TimeoutExpired:
+                    self.proc.kill()
+                    self.proc.wait()
 
         self.proc = None
 
@@ -102,7 +108,7 @@ class Server(object):
         self.send_command('INCLUDE settings_custom.cfg')
 
     def is_running(self):
-        return bool(self.proc and self.proc.poll() == None)
+        return bool(self.proc and self.proc.poll() is None)
 
     def is_dead(self):
         return bool(self.proc and self.proc.poll())
