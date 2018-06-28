@@ -28,10 +28,10 @@ var refresh = function(force) {
 
 		var user_servers = user.servers;
 		var select = document.createElement('select');
-		for (var server in user_servers) {
+		for (var idx = 0; idx < user_servers.length; idx++) {
 			var option = document.createElement('option');
-			option.value = server;
-			option.innerHTML = server;
+			option.value = user_servers[idx];
+			option.innerHTML = user_servers[idx];
 			option.setAttribute('selected', 'selected');
 			select.appendChild(option);
 		}
