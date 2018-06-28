@@ -106,28 +106,15 @@ from mcp import name, version
 
 import mcp.initial
 
-
-# drop privileges if necessary
-def demote():
-    user = pwd.getpwnam(mcp.config.user)
-
-    os.setgroups([])
-
-    os.setgid(user.pw_gid)
-    os.setuid(user.pw_uid)
-
-
-# create initial files
-if os.geteuid() == 0:
-    # demote first
-    proc = multiprocessing.Process(target=mcp.initial.check, preexec_fn=demote)
-    proc.start()
-    proc.join()
-else:
-    mcp.initial.check()
-
-
 import mcp.common.daemon
+import mcp.common.util
+
+
+# check for initial files in a potentially demoted process
+proc = multiprocessing.Process(target=mcp.initial.check, args=(mcp.common.util.demote,))
+proc.start()
+proc.join()
+
 
 import mcp.service.http
 import mcp.service.manager
@@ -152,7 +139,7 @@ mcp.service.manager.start()
 
 # drop root privileges if necessary
 if os.geteuid() == 0:
-    demote()
+    mcp.common.util.demote()
 
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()

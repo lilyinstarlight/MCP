@@ -1,5 +1,6 @@
 import os
 import os.path
+import pwd
 import re
 import shutil
 import subprocess
@@ -21,3 +22,12 @@ def chown_contents(path, uid, gid):
             chown_contents(full, uid, gid)
         else:
             os.chown(full, uid, gid)
+
+
+def demote(username):
+    user = pwd.getpwnam(username)
+
+    os.setgroups([])
+
+    os.setgid(user.pw_gid)
+    os.setuid(user.pw_uid)

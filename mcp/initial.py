@@ -7,7 +7,10 @@ import mcp.config
 import mcp.common.util
 
 
-def check():
+def check(preexec=None):
+    if preexec:
+        preexec()
+
     import mcp.model.user
     import mcp.model.server
     import mcp.model.source
