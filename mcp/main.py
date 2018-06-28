@@ -106,6 +106,27 @@ from mcp import name, version
 
 import mcp.initial
 
+
+# drop privileges if necessary
+def demote():
+    user = pwd.getpwnam(mcp.config.user)
+
+    os.setgroups([])
+
+    os.setgid(user.pw_gid)
+    os.setuid(user.pw_uid)
+
+
+# create initial files
+if os.geteuid() == 0:
+    # demote first
+    proc = multiprocessing.Process(target=mcp.initial.check, preexec_fn=demote)
+    proc.start()
+    proc.join()
+else:
+    mcp.initial.check()
+
+
 import mcp.common.daemon
 
 import mcp.service.http
@@ -129,17 +150,9 @@ signal.signal(signal.SIGINT, signal.SIG_IGN)
 # start server manager
 mcp.service.manager.start()
 
-# drop privileges if necessary
+# drop root privileges if necessary
 if os.geteuid() == 0:
-    user = pwd.getpwnam(mcp.config.user)
-
-    os.setgroups([])
-
-    os.setgid(user.pw_gid)
-    os.setuid(user.pw_uid)
-
-# check for starting files
-mcp.initial.check()
+    demote()
 
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()

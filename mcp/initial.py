@@ -6,10 +6,13 @@ import mcp.config
 
 import mcp.common.util
 
-import mcp.model.user
-
 
 def check():
+    import mcp.model.user
+    import mcp.model.server
+    import mcp.model.source
+    import mcp.model.script
+
     # create prefix directory if necessary
     try:
         os.makedirs(mcp.config.prefix)
