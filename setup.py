@@ -45,5 +45,5 @@ setup(
     install_requires=['fooster-web', 'fooster-db', 'fooster-cron', 'paramiko'],
     packages=find_packages(),
     package_data={'mcp.control': ['server/*.*', 'server/config/*.*'], 'mcp.lib': ['**/*.*'], 'mcp.page': ['html/*.*', 'res/*.*', 'res/admin/*.*', 'res/server/*.*', 'res/login/*.*', 'res/index/*.*', 'res/codemirror/*.*']},
-    entry_points = {'console_scripts': ['mcp = mcp.main']},
+    entry_points = {'console_scripts': ['mcp = mcp.__main__:main']},
 )
