@@ -15,7 +15,7 @@ class Index(mcp.common.http.AuthHandler):
     group = 0
 
     def do_get(self):
-        return 200, [dict(server) for server in mcp.model.server.items() if self.auth.username in server.users or self.auth.admin]
+        return 200, [dict(server) for server in mcp.model.server.items() if server.server in self.auth.servers or self.auth.admin]
 
     def do_post(self):
         if not self.auth.admin:
