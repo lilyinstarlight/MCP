@@ -4,8 +4,8 @@ prefix = '/var/lib/mcp/servers'
 # whether or not to allow server creation
 creation = True
 
-# whether to put servers and scripts in a chroot
-chroot = False
+# whether to put servers and scripts in a container
+container = False
 
 # directory where the sources are kept; ignored if creation is disabled
 sources = '/var/lib/mcp/sources'

@@ -16,7 +16,7 @@ class Features(mcp.common.http.AuthHandler):
 
     def do_get(self):
         # return enabled features
-        return 200, {'creation': mcp.config.creation, 'chroot': mcp.config.chroot}
+        return 200, {'creation': mcp.config.creation, 'container': mcp.config.container}
 
 class Config(mcp.common.http.PlainAuthHandler):
     group = 0

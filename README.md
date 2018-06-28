@@ -41,7 +41,7 @@ Installing
 Edit `config.py` to match your directory structure and preferences. Below is a list of the preferences and what they mean.
 - `prefix` directory is mandatory and should be the directory set aside for Armagetron servers.
 - `creation` indicates whether or not servers can be created.
-- `chroot` indicates whether servers and scripts should run inside of a chroot
+- `container` indicates whether servers and scripts should run inside of a container
 - `sources` directory is optional and contains the source code to the server software from which the servers are created.
 - `tmp` directory is optional and contains the located where servers will be built before being merged.
 - `config` directory is optional and contains the default set of configuration copied to every server when created.
