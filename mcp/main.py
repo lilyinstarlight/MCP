@@ -106,23 +106,23 @@ from mcp import name, version
 
 import mcp.initial
 
-import mcp.common.daemon
 import mcp.common.util
 
 
 if os.geteuid() == 0:
-    # check for initial files in a demoted process
-    def check():
+    pid = os.fork()
+    if pid == 0:
         mcp.common.util.demote(mcp.config.user)
         mcp.initial.check()
-
-    proc = multiprocessing.Process(target=check)
-    proc.start()
-    proc.join()
+        sys.exit(0)
+    else:
+        os.waitpid(pid, 0)
 else:
     # check for initial files
     mcp.initial.check()
 
+
+import mcp.common.daemon
 
 import mcp.service.http
 import mcp.service.manager

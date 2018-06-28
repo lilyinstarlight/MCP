@@ -29,5 +29,5 @@ def demote(username):
 
     os.setgroups([])
 
-    os.setgid(user.pw_gid)
-    os.setuid(user.pw_uid)
+    os.setregid(user.pw_gid, user.pw_gid)
+    os.setreuid(user.pw_uid, user.pw_uid)

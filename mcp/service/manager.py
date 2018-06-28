@@ -2,6 +2,7 @@ import logging
 import multiprocessing
 import os
 import os.path
+import select
 import subprocess
 import sys
 import time
@@ -123,10 +124,12 @@ class Server(object):
         self.proc.stdin.write(command.encode('latin1') + b'\n')
         self.proc.stdin.flush()
 
-running = multiprocessing.Value('b', False)
+running_read, running_write = None, None
 process = None
 
 def run():
+    os.close(running_write)
+
     server_processes = {}
 
     for entry in mcp.model.server.items():
@@ -137,7 +140,7 @@ def run():
         entry.command = ''
 
     try:
-        while running.value:
+        while not select.select([running_read], [], [])[0]:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
@@ -220,23 +223,27 @@ def run():
             process.stop()
 
 def start():
-    global running, process
+    global running_read, running_write, process
 
     if process:
         return
 
-    running.value = True
+    running_read, running_write = os.pipe()
     process = multiprocessing.Process(target=run, name='mcp-manager')
     process.start()
 
+    os.close(running_read)
+
 def stop():
-    global running, process
+    global running_read, running_write, process
 
     if not process:
         return
 
-    running.value = False
+    os.write(running_write, 'stop')
     process.join()
+
+    running_read, running_write = None, None
     process = None
 
 def is_running():
