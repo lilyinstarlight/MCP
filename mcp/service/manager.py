@@ -140,7 +140,7 @@ def run():
         entry.command = ''
 
     try:
-        while not select.select([running_read], [], [], self.poll_interval)[0]:
+        while not select.select([running_read], [], [], mcp.config.poll_interval)[0]:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
@@ -214,8 +214,6 @@ def run():
                 for name in list(server_processes.keys()):
                     if not mcp.model.server.get(name):
                         del server_processes[name]
-
-                time.sleep(mcp.config.poll_interval)
             except:
                 traceback.print_exc()
     finally:
