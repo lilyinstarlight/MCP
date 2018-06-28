@@ -86,7 +86,7 @@ class SFTPServerInterface(paramiko.SFTPServerInterface):
 
             files = os.listdir(rpath)
             for filename in files:
-                if rpath != '/' or self.user.admin or filename in self.user.servers:
+                if rpath != os.path.join(mcp.config.prefix, '') or self.user.admin or filename in self.user.servers:
                     attr = paramiko.SFTPAttributes.from_stat(os.lstat(os.path.join(rpath, filename)))
                     attr.filename = filename
                     folder.append(attr)
