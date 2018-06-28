@@ -140,7 +140,7 @@ def run():
         entry.command = ''
 
     try:
-        while not select.select([running_read], [], [])[0]:
+        while not select.select([running_read], [], [], self.poll_interval)[0]:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
@@ -240,7 +240,7 @@ def stop():
     if not process:
         return
 
-    os.write(running_write, 'stop\n')
+    os.write(running_write, b'stop\n')
     process.join()
 
     running_read, running_write = None, None
