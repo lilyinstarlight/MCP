@@ -1,5 +1,4 @@
 import logging
-import multiprocessing
 import os
 import os.path
 import select
@@ -125,11 +124,9 @@ class Server(object):
         self.proc.stdin.flush()
 
 running_read, running_write = None, None
-process = None
+pid = None
 
 def run():
-    os.close(running_write)
-
     server_processes = {}
 
     for entry in mcp.model.server.items():
@@ -223,28 +220,31 @@ def run():
             process.stop()
 
 def start():
-    global running_read, running_write, process
+    global running_read, running_write, pid
 
     if process:
         return
 
     running_read, running_write = os.pipe()
-    process = multiprocessing.Process(target=run, name='mcp-manager')
-    process.start()
-
-    os.close(running_read)
+    pid = os.fork()
+    if pid == 0:
+        os.close(running_write)
+        run()
+        sys.exit(0)
+    else:
+        os.close(running_read)
 
 def stop():
-    global running_read, running_write, process
+    global running_read, running_write, pid
 
     if not process:
         return
 
     os.write(running_write, 'stop')
-    process.join()
+    os.waitpid(pid, 0)
 
     running_read, running_write = None, None
-    process = None
+    pid = None
 
 def is_running():
-    return bool(process and process.is_alive())
+    return bool(pid and not os.waitpid(pid, os.WNOHANG)[0])
