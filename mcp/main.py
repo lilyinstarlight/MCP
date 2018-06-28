@@ -110,10 +110,18 @@ import mcp.common.daemon
 import mcp.common.util
 
 
-# check for initial files in a potentially demoted process
-proc = multiprocessing.Process(target=mcp.initial.check, args=(mcp.common.util.demote,))
-proc.start()
-proc.join()
+if os.geteuid() == 0:
+    # check for initial files in a demoted process
+    def check():
+        mcp.common.util.demote(mcp.config.user)
+        mcp.initial.check()
+
+    proc = multiprocessing.Process(target=check)
+    proc.start()
+    proc.join()
+else:
+    # check for initial files
+    mcp.initial.check()
 
 
 import mcp.service.http
@@ -139,7 +147,7 @@ mcp.service.manager.start()
 
 # drop root privileges if necessary
 if os.geteuid() == 0:
-    mcp.common.util.demote()
+    mcp.common.util.demote(mcp.config.user)
 
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()
