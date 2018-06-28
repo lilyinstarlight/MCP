@@ -222,7 +222,7 @@ def run():
 def start():
     global running_read, running_write, pid
 
-    if process:
+    if pid:
         return
 
     running_read, running_write = os.pipe()
@@ -237,7 +237,7 @@ def start():
 def stop():
     global running_read, running_write, pid
 
-    if not process:
+    if not pid:
         return
 
     os.write(running_write, 'stop')
