@@ -122,14 +122,7 @@ else:
     mcp.initial.check()
 
 
-import mcp.common.daemon
-
-import mcp.service.http
 import mcp.service.manager
-import mcp.service.rotate
-import mcp.service.update
-if os.path.exists(mcp.config.sftpkey):
-    import mcp.service.sftp
 
 log = logging.getLogger('mcp')
 
@@ -144,14 +137,25 @@ signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 # start server manager
 mcp.service.manager.start()
-
 # drop root privileges if necessary
 if os.geteuid() == 0:
     mcp.common.util.demote(mcp.config.user)
 
+
+import mcp.common.daemon
+
+
 # fill in daemon details
 mcp.common.daemon.pid = os.getpid()
 mcp.common.daemon.sync = multiprocessing.Manager()
+
+
+import mcp.service.http
+import mcp.service.rotate
+import mcp.service.update
+if os.path.exists(mcp.config.sftpkey):
+    import mcp.service.sftp
+
 
 # start everything else
 mcp.service.rotate.start()

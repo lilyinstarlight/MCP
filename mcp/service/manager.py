@@ -1,7 +1,7 @@
 import logging
+import multiprocessing
 import os
 import os.path
-import select
 import subprocess
 import sys
 import time
@@ -11,7 +11,6 @@ import mcp.config
 import mcp.error
 
 import mcp.common.env
-import mcp.common.daemon
 
 import mcp.model.server
 
@@ -123,8 +122,8 @@ class Server(object):
         self.proc.stdin.write(command.encode('latin1') + b'\n')
         self.proc.stdin.flush()
 
-running_read, running_write = None, None
-pid = None
+running = multiprocessing.Value('b', False)
+process = None
 
 def run():
     server_processes = {}
@@ -137,7 +136,7 @@ def run():
         entry.command = ''
 
     try:
-        while not select.select([running_read], [], [])[0]:
+        while running.value:
             try:
                 for entry in mcp.model.server.items():
                     # create process if necessary
@@ -220,31 +219,24 @@ def run():
             process.stop()
 
 def start():
-    global running_read, running_write, pid
+    global running, process
 
-    if pid:
+    if process:
         return
 
-    running_read, running_write = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        os.close(running_write)
-        run()
-        sys.exit(0)
-    else:
-        os.close(running_read)
+    running.value = True
+    process = multiprocessing.Process(target=run, name='mcp-manager')
+    process.start()
 
 def stop():
-    global running_read, running_write, pid
+    global running, process
 
-    if not pid:
+    if not process:
         return
 
-    os.write(running_write, 'stop')
-    os.waitpid(pid, 0)
-
-    running_read, running_write = None, None
-    pid = None
+    running.value = False
+    process.join()
+    process = None
 
 def is_running():
-    return bool(pid and not os.waitpid(pid, os.WNOHANG)[0])
+    return bool(process and process.is_alive())
