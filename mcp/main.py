@@ -3,6 +3,7 @@ import logging
 import multiprocessing
 import os
 import os.path
+import pwd
 import shutil
 import signal
 import sys
@@ -25,6 +26,7 @@ parser.add_argument('--config', dest='config', help='config directory to use')
 parser.add_argument('--scripting', dest='scripting', help='scripting directory to use')
 parser.add_argument('--tmp', dest='tmp', help='tmp directory to use')
 parser.add_argument('--sftpkey', dest='sftpkey', help='sftp key to use')
+parser.add_argument('--user', dest='user', help='user to drop to if run as root')
 parser.add_argument('--container', action='store_true', dest='container', help='whether to put servers and scripts in a container')
 
 args = parser.parse_args()
@@ -71,11 +73,15 @@ if args.tmp:
 if args.sftpkey:
     mcp.config.sftpkey = os.path.abspath(args.sftpkey)
 
+if args.user:
+    mcp.config.user = args.user
+
 if args.container:
     mcp.config.container = args.container
 
 
 if mcp.config.log:
+    logging.getLogger('mcp').addHandler(logging.StreamHandler())
     logging.getLogger('mcp').addHandler(logging.FileHandler(mcp.config.log))
 
 
@@ -113,8 +119,24 @@ log = logging.getLogger('mcp')
 
 log.info(name + ' ' + version + ' starting...')
 
+if mcp.config.container and os.geteuid() != 0:
+    log.error('Root privileges required to create containers.\nNote: The root privileges will be dropped by all daemons except the server management daemon.')
+    sys.exit(1)
+
 # fix multiprocessing ctrl+c
 signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+# start server manager
+mcp.service.manager.start()
+
+# drop privileges if necessary
+if os.geteuid() == 0:
+    user = pwd.getpwnam(mcp.config.user)
+
+    os.setgroups([])
+
+    os.setgid(user.pw_gid)
+    os.setuid(user.pw_uid)
 
 # check for starting files
 mcp.initial.check()
@@ -123,8 +145,7 @@ mcp.initial.check()
 mcp.common.daemon.pid = os.getpid()
 mcp.common.daemon.sync = multiprocessing.Manager()
 
-# start everything
-mcp.service.manager.start()
+# start everything else
 mcp.service.rotate.start()
 mcp.service.update.start()
 

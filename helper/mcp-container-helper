@@ -23,7 +23,7 @@ try:
     uid = 131072
 
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
-    if subprocess.call(['sudo', '/usr/bin/bindfs', '--map=mcp/{uid}:@mcp/@{uid}'.format(uid=uid), sys.argv[1], os.path.join(tmp, 'srv')]):
+    if subprocess.call(['/usr/bin/bindfs', '--map=mcp/{uid}:@mcp/@{uid}'.format(uid=uid), sys.argv[1], os.path.join(tmp, 'srv')]):
         raise RuntimeError()
 
     os.makedirs(os.path.join(tmp, 'usr', 'lib'), exist_ok=True)
@@ -47,18 +47,15 @@ try:
 
         shutil.copy2(path, os.path.join(tmp, library))
 
-    proc = subprocess.Popen(['sudo', '/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '-qaD', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
+    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qaD', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
 
     def terminate(signum=None, frame=None):
-        if not proc:
-            time.sleep(0.1)
-
         if proc.poll() is None:
             proc.terminate()
             try:
                 proc.wait(5)
             except subprocess.TimeoutExpired:
-                proc.kill()
+                proc.terminate()
                 proc.wait()
 
     signal.signal(signal.SIGTERM, terminate)
@@ -72,7 +69,7 @@ finally:
     try:
         terminate()
 
-        subprocess.call(['sudo', '/bin/umount', os.path.join(tmp, 'srv')])
+        subprocess.call(['/bin/umount', os.path.join(tmp, 'srv')])
 
         shutil.rmtree(tmp)
     except:

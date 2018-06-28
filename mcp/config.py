@@ -58,5 +58,8 @@ sftpkey = '/var/lib/mcp/sftp/ssh_host_rsa_key'
 tlskey = None
 tlscert = None
 
+# user to drop privileges to if run as root
+user = 'mcp'
+
 # how long to wait between server polls
 poll_interval = 0.5
