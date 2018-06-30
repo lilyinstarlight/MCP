@@ -177,7 +177,7 @@ class Log(mcp.common.http.PlainAuthHandler):
             except mcp.error.LastLogLine:
                 return 204, ''
             except mcp.error.NoLogLine:
-                return 201, mcp.model.server.script_log_get(self.groups[0])
+                return 201, mcp.model.server.log_get(self.groups[0])
         except mcp.error.NoServerError:
             raise fooster.web.HTTPError(404)
 
