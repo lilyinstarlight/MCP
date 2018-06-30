@@ -162,13 +162,10 @@ def log_get(server_name, last=None):
                 elif lines + 1 < last:
                     raise mcp.error.NoLogLine()
 
-                for _ in range(last):
+                for _ in range(last - 1):
                     log.readline()
 
             contents = log.read()
-
-            if contents and contents[-1] != b'\n':
-                contents += b'\n'
 
             return contents
     except FileNotFoundError:
@@ -206,13 +203,10 @@ def script_log_get(server_name, last=None):
                 elif lines + 1 < last:
                     raise mcp.error.NoLogLine()
 
-                for _ in range(last):
+                for _ in range(last - 1):
                     log.readline()
 
             contents = log.read()
-
-            if contents and contents[-1] != b'\n':
-                contents += b'\n'
 
             return contents
     except FileNotFoundError:
