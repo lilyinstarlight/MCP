@@ -170,7 +170,7 @@ var refresh = function(force) {
 			getLog(selected, log_last, function(response, last) {
 				log_last = last;
 
-				var scroll =  Math.floor(document.getElementById('log').scrollTop + document.getElementById('log').clientHeight) == document.getElementById('log').scrollHeight || force;
+				var scroll = Math.floor(document.getElementById('log').scrollTop + document.getElementById('log').clientHeight) == document.getElementById('log').scrollHeight || force;
 
 				document.getElementById('log').innerHTML += response;
 
@@ -189,7 +189,7 @@ var refresh = function(force) {
 			getScriptLog(selected, script_log_last, function(response, last) {
 				script_log_last = last;
 
-				var scroll =  Math.floor(document.getElementById('script_log').scrollTop + document.getElementById('script_log').clientHeight) == document.getElementById('script_log').scrollHeight || force;
+				var scroll = Math.floor(document.getElementById('script_log').scrollTop + document.getElementById('script_log').clientHeight) == document.getElementById('script_log').scrollHeight || force;
 
 				document.getElementById('script_log').innerHTML += response;
 
