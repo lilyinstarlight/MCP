@@ -72,9 +72,9 @@ def build(server_name, source_name, library_name=None, source_revision=None, lib
 
     try:
         if library_name:
-            mcp.control.script.prepare(library_name, tmp_library, os.path.join(tmp_prefix, 'scripts'), library_revision)
+            mcp.control.script.prepare(library_name, tmp_library, os.path.join(tmp_prefix, 'script'), library_revision)
         else:
-            os.makedirs(os.path.join(tmp_prefix, 'scripts'), exist_ok=True)
+            os.makedirs(os.path.join(tmp_prefix, 'script'), exist_ok=True)
     except:
         raise mcp.error.ConfigError('Failed to create script directory')
 
