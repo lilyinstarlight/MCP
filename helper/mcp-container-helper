@@ -29,18 +29,16 @@ try:
     if subprocess.call(['/usr/bin/bindfs', '--map=mcp/{uid}:@mcp/@{uid}'.format(uid=uid), sys.argv[1], os.path.join(tmp, 'srv')]):
         raise RuntimeError()
 
-    if os.path.exists(os.path.join('/', 'lib64', 'libresolv.so.2')):
-        os.makedirs(os.path.join(tmp, 'lib64'), exist_ok=True)
-        shutil.copy2(os.path.join('/', 'lib64', 'libresolv.so.2'), os.path.join(tmp, 'lib64', 'libresolv.so.2'))
+    libdir = 'lib64' if os.path.exists(os.path.join('/', 'lib64', 'libresolv.so.2')) else 'lib'
 
-        os.makedirs(os.path.join(tmp, 'lib64'), exist_ok=True)
-        shutil.copy2(os.path.join('/', 'lib64', 'libnss_dns.so.2'), os.path.join(tmp, 'lib64', 'libnss_dns.so.2'))
-    else:
-        os.makedirs(os.path.join(tmp, 'lib64'), exist_ok=True)
-        shutil.copy2(os.path.join('/', 'lib64', 'libresolv.so.2'), os.path.join(tmp, 'lib64', 'libresolv.so.2'))
+    os.makedirs(os.path.join(tmp, libdir), exist_ok=True)
+    shutil.copy2(os.path.join('/', libdir, 'libresolv.so.2'), os.path.join(tmp, libdir, 'libresolv.so.2'))
 
-        os.makedirs(os.path.join(tmp, 'lib'), exist_ok=True)
-        shutil.copy2(os.path.join('/', 'lib', 'libnss_dns.so.2'), os.path.join(tmp, 'lib', 'libnss_dns.so.2'))
+    os.makedirs(os.path.join(tmp, libdir), exist_ok=True)
+    shutil.copy2(os.path.join('/', libdir, 'libnss_dns.so.2'), os.path.join(tmp, libdir, 'libnss_dns.so.2'))
+
+    os.makedirs(os.path.join(tmp, 'usr', libdir), exist_ok=True)
+    shutil.copy2(os.path.join('/', 'usr', libdir, 'libz.so.1'), os.path.join(tmp, libdir, 'libz.so.1'))
 
     os.makedirs(os.path.join(tmp, 'usr', 'lib'), exist_ok=True)
     shutil.copy2(os.path.join('/', 'usr', 'lib', 'os-release'), os.path.join(tmp, 'usr', 'lib', 'os-release'))
