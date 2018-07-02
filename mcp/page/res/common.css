@@ -44,6 +44,14 @@ main {
 	padding: 20px;
 }
 
+footer {
+	font-size: 18px;
+	font-weight: bold;
+
+	width: 100%;
+	text-align: center;
+}
+
 a {
 	color: #CA3;
 }
