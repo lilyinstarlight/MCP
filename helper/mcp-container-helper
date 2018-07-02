@@ -47,8 +47,18 @@ try:
 
     libraries = {}
 
+    exe = os.path.join(sys.argv[1], sys.argv[2])
+
+    with open(exe, 'rb') as exefile:
+        shebang = exefile.readline()
+        if shebang.startswith(b'#!'):
+            exe = shebang[2:].strip()
+
+            os.makedirs(os.path.join(tmp, os.path.dirname(exe)[1:]), exist_ok=True)
+            shutil.copy2(exe, os.path.join(tmp, os.path.dirname(exe)[1:]))
+
     try:
-        for line in subprocess.check_output(['ldd', os.path.join(sys.argv[1], sys.argv[2])]).splitlines():
+        for line in subprocess.check_output(['ldd', exe]).splitlines():
             match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
             if match:
                 if match.group(1) and match.group(2):
@@ -60,7 +70,6 @@ try:
 
     for library, path in libraries.items():
         os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
-
         shutil.copy2(path, os.path.join(tmp, library))
 
     proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qaD', tmp, os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
