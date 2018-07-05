@@ -331,7 +331,10 @@ var load = function() {
 	}, false);
 
 	document.getElementById('script_doc_button').addEventListener('click', function(ev) {
-		goto('/api/script/' + library + '/doc', true);
+		if (library)
+			goto('/api/script/' + library + '/doc', true);
+		else
+			alert('No library installed');
 
 		ev.preventDefault();
 	}, false);
