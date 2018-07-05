@@ -163,6 +163,9 @@ var refresh = function(force) {
 
 			library = server.library;
 
+			if (!library !== document.getElementById('script_doc_button').disabled)
+				document.getElementById('script_doc_button').disabled = !library;
+
 			server_last = server;
 		});
 
@@ -331,10 +334,7 @@ var load = function() {
 	}, false);
 
 	document.getElementById('script_doc_button').addEventListener('click', function(ev) {
-		if (library)
-			goto('/api/script/' + library + '/doc', true);
-		else
-			alert('No library installed');
+		goto('/api/script/' + library + '/doc', true);
 
 		ev.preventDefault();
 	}, false);
