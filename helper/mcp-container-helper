@@ -43,9 +43,6 @@ try:
     os.makedirs(os.path.join(tmp, 'usr', 'lib'), exist_ok=True)
     shutil.copy2(os.path.join('/', 'usr', 'lib', 'os-release'), os.path.join(tmp, 'usr', 'lib', 'os-release'))
 
-    os.makedirs(os.path.join(tmp, 'bin'), exist_ok=True)
-    shutil.copy2(os.path.join('/', 'bin', 'sh'), os.path.join(tmp, 'bin', 'sh'))
-
     libraries = {}
 
     exe = os.path.join(sys.argv[2], sys.argv[3])
@@ -69,22 +66,11 @@ try:
     except subprocess.CalledProcessError:
         pass
 
-    try:
-        for line in subprocess.check_output(['ldd', '/bin/sh']).splitlines():
-            match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
-            if match:
-                if match.group(1) and match.group(2):
-                    libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
-                elif match.group(3):
-                    libraries[match.group(3)[1:]] = match.group(3)
-    except subprocess.CalledProcessError:
-        pass
-
     for library, path in libraries.items():
         os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
         shutil.copy2(path, os.path.join(tmp, library))
 
-    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qnaD', tmp] + ['--port=udp:{port}'.format(port=sys.argv[1])] if int(sys.argv[1]) else [] + [os.path.join('/', 'srv', sys.argv[3])] + sys.argv[4:])
+    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qnaD', tmp] + (['--port=udp:{port}'.format(port=sys.argv[1])] if int(sys.argv[1]) else []) + [os.path.join('/', 'srv', sys.argv[3])] + sys.argv[4:])
 
     def terminate(signum=None, frame=None):
         if proc.poll() is None:
