@@ -70,7 +70,7 @@ try:
         os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
         shutil.copy2(path, os.path.join(tmp, library))
 
-    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qnaD', tmp] + (['--port=udp:{port}'.format(port=sys.argv[1])] if int(sys.argv[1]) else []) + [os.path.join('/', 'srv', sys.argv[3])] + sys.argv[4:])
+    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qaD', tmp] + [os.path.join('/', 'srv', sys.argv[3])] + sys.argv[4:])
 
     def terminate(signum=None, frame=None):
         if proc.poll() is None:
