@@ -11,7 +11,7 @@ import tempfile
 import time
 
 
-if not os.path.normpath(sys.argv[2]).startswith('/var/lib/mcp/servers/'):
+if not os.path.normpath(sys.argv[1]).startswith('/var/lib/mcp/servers/'):
     sys.exit(1)
 
 
@@ -26,7 +26,7 @@ try:
         uid = random.randint(8, 28670)*65536
 
     os.makedirs(os.path.join(tmp, 'srv'), exist_ok=True)
-    if subprocess.call(['/usr/bin/bindfs', '--map=mcp/{uid}:@mcp/@{uid}'.format(uid=uid), sys.argv[2], os.path.join(tmp, 'srv')]):
+    if subprocess.call(['/usr/bin/bindfs', '--map=mcp/{uid}:@mcp/@{uid}'.format(uid=uid), sys.argv[1], os.path.join(tmp, 'srv')]):
         raise RuntimeError()
 
     libdir = 'lib64' if os.path.exists(os.path.join('/', 'lib64', 'libresolv.so.2')) else 'lib'
@@ -45,7 +45,7 @@ try:
 
     libraries = {}
 
-    exe = os.path.join(sys.argv[2], sys.argv[3])
+    exe = os.path.join(sys.argv[1], sys.argv[2])
 
     with open(exe, 'rb') as exefile:
         shebang = exefile.readline()
@@ -70,7 +70,7 @@ try:
         os.makedirs(os.path.join(tmp, os.path.dirname(library)), exist_ok=True)
         shutil.copy2(path, os.path.join(tmp, library))
 
-    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qaD', tmp] + [os.path.join('/', 'srv', sys.argv[3])] + sys.argv[4:])
+    proc = subprocess.Popen(['/usr/bin/systemd-nspawn', '--private-users={uid}'.format(uid=uid), '--private-users-chown', '--kill-signal=SIGRTMIN+3', '-qaD', tmp] + [os.path.join('/', 'srv', sys.argv[2])] + sys.argv[3:])
 
     def terminate(signum=None, frame=None):
         if proc.poll() is None:
