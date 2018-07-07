@@ -43,6 +43,9 @@ try:
     os.makedirs(os.path.join(tmp, 'usr', 'lib'), exist_ok=True)
     shutil.copy2(os.path.join('/', 'usr', 'lib', 'os-release'), os.path.join(tmp, 'usr', 'lib', 'os-release'))
 
+    os.makedirs(os.path.join(tmp, 'bin'), exist_ok=True)
+    shutil.copy2(os.path.join('/', 'bin', 'sh'), os.path.join(tmp, 'bin', 'sh'))
+
     libraries = {}
 
     exe = os.path.join(sys.argv[2], sys.argv[3])
@@ -57,6 +60,17 @@ try:
 
     try:
         for line in subprocess.check_output(['ldd', exe]).splitlines():
+            match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
+            if match:
+                if match.group(1) and match.group(2):
+                    libraries[os.path.join('lib64' if '/lib64/' in match.group(2) else 'lib', match.group(1))] = match.group(2)
+                elif match.group(3):
+                    libraries[match.group(3)[1:]] = match.group(3)
+    except subprocess.CalledProcessError:
+        pass
+
+    try:
+        for line in subprocess.check_output(['ldd', '/bin/sh']).splitlines():
             match = re.match('\t(.*) => (.*) \(0x|\t(/.*) \(0x', line.decode())
             if match:
                 if match.group(1) and match.group(2):
