@@ -262,7 +262,10 @@ class ServerInterface(paramiko.ServerInterface):
             return paramiko.AUTH_FAILED
 
     def check_channel_request(self, kind, chanid):
-        return paramiko.OPEN_SUCCEEDED
+        if kind == 'session':
+            return paramiko.OPEN_SUCCEEDED
+
+        return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def get_allowed_auths(self, username):
         return 'password'
